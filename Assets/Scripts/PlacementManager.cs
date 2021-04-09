@@ -16,6 +16,8 @@ public class PlacementManager : MonoBehaviour
     private GameObject[] versionObjs;
     private int objCount;
 
+    private bool inPlacement;
+
     private void Start()
     {
         objCount = versionHistoryObj.transform.childCount;
@@ -31,14 +33,23 @@ public class PlacementManager : MonoBehaviour
         versionHistoryObj.SetActive(false);
     }
 
-    public void ToggleStatus(bool status)
-    {
-        versionHistoryObj.SetActive(status);
-        tapToPlace.enabled = true;
-        tapToPlace.StartPlacement();
-    }
+    //public void ToggleStatus(bool status)
+    //{
+    //    if (status)
+    //    {
+    //        versionHistoryObj.SetActive(status);
+    //        tapToPlace.enabled = true;
+    //        tapToPlace.StartPlacement();
 
-    public void ToggleMaterials(bool status)
+    //        inPlacement = true;
+    //    }
+    //    else
+    //    {
+    //        inPlacement = false;
+    //    }
+    //}
+
+    private void ToggleMaterials(bool status)
     {
         Material mat = status ? placementMaterial : displayMaterial;
 
@@ -46,5 +57,27 @@ public class PlacementManager : MonoBehaviour
         {
             obj.GetComponent<MeshRenderer>().material = mat;
         }
+    }
+
+    public void PlacementStarts()
+    {
+        versionHistoryObj.SetActive(true);
+        tapToPlace.enabled = true;
+        tapToPlace.StartPlacement();
+
+        inPlacement = true;
+
+        ToggleMaterials(true);
+    }
+
+    public void PlacementFinished()
+    {
+        ToggleMaterials(false);
+        inPlacement = false;
+    }
+
+    public bool GetInPlacement()
+    {
+        return inPlacement;
     }
 }
