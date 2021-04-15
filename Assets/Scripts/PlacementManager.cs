@@ -5,8 +5,14 @@ using Microsoft.MixedReality.Toolkit.Utilities.Solvers;
 
 public class PlacementManager : MonoBehaviour
 {
+    public Vector3 comparisonPanelPositionOffset;
+
     [SerializeField]
     private GameObject versionHistoryObj;
+    [SerializeField]
+    private GameObject comparisonPanel;
+    [SerializeField]
+    private GameObject startUpPanel;
     [SerializeField]
     private Material displayMaterial;
     [SerializeField]
@@ -30,7 +36,7 @@ public class PlacementManager : MonoBehaviour
         }
 
         tapToPlace = versionHistoryObj.GetComponent<TapToPlace>();
-        versionHistoryObj.SetActive(false);
+        SetUp();
     }
 
     //public void ToggleStatus(bool status)
@@ -61,6 +67,7 @@ public class PlacementManager : MonoBehaviour
 
     public void PlacementStarts()
     {
+        comparisonPanel.SetActive(false);
         versionHistoryObj.SetActive(true);
         tapToPlace.enabled = true;
         tapToPlace.StartPlacement();
@@ -74,10 +81,25 @@ public class PlacementManager : MonoBehaviour
     {
         ToggleMaterials(false);
         inPlacement = false;
+
+        comparisonPanel.transform.rotation = versionHistoryObj.transform.rotation;
+        comparisonPanel.transform.position = versionHistoryObj.transform.position + (versionHistoryObj.transform.rotation * comparisonPanelPositionOffset);
+        comparisonPanel.SetActive(true);
     }
 
     public bool GetInPlacement()
     {
         return inPlacement;
+    }
+
+    public void SetUp()
+    {
+        versionHistoryObj.SetActive(false);
+        comparisonPanel.SetActive(false);
+        startUpPanel.SetActive(true);
+
+        ToggleMaterials(false);
+
+        inPlacement = false;
     }
 }
