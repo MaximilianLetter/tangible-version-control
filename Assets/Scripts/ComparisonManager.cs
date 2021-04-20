@@ -2,25 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ComparisonMode { SideBySide, Transparent, Differences }
+
 public class ComparisonManager : MonoBehaviour
 {
-    enum ComparisonMode { SideBySide, Transparent, Differences };
 
     private bool inComparison;
     private GameObject comparingObj;
+    private ComparisonObject comparingObjLogic;
     private GameObject originalVersionObj;
+    private GameObject trackedObj;
 
-    private ComparisonMode mode;
+    public ComparisonMode mode;
 
     private void Start()
     {
+        trackedObj = GameObject.Find("TrackedContainer");
+
         inComparison = false;
         comparingObj = null;
 
         mode = ComparisonMode.SideBySide;
     }
 
-    public void StartComparison(GameObject trackedObj, GameObject versionObj)
+    public void StartComparison(GameObject physicalObj, GameObject versionObj)
     {
         if (inComparison)
         {
@@ -34,7 +39,8 @@ public class ComparisonManager : MonoBehaviour
         originalVersionObj = versionObj;
         inComparison = true;
 
-        comparingObj = Instantiate(versionObj, trackedObj.transform.parent);
+        comparingObj = Instantiate(versionObj, physicalObj.transform.parent);
+        comparingObjLogic = comparingObj.AddComponent<ComparisonObject>();
 
         // Disable collider so it does not collide with the comparing obj
         var coll = comparingObj.GetComponent<Collider>();
@@ -50,14 +56,17 @@ public class ComparisonManager : MonoBehaviour
     {
         if (mode == ComparisonMode.SideBySide)
         {
-            comparingObj.transform.localPosition = new Vector3(-0.2f, 0, 0);
+            comparingObj.transform.parent = null;
+            comparingObjLogic.hoverNext = true;
         }
         else if (mode == ComparisonMode.Transparent)
         {
+            comparingObj.transform.parent = trackedObj.transform;
             comparingObj.transform.localPosition = Vector3.zero;
         }
         else if (mode == ComparisonMode.Differences)
         {
+            comparingObj.transform.parent = trackedObj.transform;
             comparingObj.transform.localPosition = Vector3.zero;
         }
     }
@@ -73,6 +82,13 @@ public class ComparisonManager : MonoBehaviour
 
     public void SwitchComparisonMode()
     {
+        // Reset properties if necessary
+        if (comparingObjLogic != null)
+        {
+            comparingObjLogic.hoverNext = false;
+        }
+
+        // Cycle through modes
         mode = (ComparisonMode)(((int)mode + 1) % 3);
 
         Debug.Log("Comparison mode switched to: " + mode);

@@ -82,6 +82,8 @@ public class PlacementManager : MonoBehaviour
         ToggleMaterials(false);
         inPlacement = false;
 
+        tapToPlace.enabled = false;
+
         comparisonPanel.transform.rotation = versionHistoryObj.transform.rotation;
         comparisonPanel.transform.position = versionHistoryObj.transform.position + (versionHistoryObj.transform.rotation * comparisonPanelPositionOffset);
         comparisonPanel.SetActive(true);
