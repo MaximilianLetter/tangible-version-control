@@ -306,6 +306,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f715d5bb31a532940a13c47095b3d864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  transparentMat: {fileID: 2100000, guid: 0794c975da3543148b499d1e05dc0007, type: 2}
+  wireframesMat: {fileID: 2100000, guid: 8a2eb0a7f7ce218499260558df6c19d7, type: 2}
+  phantomMat: {fileID: 2100000, guid: 041147a74419bfb46ad909df84dfb495, type: 2}
   mode: 0
 --- !u!1001 &382480056
 PrefabInstance:
@@ -1029,6 +1032,7 @@ GameObject:
   - component: {fileID: 958771090}
   - component: {fileID: 958771089}
   - component: {fileID: 958771093}
+  - component: {fileID: 958771094}
   m_Layer: 0
   m_Name: Object
   m_TagString: Untagged
@@ -1136,6 +1140,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 730db5f95d8055a48b10e06985a255aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &958771094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 958771087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9ed55731c6baa14c92ecc0fa664bcf7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &963194225
@@ -1365,7 +1381,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &1750029596
 MeshCollider:
   m_ObjectHideFlags: 0

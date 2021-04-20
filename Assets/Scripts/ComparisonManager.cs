@@ -2,22 +2,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum ComparisonMode { SideBySide, Transparent, Differences }
+public enum ComparisonMode { SideBySide, Overlay, Differences }
 
 public class ComparisonManager : MonoBehaviour
 {
+    // Comparison properties
+    public Material transparentMat;
+    public Material wireframesMat;
+    public Material phantomMat;
 
+    // Required objects
     private bool inComparison;
     private GameObject comparingObj;
     private ComparisonObject comparingObjLogic;
     private GameObject originalVersionObj;
     private GameObject trackedObj;
+    private TrackedObject trackedObjLogic;
 
     public ComparisonMode mode;
 
     private void Start()
     {
         trackedObj = GameObject.Find("TrackedContainer");
+        trackedObjLogic = trackedObj.transform.GetChild(0).GetComponent<TrackedObject>();
 
         inComparison = false;
         comparingObj = null;
@@ -53,21 +60,39 @@ public class ComparisonManager : MonoBehaviour
     }
 
     private void DisplayComparison()
-    {
+    {        
+        // Reset properties if necessary
+        if (comparingObjLogic == null || trackedObjLogic == null)
+        {
+            Debug.Log("Scripts of comparingObj or trackedObj missing");
+            return;
+        }
+
+        comparingObjLogic.Reset();
+        trackedObjLogic.ResetMaterial();
+
+        // Activate effects based on activated mode
         if (mode == ComparisonMode.SideBySide)
         {
             comparingObj.transform.parent = null;
             comparingObjLogic.hoverNext = true;
         }
-        else if (mode == ComparisonMode.Transparent)
+        else if (mode == ComparisonMode.Overlay)
         {
             comparingObj.transform.parent = trackedObj.transform;
             comparingObj.transform.localPosition = Vector3.zero;
+
+            trackedObjLogic.SetMaterial(phantomMat);
+            comparingObjLogic.SetOverlayMaterial(transparentMat);
         }
         else if (mode == ComparisonMode.Differences)
         {
             comparingObj.transform.parent = trackedObj.transform;
             comparingObj.transform.localPosition = Vector3.zero;
+
+            // For testing purposes
+            trackedObjLogic.SetMaterial(phantomMat);
+            comparingObjLogic.SetOverlayMaterial(wireframesMat);
         }
     }
 
@@ -78,16 +103,11 @@ public class ComparisonManager : MonoBehaviour
         comparingObj = null;
         originalVersionObj = null;
         inComparison = false;
+        trackedObjLogic.ResetMaterial();
     }
 
     public void SwitchComparisonMode()
     {
-        // Reset properties if necessary
-        if (comparingObjLogic != null)
-        {
-            comparingObjLogic.hoverNext = false;
-        }
-
         // Cycle through modes
         mode = (ComparisonMode)(((int)mode + 1) % 3);
 

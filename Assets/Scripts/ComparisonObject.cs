@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class ComparisonObject : MonoBehaviour
 {
+    private MeshRenderer meshRenderer;
+    private Material baseMat;
+
     private Transform trackedObjTransform;
 
     public float floatingDistance = 0.2f;
@@ -13,6 +16,9 @@ public class ComparisonObject : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        meshRenderer = gameObject.GetComponent<MeshRenderer>();
+        baseMat = meshRenderer.material;
+
         trackedObjTransform = GameObject.Find("TrackedContainer").transform;
     }
 
@@ -46,6 +52,24 @@ public class ComparisonObject : MonoBehaviour
                 camTransform.position + offset,
                 trackedObjTransform.rotation
             );
+        }
+    }
+
+    public void SetOverlayMaterial(Material mat)
+    {
+        if (meshRenderer != null)
+        {
+            meshRenderer.material = mat;
+        }
+    }
+
+    public void Reset()
+    {
+        hoverNext = false;
+
+        if (meshRenderer != null)
+        {
+            meshRenderer.material = baseMat;
         }
     }
 }
