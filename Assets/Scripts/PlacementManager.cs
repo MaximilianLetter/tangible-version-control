@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Utilities.Solvers;
+using Vuforia;
 
 public class PlacementManager : MonoBehaviour
 {
@@ -27,6 +28,7 @@ public class PlacementManager : MonoBehaviour
     private void Start()
     {
         objCount = versionHistoryObj.transform.childCount;
+
         versionObjs = new GameObject[objCount];
 
         // Fill list of sub objects
@@ -87,6 +89,9 @@ public class PlacementManager : MonoBehaviour
         comparisonPanel.transform.rotation = versionHistoryObj.transform.rotation;
         comparisonPanel.transform.position = versionHistoryObj.transform.position + (versionHistoryObj.transform.rotation * comparisonPanelPositionOffset);
         comparisonPanel.SetActive(true);
+
+        // Start vuforia tracking
+        Camera.main.GetComponent<VuforiaBehaviour>().enabled = true;
     }
 
     public bool GetInPlacement()
