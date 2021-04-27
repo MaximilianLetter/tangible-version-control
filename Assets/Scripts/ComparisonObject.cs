@@ -9,7 +9,7 @@ public class ComparisonObject : MonoBehaviour
 
     private Transform trackedObjTransform;
 
-    public float floatingDistance = 0.1f;
+    public float floatingDistance = 0.15f;
     public int minAngle = 10;
     public bool hoverNext;
 
