@@ -4,22 +4,25 @@ using UnityEngine;
 
 public class ComparisonObject : MonoBehaviour
 {
+    private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;
     private Material baseMat;
 
     private Transform trackedObjTransform;
+    private float floatingDistance;
 
-    public float floatingDistance = 0.2f;
-    public int minAngle = 10;
     public bool hoverNext;
 
     // Start is called before the first frame update
     void Start()
     {
+        meshFilter = gameObject.GetComponent<MeshFilter>();
         meshRenderer = gameObject.GetComponent<MeshRenderer>();
         baseMat = meshRenderer.material;
 
         trackedObjTransform = GameObject.Find("TrackedContainer").transform;
+
+        floatingDistance = ComparisonManager.Instance.floatingDistance;
     }
 
     // Update is called once per frame
@@ -71,5 +74,22 @@ public class ComparisonObject : MonoBehaviour
         {
             meshRenderer.material = baseMat;
         }
+    }
+
+    public void Activate(GameObject toClone)
+    {
+        // Copy information form original object
+        meshFilter.mesh = toClone.GetComponent<MeshFilter>().mesh;
+        transform.localScale = toClone.transform.localScale;
+
+        gameObject.SetActive(true);
+    }
+
+    public void Deactivate()
+    {
+        meshFilter.mesh = null;
+        transform.localScale = Vector3.one;
+
+        gameObject.SetActive(false);
     }
 }

@@ -6,106 +6,130 @@ public enum ComparisonMode { SideBySide, Overlay, Differences }
 
 public class ComparisonManager : MonoBehaviour
 {
+    // Singleton setup
+    private static ComparisonManager _instance;
+
+    public static ComparisonManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = new ComparisonManager();
+                Debug.Log("Comparison Manager created");
+            }
+            return _instance;
+        }
+    }
+
     // Comparison properties
     public Material transparentMat;
     public Material wireframesMat;
     public Material phantomMat;
+    public float floatingDistance;
 
-    // Required objects
-    private bool inComparison;
-    private GameObject comparingObj;
-    private ComparisonObject comparingObjLogic;
+    // Required object references
+    private TrackedObject trackedObj;
+    private Transform trackedTransform;
+    private ComparisonObject comparisonObj;
+
+    // State variables
     private GameObject originalVersionObj;
-    private GameObject trackedObj;
-    private TrackedObject trackedObjLogic;
-
+    private bool inComparison;
     public ComparisonMode mode;
 
-    private void Start()
+    private void Awake()
     {
-        trackedObj = GameObject.Find("TrackedContainer");
-        trackedObjLogic = trackedObj.transform.GetChild(0).GetComponent<TrackedObject>();
+        _instance = this;
 
+        // Get relevant gameobject logic
+        trackedObj = GameObject.FindObjectOfType<TrackedObject>();
+        comparisonObj = GameObject.FindObjectOfType<ComparisonObject>();
+
+        // Get relevant transform information
+        trackedTransform = trackedObj.transform.parent;
+
+        // Initialize states
         inComparison = false;
-        comparingObj = null;
-
         mode = ComparisonMode.SideBySide;
     }
 
+    /// <summary>
+    /// Starts a comparison between the tracked physical object and the collided object of the version history.
+    /// </summary>
+    /// <param name="physicalObj"></param>
+    /// <param name="versionObj"></param>
     public void StartComparison(GameObject physicalObj, GameObject versionObj)
     {
+        // Check for existing comparison, suppress reinitializing the same comparison
         if (inComparison)
         {
             if (versionObj == originalVersionObj) return;
 
+            // Reset if a new comparison is about to start
             ResetComparison();
         }
 
         Debug.Log("Comparison started");
 
+        // Save reference to object for avoiding reinitializing the same comparison
         originalVersionObj = versionObj;
+        
         inComparison = true;
-
-        comparingObj = Instantiate(versionObj, physicalObj.transform.parent);
-        comparingObjLogic = comparingObj.AddComponent<ComparisonObject>();
-
-        // Disable collider so it does not collide with the comparing obj
-        var coll = comparingObj.GetComponent<Collider>();
-        if (coll != null)
-        {
-            coll.enabled = false;
-        }
+        comparisonObj.Activate(versionObj);
 
         DisplayComparison();
     }
 
+    /// <summary>
+    /// Displays a comparison operation based on the currently active comparison mode.
+    /// </summary>
     private void DisplayComparison()
     {        
-        // Reset properties if necessary
-        if (comparingObjLogic == null || trackedObjLogic == null)
-        {
-            Debug.Log("Scripts of comparingObj or trackedObj missing");
-            return;
-        }
-
-        comparingObjLogic.Reset();
-        trackedObjLogic.ResetMaterial();
+        // Reset properties of tracked object and comparison object
+        comparisonObj.Reset();
+        trackedObj.ResetMaterial();
 
         // Activate effects based on activated mode
         if (mode == ComparisonMode.SideBySide)
         {
-            comparingObj.transform.parent = null;
-            comparingObjLogic.hoverNext = true;
+            comparisonObj.transform.parent = null;
+            comparisonObj.hoverNext = true;
         }
         else if (mode == ComparisonMode.Overlay)
         {
-            comparingObj.transform.parent = trackedObj.transform;
-            comparingObj.transform.localPosition = Vector3.zero;
+            comparisonObj.transform.parent = trackedTransform;
+            comparisonObj.transform.localPosition = Vector3.zero;
 
-            trackedObjLogic.SetMaterial(phantomMat);
-            comparingObjLogic.SetOverlayMaterial(transparentMat);
+            trackedObj.SetMaterial(phantomMat);
+            comparisonObj.SetOverlayMaterial(transparentMat);
         }
         else if (mode == ComparisonMode.Differences)
         {
-            comparingObj.transform.parent = trackedObj.transform;
-            comparingObj.transform.localPosition = Vector3.zero;
+            comparisonObj.transform.parent = trackedTransform;
+            comparisonObj.transform.localPosition = Vector3.zero;
 
-            // For testing purposes
-            trackedObjLogic.SetMaterial(phantomMat);
-            comparingObjLogic.SetOverlayMaterial(wireframesMat);
+            // NOTE: This will be replaced by another comparison operation
+            trackedObj.SetMaterial(phantomMat);
+            comparisonObj.SetOverlayMaterial(wireframesMat);
         }
     }
 
+    /// <summary>
+    /// Resets the status of tracked and comparison object, also resets internal values.
+    /// </summary>
     public void ResetComparison()
     {
-        Destroy(comparingObj);
-
-        comparingObj = null;
         originalVersionObj = null;
         inComparison = false;
-        trackedObjLogic.ResetMaterial();
+
+        comparisonObj.Deactivate();
+        trackedObj.ResetMaterial();
     }
 
+    /// <summary>
+    /// Cycles through the comparison modes, if a comparison is running, the effect is displayed immediately.
+    /// </summary>
     public void SwitchComparisonMode()
     {
         // Cycle through modes
@@ -113,6 +137,9 @@ public class ComparisonManager : MonoBehaviour
 
         Debug.Log("Comparison mode switched to: " + mode);
 
-        DisplayComparison();
+        if (inComparison)
+        {
+            DisplayComparison();
+        }
     }
 }
