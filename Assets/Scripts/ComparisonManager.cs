@@ -26,7 +26,7 @@ public class ComparisonManager : MonoBehaviour
     public Material transparentMat;
     public Material wireframesMat;
     public Material phantomMat;
-    public float floatingDistance;
+    public float staticFloatingDistance;
 
     // Required object references
     private TrackedObject trackedObj;
@@ -35,6 +35,7 @@ public class ComparisonManager : MonoBehaviour
 
     // State variables
     private GameObject originalVersionObj;
+    private float floatingDistance;
     private bool inComparison;
     public ComparisonMode mode;
 
@@ -78,6 +79,16 @@ public class ComparisonManager : MonoBehaviour
         inComparison = true;
         comparisonObj.Activate(versionObj);
 
+        // Calculate floating distance based on object sizes
+        // NOTE: this could further be improved by calculating the maximum diaginonal distance
+        var coll1 = physicalObj.GetComponent<Collider>().bounds.size;
+        var coll2 = versionObj.GetComponent<Collider>().bounds.size;
+
+        float coll1max = Mathf.Max(Mathf.Max(coll1.x, coll1.y), coll1.z);
+        float coll2max = Mathf.Max(Mathf.Max(coll2.x, coll2.z), coll2.z);
+
+        floatingDistance = (coll1max / 2) + (coll2max / 2) + staticFloatingDistance;
+
         DisplayComparison();
     }
 
@@ -94,7 +105,7 @@ public class ComparisonManager : MonoBehaviour
         if (mode == ComparisonMode.SideBySide)
         {
             comparisonObj.transform.parent = null;
-            comparisonObj.hoverNext = true;
+            comparisonObj.SetSideBySide(floatingDistance);
         }
         else if (mode == ComparisonMode.Overlay)
         {

@@ -11,7 +11,7 @@ public class ComparisonObject : MonoBehaviour
     private Transform trackedObjTransform;
     private float floatingDistance;
 
-    public bool hoverNext;
+    private bool hoverNext;
 
     // Start is called before the first frame update
     void Start()
@@ -21,8 +21,6 @@ public class ComparisonObject : MonoBehaviour
         baseMat = meshRenderer.material;
 
         trackedObjTransform = GameObject.Find("TrackedContainer").transform;
-
-        floatingDistance = ComparisonManager.Instance.floatingDistance;
     }
 
     // Update is called once per frame
@@ -56,6 +54,12 @@ public class ComparisonObject : MonoBehaviour
                 trackedObjTransform.rotation
             );
         }
+    }
+
+    public void SetSideBySide(float distance)
+    {
+        floatingDistance = distance;
+        hoverNext = true;
     }
 
     public void SetOverlayMaterial(Material mat)
