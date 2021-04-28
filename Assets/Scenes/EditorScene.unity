@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 230885225}
   - component: {fileID: 230885224}
   - component: {fileID: 230885227}
+  - component: {fileID: 230885228}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: VersionObject
@@ -229,6 +230,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   outlineMaterial: {fileID: 2100000, guid: 6de577e17cb773143afa8a10b3c9b91b, type: 2}
   outlineWidth: 0.01
+--- !u!114 &230885228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 230885222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd3ecd93599134b45aa343369dc5cbd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  title: Version 2
+  description: A simple geometry object
+  createdAt: 05.02.2021
+  createdBy: Alex
 --- !u!1 &242140788
 GameObject:
   m_ObjectHideFlags: 0
@@ -496,6 +513,7 @@ GameObject:
   - component: {fileID: 535007260}
   - component: {fileID: 535007263}
   - component: {fileID: 535007264}
+  - component: {fileID: 535007265}
   m_Layer: 0
   m_Name: Cube
   m_TagString: VersionObject
@@ -515,7 +533,7 @@ Transform:
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 942659300}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &535007260
 BoxCollider:
@@ -603,6 +621,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c815ab218a267b48afc8fb261238df4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &535007265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 535007258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd3ecd93599134b45aa343369dc5cbd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  title: Version 1
+  description: A simple geometry object
+  createdAt: 03.02.2021
+  createdBy: Alex
 --- !u!1 &643524460
 GameObject:
   m_ObjectHideFlags: 0
@@ -855,6 +889,7 @@ GameObject:
   - component: {fileID: 919174124}
   - component: {fileID: 919174123}
   - component: {fileID: 919174126}
+  - component: {fileID: 919174127}
   m_Layer: 0
   m_Name: Cylinder
   m_TagString: VersionObject
@@ -951,6 +986,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   outlineMaterial: {fileID: 2100000, guid: 6de577e17cb773143afa8a10b3c9b91b, type: 2}
   outlineWidth: 0.01
+--- !u!114 &919174127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919174121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd3ecd93599134b45aa343369dc5cbd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  title: Version 3
+  description: A simple geometry object
+  createdAt: 07.02.2021
+  createdBy: Alex
 --- !u!1 &942659297
 GameObject:
   m_ObjectHideFlags: 0
@@ -1058,8 +1109,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 535007259}
   - {fileID: 1208008965}
+  - {fileID: 535007259}
   - {fileID: 230885223}
   - {fileID: 919174122}
   - {fileID: 1190643981}
@@ -1405,6 +1456,7 @@ GameObject:
   - component: {fileID: 1190643983}
   - component: {fileID: 1190643982}
   - component: {fileID: 1190643985}
+  - component: {fileID: 1190643986}
   m_Layer: 0
   m_Name: BigCube
   m_TagString: VersionObject
@@ -1500,6 +1552,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   outlineMaterial: {fileID: 2100000, guid: 6de577e17cb773143afa8a10b3c9b91b, type: 2}
   outlineWidth: 0.01
+--- !u!114 &1190643986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1190643980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd3ecd93599134b45aa343369dc5cbd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  title: Version 4
+  description: A big geometry object
+  createdAt: 09.02.2021
+  createdBy: Alex
 --- !u!1 &1208008964
 GameObject:
   m_ObjectHideFlags: 0
@@ -1513,6 +1581,7 @@ GameObject:
   - component: {fileID: 1208008967}
   - component: {fileID: 1208008966}
   - component: {fileID: 1208008969}
+  - component: {fileID: 1208008970}
   m_Layer: 0
   m_Name: LongCube
   m_TagString: VersionObject
@@ -1532,7 +1601,7 @@ Transform:
   m_LocalScale: {x: 0.3, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 942659300}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1208008966
 BoxCollider:
@@ -1608,6 +1677,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   outlineMaterial: {fileID: 2100000, guid: 6de577e17cb773143afa8a10b3c9b91b, type: 2}
   outlineWidth: 0.01
+--- !u!114 &1208008970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1208008964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd3ecd93599134b45aa343369dc5cbd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  title: Version 0
+  description: A simple geometry object
+  createdAt: 01.02.2021
+  createdBy: Alex
 --- !u!1 &1259578823
 GameObject:
   m_ObjectHideFlags: 0
