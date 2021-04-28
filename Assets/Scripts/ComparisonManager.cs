@@ -32,6 +32,8 @@ public class ComparisonManager : MonoBehaviour
     private TrackedObject trackedObj;
     private Transform trackedTransform;
     private ComparisonObject comparisonObj;
+    private VirtualTwin virtualTwin;
+    private LineRenderer comparisonLine;
 
     // State variables
     private GameObject originalVersionObj;
@@ -46,11 +48,14 @@ public class ComparisonManager : MonoBehaviour
         // Get relevant gameobject logic
         trackedObj = GameObject.FindObjectOfType<TrackedObject>();
         comparisonObj = GameObject.FindObjectOfType<ComparisonObject>();
+        virtualTwin = GameObject.FindObjectOfType<VirtualTwin>();
+        comparisonLine = GameObject.FindObjectOfType<LineRenderer>();
 
         // Get relevant transform information
         trackedTransform = trackedObj.transform.parent;
 
         // Initialize states
+        comparisonLine.enabled = false;
         inComparison = false;
         mode = ComparisonMode.SideBySide;
     }
@@ -69,6 +74,12 @@ public class ComparisonManager : MonoBehaviour
 
             // Reset if a new comparison is about to start
             ResetComparison();
+
+            if (versionObj.GetComponent<VirtualTwin>() != null)
+            {
+                Debug.Log("Comparing against virtual twin");
+                return;
+            }
         }
 
         Debug.Log("Comparison started");
@@ -76,9 +87,7 @@ public class ComparisonManager : MonoBehaviour
         // Save reference to object for avoiding reinitializing the same comparison
         originalVersionObj = versionObj;
 
-        // Highlight the versionObj as being compared against
-        originalVersionObj.GetComponent<MeshOutline>().enabled = true;
-        
+        HighlightComparison();
         inComparison = true;
         comparisonObj.Activate(versionObj);
 
@@ -136,12 +145,34 @@ public class ComparisonManager : MonoBehaviour
     {
         // Disable highlight on version object
         originalVersionObj.GetComponent<MeshOutline>().enabled = false;
+        comparisonLine.enabled = false;
 
         originalVersionObj = null;
         inComparison = false;
 
         comparisonObj.Deactivate();
         trackedObj.ResetMaterial();
+    }
+
+    private void HighlightComparison()
+    {
+        // Highlight the versionObj as being compared against
+        originalVersionObj.GetComponent<MeshOutline>().enabled = true;
+
+        float height1 = virtualTwin.GetComponent<Collider>().bounds.size.y;
+        float height2 = originalVersionObj.GetComponent<Collider>().bounds.size.y;
+
+        Vector3 posStart = virtualTwin.transform.position + new Vector3(0, height1 / 2, 0);
+        Vector3 posEnd = originalVersionObj.transform.position + new Vector3(0, height2 / 2, 0);
+
+        comparisonLine.enabled = true;
+        comparisonLine.positionCount = 4;
+        comparisonLine.SetPositions(new[] {
+            posStart,
+            posStart + virtualTwin.transform.up * height2,
+            posEnd +  originalVersionObj.transform.up * height1,
+            posEnd
+        });
     }
 
     /// <summary>

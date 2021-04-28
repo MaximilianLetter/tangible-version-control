@@ -7,9 +7,9 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: OutlineOrange
+  m_Name: LineOrange
   m_Shader: {fileID: 4800000, guid: 5bdea20278144b11916d77503ba1467a, type: 3}
-  m_ShaderKeywords: _DISABLE_ALBEDO_MAP _SMOOTH_NORMALS _VERTEX_EXTRUSION _VERTEX_EXTRUSION_SMOOTH_NORMAL
+  m_ShaderKeywords: _DISABLE_ALBEDO_MAP _SMOOTH_NORMALS _VERTEX_EXTRUSION_SMOOTH_NORMAL
     _VERTEX_EXTRUSION_SMOOTH_NORMALS
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
@@ -112,7 +112,7 @@ Material:
     - _StencilReference: 0
     - _TriplanarMappingBlendSharpness: 4
     - _VertexColors: 0
-    - _VertexExtrusion: 1
+    - _VertexExtrusion: 0
     - _VertexExtrusionSmoothNormal: 1
     - _VertexExtrusionSmoothNormals: 1
     - _VertexExtrusionValue: 0.01
