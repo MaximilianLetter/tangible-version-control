@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Microsoft.MixedReality.Toolkit.Utilities;
 public enum ComparisonMode { SideBySide, Overlay, Differences }
 
 public class ComparisonManager : MonoBehaviour
@@ -75,6 +75,9 @@ public class ComparisonManager : MonoBehaviour
 
         // Save reference to object for avoiding reinitializing the same comparison
         originalVersionObj = versionObj;
+
+        // Highlight the versionObj as being compared against
+        originalVersionObj.GetComponent<MeshOutline>().enabled = true;
         
         inComparison = true;
         comparisonObj.Activate(versionObj);
@@ -131,6 +134,9 @@ public class ComparisonManager : MonoBehaviour
     /// </summary>
     public void ResetComparison()
     {
+        // Disable highlight on version object
+        originalVersionObj.GetComponent<MeshOutline>().enabled = false;
+
         originalVersionObj = null;
         inComparison = false;
 
