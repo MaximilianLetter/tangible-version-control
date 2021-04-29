@@ -4,22 +4,28 @@ using UnityEngine;
 
 public class ComparisonObject : MonoBehaviour
 {
+    // External references
+    private Transform trackedObjTransform;
+
+    // Internal references
     private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;
     private Material baseMat;
 
-    private Transform trackedObjTransform;
+    // Internal variables
     private float floatingDistance;
-
     private bool hoverNext;
+    private bool hoverSide;
     private bool ready;
 
     void Start()
     {
+        // Setup component references and starting material
         meshFilter = gameObject.GetComponent<MeshFilter>();
         meshRenderer = gameObject.GetComponent<MeshRenderer>();
         baseMat = meshRenderer.material;
 
+        // Get references to necessary gameobjects
         trackedObjTransform = GameObject.Find("TrackedContainer").transform;
 
         ready = true;
@@ -45,6 +51,9 @@ public class ComparisonObject : MonoBehaviour
             float angleF = Mathf.Asin(floatingDistance / Vector3.Distance(camTransform.position, trackedPos));
             float yAngle = (angleF * 180) / Mathf.PI;
 
+            // Flip the floating side if specified
+            if (hoverSide) yAngle = 360 - yAngle;
+
             // Calculate offset based on angle, direction and distance
             // In case of a steep camera angle the positioning bugs out
             offset = Quaternion.Euler(0, yAngle, 0) * direction * distance;
@@ -57,6 +66,10 @@ public class ComparisonObject : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Activates the floating mode besides the tracked object.
+    /// </summary>
+    /// <param name="distance">Distance between the tracked and the compared object.</param>
     public void SetSideBySide(float distance)
     {
         floatingDistance = distance;
@@ -65,12 +78,12 @@ public class ComparisonObject : MonoBehaviour
 
     public void SetOverlayMaterial(Material mat)
     {
-        if (meshRenderer != null)
-        {
-            meshRenderer.material = mat;
-        }
+        meshRenderer.material = mat;
     }
 
+    /// <summary>
+    /// Resets any applied comparison operations to default.
+    /// </summary>
     public void Reset()
     {
         hoverNext = false;
@@ -81,17 +94,25 @@ public class ComparisonObject : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Activates the object and applies the mesh and size of the given object to itself.
+    /// </summary>
+    /// <param name="toClone">Object to obtain mesh and scale from.</param>
     public void Activate(GameObject toClone)
     {
-        // Copy information form original object
+        // Copy information from original object
         meshFilter.mesh = toClone.GetComponent<MeshFilter>().mesh;
         transform.localScale = toClone.transform.localScale;
 
         gameObject.SetActive(true);
     }
 
+    /// <summary>
+    /// Deactivates the object and removes applied mesh and scale operations.
+    /// </summary>
     public void Deactivate()
     {
+        // Reset mesh and scale
         meshFilter.mesh = null;
         transform.localScale = Vector3.one;
 
@@ -101,5 +122,13 @@ public class ComparisonObject : MonoBehaviour
     public bool IsReady()
     {
         return ready;
+    }
+
+    /// <summary>
+    /// Flips the side the object floats from left to right and visa versa.
+    /// </summary>
+    public void FlipHoverSide()
+    {
+        hoverSide = !hoverSide;
     }
 }
