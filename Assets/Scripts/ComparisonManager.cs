@@ -29,6 +29,7 @@ public class ComparisonManager : MonoBehaviour
     public float staticFloatingDistance;
 
     // Required object references
+    private InformationPanel informationPanel;
     private TrackedObject trackedObj;
     private Transform trackedTransform;
     private ComparisonObject comparisonObj;
@@ -46,6 +47,7 @@ public class ComparisonManager : MonoBehaviour
         _instance = this;
 
         // Get relevant gameobject logic
+        informationPanel = GameObject.FindObjectOfType<InformationPanel>();
         trackedObj = GameObject.FindObjectOfType<TrackedObject>();
         comparisonObj = GameObject.FindObjectOfType<ComparisonObject>();
         virtualTwin = GameObject.FindObjectOfType<VirtualTwin>();
@@ -55,6 +57,7 @@ public class ComparisonManager : MonoBehaviour
         trackedTransform = trackedObj.transform.parent;
 
         // Initialize states
+        informationPanel.gameObject.SetActive(false);
         comparisonLine.enabled = false;
         inComparison = false;
         mode = ComparisonMode.SideBySide;
@@ -100,6 +103,10 @@ public class ComparisonManager : MonoBehaviour
         float coll2max = Mathf.Max(Mathf.Max(coll2.x, coll2.z), coll2.z);
 
         floatingDistance = (coll1max / 2) + (coll2max / 2) + staticFloatingDistance;
+
+        // Fill information panel with content and show
+        informationPanel.gameObject.SetActive(true);
+        informationPanel.SetContents(virtualTwin.GetComponent<VersionObject>(), versionObj.GetComponent<VersionObject>(), floatingDistance);
 
         DisplayComparison();
     }
@@ -149,6 +156,8 @@ public class ComparisonManager : MonoBehaviour
 
         originalVersionObj = null;
         inComparison = false;
+
+        informationPanel.gameObject.SetActive(false);
 
         comparisonObj.Deactivate();
         trackedObj.ResetMaterial();
