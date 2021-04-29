@@ -14,8 +14,11 @@ public class ComparisonObject : MonoBehaviour
 
     // Internal variables
     private float floatingDistance;
-    private bool hoverNext;
+    private bool sideBySide;
     private bool hoverSide;
+
+    private Transform transformInUse;
+    private bool bottomPivot;
     private bool ready;
 
     void Start()
@@ -28,12 +31,15 @@ public class ComparisonObject : MonoBehaviour
         // Get references to necessary gameobjects
         trackedObjTransform = GameObject.Find("TrackedContainer").transform;
 
+        transformInUse = transform;
+        bottomPivot = false;
+        hoverSide = false;
         ready = true;
     }
 
     void Update()
     {
-        if (hoverNext)
+        if (sideBySide)
         {
             Vector3 offset;
             Transform camTransform = Camera.main.transform;
@@ -59,7 +65,7 @@ public class ComparisonObject : MonoBehaviour
             offset = Quaternion.Euler(0, yAngle, 0) * direction * distance;
 
             // Apply calculated position and rotation
-            transform.SetPositionAndRotation(
+            transformInUse.SetPositionAndRotation(
                 camTransform.position + offset,
                 trackedObjTransform.rotation
             );
@@ -73,7 +79,7 @@ public class ComparisonObject : MonoBehaviour
     public void SetSideBySide(float distance)
     {
         floatingDistance = distance;
-        hoverNext = true;
+        sideBySide = true;
     }
 
     public void SetOverlayMaterial(Material mat)
@@ -86,7 +92,7 @@ public class ComparisonObject : MonoBehaviour
     /// </summary>
     public void Reset()
     {
-        hoverNext = false;
+        sideBySide = false;
 
         if (meshRenderer != null)
         {
@@ -103,6 +109,10 @@ public class ComparisonObject : MonoBehaviour
         // Copy information from original object
         meshFilter.mesh = toClone.GetComponent<MeshFilter>().mesh;
         transform.localScale = toClone.transform.localScale;
+
+        // Set pivot point according the the current mode
+        if (bottomPivot) SetPivotPointBottom();
+        else SetPivotPointCenter();
 
         gameObject.SetActive(true);
     }
@@ -130,5 +140,41 @@ public class ComparisonObject : MonoBehaviour
     public void FlipHoverSide()
     {
         hoverSide = !hoverSide;
+    }
+
+    /// <summary>
+    /// Switch the pivot point between center and bottom.
+    /// </summary>
+    public void SwitchPivotPoint()
+    {
+        bottomPivot = !bottomPivot;
+
+        // Set pivot point according to the new mode
+        if (bottomPivot) SetPivotPointBottom();
+        else SetPivotPointCenter();
+    }
+
+    /// <summary>
+    /// Set the pivot point to bottom by updating the parent transform and offsetting the object to match the tracked object's bottom point.
+    /// </summary>
+    private void SetPivotPointBottom()
+    {
+        transformInUse = transform.parent;
+
+        // Calculate the needed offset to match the tracked object's bottom point
+        float heightCompObj = transform.GetComponent<MeshFilter>().mesh.bounds.size.y * transform.localScale.y;
+        float heightTrackedObj = trackedObjTransform.GetComponent<Collider>().bounds.size.y * trackedObjTransform.localScale.y;
+        float offset = (heightCompObj / 2) - (heightTrackedObj / 2);
+
+        transform.localPosition = new Vector3(0, offset, 0);
+    }
+
+    /// <summary>
+    /// Set the pivot point to center by directly modifying its transform position.
+    /// </summary>
+    private void SetPivotPointCenter()
+    {
+        transform.parent.position = Vector3.zero;
+        transformInUse = transform;
     }
 }

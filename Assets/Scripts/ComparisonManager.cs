@@ -33,6 +33,7 @@ public class ComparisonManager : MonoBehaviour
     private TrackedObject trackedObj;
     private Transform trackedTransform;
     private ComparisonObject comparisonObj;
+    private Transform comparisonObjContainer;
     private VirtualTwin virtualTwin;
     private LineRenderer comparisonLine;
 
@@ -50,9 +51,11 @@ public class ComparisonManager : MonoBehaviour
         // Get relevant gameobject logic
         informationPanel = GameObject.FindObjectOfType<InformationPanel>();
         trackedObj = GameObject.FindObjectOfType<TrackedObject>();
-        comparisonObj = GameObject.FindObjectOfType<ComparisonObject>();
         virtualTwin = GameObject.FindObjectOfType<VirtualTwin>();
         comparisonLine = GameObject.FindObjectOfType<LineRenderer>();
+
+        comparisonObj = GameObject.FindObjectOfType<ComparisonObject>();
+        comparisonObjContainer = comparisonObj.transform.parent;
 
         // Get relevant transform information
         trackedTransform = trackedObj.transform.parent;
@@ -125,7 +128,7 @@ public class ComparisonManager : MonoBehaviour
         // Activate effects based on activated mode
         if (mode == ComparisonMode.SideBySide)
         {
-            comparisonObj.transform.parent = null;
+            comparisonObj.transform.parent = comparisonObjContainer;
             comparisonObj.SetSideBySide(floatingDistance);
         }
         else if (mode == ComparisonMode.Overlay)
