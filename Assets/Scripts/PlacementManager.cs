@@ -20,13 +20,13 @@ public class PlacementManager : MonoBehaviour
 
     private TapToPlace tapToPlace;
     private GameObject[] versionObjs;
-    private int objCount;
 
+    private bool ready;
     private bool inPlacement;
 
     private void Start()
     {
-        objCount = versionHistoryObj.transform.childCount;
+        int objCount = versionHistoryObj.transform.childCount;
         versionObjs = new GameObject[objCount];
 
         // Fill list of sub objects
@@ -37,6 +37,13 @@ public class PlacementManager : MonoBehaviour
 
         tapToPlace = versionHistoryObj.GetComponent<TapToPlace>();
         SetUp();
+
+        ready = true;
+    }
+
+    public bool IsReady()
+    {
+        return ready;
     }
 
     //public void ToggleStatus(bool status)

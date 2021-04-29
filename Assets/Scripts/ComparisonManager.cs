@@ -37,6 +37,7 @@ public class ComparisonManager : MonoBehaviour
     private LineRenderer comparisonLine;
 
     // State variables
+    private bool ready;
     private GameObject originalVersionObj;
     private float floatingDistance;
     private bool inComparison;
@@ -57,10 +58,11 @@ public class ComparisonManager : MonoBehaviour
         trackedTransform = trackedObj.transform.parent;
 
         // Initialize states
-        informationPanel.gameObject.SetActive(false);
         comparisonLine.enabled = false;
         inComparison = false;
         mode = ComparisonMode.SideBySide;
+
+        ready = true;
     }
 
     /// <summary>
@@ -151,10 +153,13 @@ public class ComparisonManager : MonoBehaviour
     public void ResetComparison()
     {
         // Disable highlight on version object
-        originalVersionObj.GetComponent<MeshOutline>().enabled = false;
-        comparisonLine.enabled = false;
+        if (originalVersionObj != null)
+        {
+            originalVersionObj.GetComponent<MeshOutline>().enabled = false;
+            comparisonLine.enabled = false;
+            originalVersionObj = null;
+        }
 
-        originalVersionObj = null;
         inComparison = false;
 
         informationPanel.gameObject.SetActive(false);
@@ -198,5 +203,10 @@ public class ComparisonManager : MonoBehaviour
         {
             DisplayComparison();
         }
+    }
+
+    public bool IsReady()
+    {
+        return ready;
     }
 }

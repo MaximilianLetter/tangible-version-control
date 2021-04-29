@@ -15,6 +15,7 @@ public class InformationPanel : MonoBehaviour
 
     private float floatingOffset;
     private float height;
+    private bool ready;
 
     private Transform trackedObjTransform;
 
@@ -23,6 +24,13 @@ public class InformationPanel : MonoBehaviour
         trackedObjTransform = GameObject.Find("TrackedContainer").transform;
         floatingOffset = 0f;
         height = backPanel.bounds.size.y;
+
+        ready = true;
+    }
+
+    public bool IsReady()
+    {
+        return ready;
     }
 
     public void SetContents(VersionObject obj1, VersionObject obj2, float dist)
