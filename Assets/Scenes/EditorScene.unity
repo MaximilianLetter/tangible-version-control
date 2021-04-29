@@ -339,6 +339,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f715d5bb31a532940a13c47095b3d864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  usePhysical: 0
   transparentMat: {fileID: 2100000, guid: 0794c975da3543148b499d1e05dc0007, type: 2}
   wireframesMat: {fileID: 2100000, guid: 8a2eb0a7f7ce218499260558df6c19d7, type: 2}
   phantomMat: {fileID: 2100000, guid: 041147a74419bfb46ad909df84dfb495, type: 2}
@@ -1316,6 +1317,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9ed55731c6baa14c92ecc0fa664bcf7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  phantomMat: {fileID: 2100000, guid: 041147a74419bfb46ad909df84dfb495, type: 2}
+  virtualMat: {fileID: 2100000, guid: da199a9422858544aaed2d4e6d24a8dc, type: 2}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

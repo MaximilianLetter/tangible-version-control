@@ -22,6 +22,9 @@ public class ComparisonManager : MonoBehaviour
         }
     }
 
+    // Use tracking and physical objects
+    public bool usePhysical;
+
     // Comparison properties
     public Material transparentMat;
     public Material wireframesMat;

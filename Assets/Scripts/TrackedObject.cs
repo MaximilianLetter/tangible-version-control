@@ -4,13 +4,26 @@ using UnityEngine;
 
 public class TrackedObject : MonoBehaviour
 {
+    public Material phantomMat;
+    public Material virtualMat;
+
     private MeshRenderer meshRenderer;
     private Material baseMat;
 
     void Start()
     {
         meshRenderer = GetComponent<MeshRenderer>();
-        baseMat = meshRenderer.material;
+
+        // Switch the default material based on global setting
+        if (ComparisonManager.Instance.usePhysical)
+        {
+            baseMat = phantomMat;
+        } else
+        {
+            baseMat = virtualMat;
+        }
+
+        meshRenderer.material = baseMat;
     }
 
     public void SetMaterial(Material mat)
