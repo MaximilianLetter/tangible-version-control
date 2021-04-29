@@ -10,6 +10,7 @@ public class StartupManager : MonoBehaviour
 
     private PlacementManager placementManager;
     private InformationPanel informationPanel;
+    private ComparisonObject comparisonObject;
 
     IEnumerator Start()
     {
@@ -19,13 +20,15 @@ public class StartupManager : MonoBehaviour
         // Get necessary references
         placementManager = FindObjectOfType<PlacementManager>();
         informationPanel = FindObjectOfType<InformationPanel>();
+        comparisonObject = FindObjectOfType<ComparisonObject>();
 
         // Wait for other objects getting ready
         while (true)
         {
             if (placementManager.IsReady() &&
                 informationPanel.IsReady() &&
-                ComparisonManager.Instance.IsReady()
+                ComparisonManager.Instance.IsReady() &&
+                comparisonObject.IsReady()
                 )
             {
                 break;

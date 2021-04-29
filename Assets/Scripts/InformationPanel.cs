@@ -5,19 +5,20 @@ using TMPro;
 
 public class InformationPanel : MonoBehaviour
 {
-    // try to reduce getComponent calls in comparison manager, directly talk to verisonObjects maybe
-    // let panel float below the phys object (position of tracked object, but radial view)
+    // Text objects that can be populated
     public TMP_Text obj1_title;
     public TMP_Text obj1_desc;
     public TMP_Text obj2_title;
     public TMP_Text obj2_desc;
     public BoxCollider backPanel;
 
+    // Internal variables used for calculating the floating distance
     private float floatingOffset;
     private float height;
-    private bool ready;
 
     private Transform trackedObjTransform;
+
+    private bool ready;
 
     void Start()
     {
@@ -33,6 +34,12 @@ public class InformationPanel : MonoBehaviour
         return ready;
     }
 
+    /// <summary>
+    /// Sets the content of the information panel aswell as the floating distance to the tracked object.
+    /// </summary>
+    /// <param name="obj1">Static information about the movable object, most propably the virtual twin of the physical object.</param>
+    /// <param name="obj2">Static information about the compared version.</param>
+    /// <param name="dist">Distance between the two objects.</param>
     public void SetContents(VersionObject obj1, VersionObject obj2, float dist)
     {
         obj1_title.text = obj1.title;
@@ -46,6 +53,6 @@ public class InformationPanel : MonoBehaviour
 
     void Update()
     {
-        transform.position = trackedObjTransform.position - (trackedObjTransform.up * floatingOffset);
+        transform.position = trackedObjTransform.position + (Vector3.down * floatingOffset);
     }
 }

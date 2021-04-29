@@ -8,6 +8,8 @@ public class PlacementManager : MonoBehaviour
     public Vector3 comparisonPanelPositionOffset;
 
     [SerializeField]
+    private GameObject floor;
+    [SerializeField]
     private GameObject versionHistoryObj;
     [SerializeField]
     private GameObject comparisonPanel;
@@ -36,7 +38,10 @@ public class PlacementManager : MonoBehaviour
         }
 
         tapToPlace = versionHistoryObj.GetComponent<TapToPlace>();
-        SetUp();
+
+        // Setup internal values
+        ToggleMaterials(false);
+        inPlacement = false;
 
         ready = true;
     }
@@ -46,22 +51,10 @@ public class PlacementManager : MonoBehaviour
         return ready;
     }
 
-    //public void ToggleStatus(bool status)
-    //{
-    //    if (status)
-    //    {
-    //        versionHistoryObj.SetActive(status);
-    //        tapToPlace.enabled = true;
-    //        tapToPlace.StartPlacement();
-
-    //        inPlacement = true;
-    //    }
-    //    else
-    //    {
-    //        inPlacement = false;
-    //    }
-    //}
-
+    /// <summary>
+    /// Toggle between transparent material during positioning and opaque material after the placement finished.
+    /// </summary>
+    /// <param name="status">True equals the placement material, false equals the normal display material.</param>
     private void ToggleMaterials(bool status)
     {
         Material mat = status ? placementMaterial : displayMaterial;
@@ -72,43 +65,48 @@ public class PlacementManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Starts the placement process.
+    /// </summary>
     public void PlacementStarts()
     {
+        // Activate necessary objects and scripts
         comparisonPanel.SetActive(false);
         versionHistoryObj.SetActive(true);
         tapToPlace.enabled = true;
         tapToPlace.StartPlacement();
+        ToggleMaterials(true);
+
+#if UNITY_EDITOR
+        floor.SetActive(true);
+#endif
 
         inPlacement = true;
-
-        ToggleMaterials(true);
     }
 
+    /// <summary>
+    /// Finishes the placement process.
+    /// </summary>
     public void PlacementFinished()
     {
-        ToggleMaterials(false);
-        inPlacement = false;
-
+        // Stop the ability to move the version history
         tapToPlace.enabled = false;
+        ToggleMaterials(false);
 
+#if UNITY_EDITOR
+        floor.SetActive(false);
+#endif
+
+        // Place the comparison panel according to version history positioning
         comparisonPanel.transform.rotation = versionHistoryObj.transform.rotation;
         comparisonPanel.transform.position = versionHistoryObj.transform.position + (versionHistoryObj.transform.rotation * comparisonPanelPositionOffset);
         comparisonPanel.SetActive(true);
+
+        inPlacement = false;
     }
 
     public bool GetInPlacement()
     {
         return inPlacement;
-    }
-
-    public void SetUp()
-    {
-        versionHistoryObj.SetActive(false);
-        comparisonPanel.SetActive(false);
-        startUpPanel.SetActive(true);
-
-        ToggleMaterials(false);
-
-        inPlacement = false;
     }
 }

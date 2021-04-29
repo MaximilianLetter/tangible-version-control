@@ -276,6 +276,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   comparisonPanelPositionOffset: {x: 0, y: 0.6, z: 0.4}
+  floor: {fileID: 1750029595}
   versionHistoryObj: {fileID: 942659297}
   comparisonPanel: {fileID: 382480058}
   startUpPanel: {fileID: 6075570422553964664}
@@ -1352,7 +1353,7 @@ Camera:
   m_GameObject: {fileID: 963194225}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -2092,7 +2093,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &1750029596
 MeshCollider:
   m_ObjectHideFlags: 0

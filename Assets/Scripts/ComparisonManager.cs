@@ -38,7 +38,7 @@ public class ComparisonManager : MonoBehaviour
 
     // State variables
     private bool ready;
-    private GameObject originalVersionObj;
+    private GameObject versionHistoryObj;
     private float floatingDistance;
     private bool inComparison;
     public ComparisonMode mode;
@@ -81,7 +81,7 @@ public class ComparisonManager : MonoBehaviour
         // Check for existing comparison, suppress reinitializing the same comparison
         if (inComparison)
         {
-            if (versionObj == originalVersionObj) return;
+            if (versionObj == versionHistoryObj) return;
 
             // Reset if a new comparison is about to start
             ResetComparison();
@@ -90,7 +90,7 @@ public class ComparisonManager : MonoBehaviour
         Debug.Log("Comparison started");
 
         // Save reference to object for avoiding reinitializing the same comparison
-        originalVersionObj = versionObj;
+        versionHistoryObj = versionObj;
 
         HighlightComparison();
         inComparison = true;
@@ -153,11 +153,11 @@ public class ComparisonManager : MonoBehaviour
     public void ResetComparison()
     {
         // Disable highlight on version object
-        if (originalVersionObj != null)
+        if (versionHistoryObj != null)
         {
-            originalVersionObj.GetComponent<MeshOutline>().enabled = false;
+            versionHistoryObj.GetComponent<MeshOutline>().enabled = false;
             comparisonLine.enabled = false;
-            originalVersionObj = null;
+            versionHistoryObj = null;
         }
 
         inComparison = false;
@@ -168,23 +168,26 @@ public class ComparisonManager : MonoBehaviour
         trackedObj.ResetMaterial();
     }
 
+    /// <summary>
+    /// Activate outlines on the version object and draw a line between virtual twin and version object.
+    /// </summary>
     private void HighlightComparison()
     {
         // Highlight the versionObj as being compared against
-        originalVersionObj.GetComponent<MeshOutline>().enabled = true;
+        versionHistoryObj.GetComponent<MeshOutline>().enabled = true;
 
         float height1 = virtualTwin.GetComponent<Collider>().bounds.size.y;
-        float height2 = originalVersionObj.GetComponent<Collider>().bounds.size.y;
+        float height2 = versionHistoryObj.GetComponent<Collider>().bounds.size.y;
 
         Vector3 posStart = virtualTwin.transform.position + new Vector3(0, height1 / 2, 0);
-        Vector3 posEnd = originalVersionObj.transform.position + new Vector3(0, height2 / 2, 0);
+        Vector3 posEnd = versionHistoryObj.transform.position + new Vector3(0, height2 / 2, 0);
 
         comparisonLine.enabled = true;
         comparisonLine.positionCount = 4;
         comparisonLine.SetPositions(new[] {
             posStart,
             posStart + virtualTwin.transform.up * height2,
-            posEnd +  originalVersionObj.transform.up * height1,
+            posEnd +  versionHistoryObj.transform.up * height1,
             posEnd
         });
     }

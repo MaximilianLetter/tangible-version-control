@@ -12,8 +12,8 @@ public class ComparisonObject : MonoBehaviour
     private float floatingDistance;
 
     private bool hoverNext;
+    private bool ready;
 
-    // Start is called before the first frame update
     void Start()
     {
         meshFilter = gameObject.GetComponent<MeshFilter>();
@@ -21,9 +21,10 @@ public class ComparisonObject : MonoBehaviour
         baseMat = meshRenderer.material;
 
         trackedObjTransform = GameObject.Find("TrackedContainer").transform;
+
+        ready = true;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (hoverNext)
@@ -95,5 +96,10 @@ public class ComparisonObject : MonoBehaviour
         transform.localScale = Vector3.one;
 
         gameObject.SetActive(false);
+    }
+
+    public bool IsReady()
+    {
+        return ready;
     }
 }
