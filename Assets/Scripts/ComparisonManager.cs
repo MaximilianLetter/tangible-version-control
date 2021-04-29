@@ -67,6 +67,12 @@ public class ComparisonManager : MonoBehaviour
     /// <param name="versionObj"></param>
     public void StartComparison(GameObject physicalObj, GameObject versionObj)
     {
+        if (versionObj.GetComponent<VirtualTwin>() != null)
+        {
+            Debug.Log("Comparing against virtual twin");
+            return;
+        }
+
         // Check for existing comparison, suppress reinitializing the same comparison
         if (inComparison)
         {
@@ -74,12 +80,6 @@ public class ComparisonManager : MonoBehaviour
 
             // Reset if a new comparison is about to start
             ResetComparison();
-
-            if (versionObj.GetComponent<VirtualTwin>() != null)
-            {
-                Debug.Log("Comparing against virtual twin");
-                return;
-            }
         }
 
         Debug.Log("Comparison started");
