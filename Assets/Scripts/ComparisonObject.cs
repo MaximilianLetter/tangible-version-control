@@ -160,13 +160,16 @@ public class ComparisonObject : MonoBehaviour
     private void SetPivotPointBottom()
     {
         transformInUse = transform.parent;
+        transform.localRotation = Quaternion.identity;
 
         // Calculate the needed offset to match the tracked object's bottom point
         float heightCompObj = transform.GetComponent<MeshFilter>().mesh.bounds.size.y * transform.localScale.y;
         float heightTrackedObj = trackedObjTransform.GetComponent<Collider>().bounds.size.y * trackedObjTransform.localScale.y;
         float offset = (heightCompObj / 2) - (heightTrackedObj / 2);
 
-        transform.localPosition = new Vector3(0, offset, 0);
+        // NOTE: The pivot point is the bottom of the object, regardless of orientation
+        // This could result in unexpected behavior
+        transform.localPosition = trackedObjTransform.localRotation *  new Vector3(0, offset, 0);
     }
 
     /// <summary>

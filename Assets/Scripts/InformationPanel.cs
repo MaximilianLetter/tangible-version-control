@@ -48,11 +48,12 @@ public class InformationPanel : MonoBehaviour
         obj2_title.text = obj2.title;
         obj2_desc.text = obj2.description + "\n\n" + obj2.createdAt + "\n" + obj2.createdBy;
 
-        floatingOffset = dist + height;
+        floatingOffset = dist + (height / 2);
     }
 
     void Update()
     {
         transform.position = trackedObjTransform.position + (Vector3.down * floatingOffset);
+        // TODO: Also bring the panel closer to the camera and meanwhile decrease its size
     }
 }
