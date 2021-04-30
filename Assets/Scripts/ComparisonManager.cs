@@ -26,9 +26,8 @@ public class ComparisonManager : MonoBehaviour
     public bool usePhysical;
 
     // Comparison properties
-    public Material transparentMat;
-    public Material wireframesMat;
     public Material phantomMat;
+    public Material[] overlayMats;
     public float staticFloatingDistance;
 
     // Required object references
@@ -140,7 +139,7 @@ public class ComparisonManager : MonoBehaviour
             comparisonObj.transform.localPosition = Vector3.zero;
 
             trackedObj.SetMaterial(phantomMat);
-            comparisonObj.SetOverlayMaterial(transparentMat);
+            comparisonObj.SetCurrentOverlayMaterial();
         }
         else if (mode == ComparisonMode.Differences)
         {
@@ -149,8 +148,10 @@ public class ComparisonManager : MonoBehaviour
 
             // NOTE: This will be replaced by another comparison operation
             trackedObj.SetMaterial(phantomMat);
-            comparisonObj.SetOverlayMaterial(wireframesMat);
+            comparisonObj.SetCurrentOverlayMaterial(); // TODO
         }
+
+        informationPanel.SetOptions();
     }
 
     /// <summary>

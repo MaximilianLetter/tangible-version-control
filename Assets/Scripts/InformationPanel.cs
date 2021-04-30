@@ -12,6 +12,11 @@ public class InformationPanel : MonoBehaviour
     public TMP_Text obj2_desc;
     public BoxCollider backPanel;
 
+    // Button groups that are toggled based on the current comparison mode
+    public GameObject sideBySideOptions;
+    public GameObject overlayOptions;
+    public GameObject differencesOptions;
+
     // Internal variables used for calculating the floating distance
     private float floatingOffset;
     private float height;
@@ -49,6 +54,35 @@ public class InformationPanel : MonoBehaviour
         obj2_desc.text = obj2.description + "\n\n" + obj2.createdAt + "\n" + obj2.createdBy;
 
         floatingOffset = dist + (height / 2);
+
+        SetOptions();
+    }
+
+    /// <summary>
+    /// Activates the fitting options based on the active comparison mode.
+    /// </summary>
+    public void SetOptions()
+    {
+        ComparisonMode mode = ComparisonManager.Instance.mode;
+
+        // Make sure the other options are disabled
+        sideBySideOptions.SetActive(false);
+        overlayOptions.SetActive(false);
+        differencesOptions.SetActive(false);
+
+        // Set active based on current comparison mode
+        if (mode == ComparisonMode.SideBySide)
+        {
+            sideBySideOptions.SetActive(true);
+        }
+        else if (mode == ComparisonMode.Overlay)
+        {
+            overlayOptions.SetActive(true);
+        }
+        else if (mode == ComparisonMode.Differences)
+        {
+            differencesOptions.SetActive(true);
+        }
     }
 
     void Update()

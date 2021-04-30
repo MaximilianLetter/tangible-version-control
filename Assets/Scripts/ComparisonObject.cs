@@ -12,10 +12,13 @@ public class ComparisonObject : MonoBehaviour
     private MeshRenderer meshRenderer;
     private Material baseMat;
 
-    // Internal variables
+    // Side by side variables
     private float floatingDistance;
     private bool sideBySide;
     private bool hoverSide;
+
+    // Overlay variables
+    private int materialIndex;
 
     private Transform transformInUse;
     private bool bottomPivot;
@@ -82,7 +85,11 @@ public class ComparisonObject : MonoBehaviour
         sideBySide = true;
     }
 
-    public void SetOverlayMaterial(Material mat)
+    /// <summary>
+    /// Sets the material of the object to the given material.
+    /// </summary>
+    /// <param name="mat">Material to display</param>
+    public void SetMaterial(Material mat)
     {
         meshRenderer.material = mat;
     }
@@ -179,5 +186,23 @@ public class ComparisonObject : MonoBehaviour
     {
         transform.parent.position = Vector3.zero;
         transformInUse = transform;
+    }
+
+    /// <summary>
+    /// Cycle through the options for displaying the overlayed object.
+    /// </summary>
+    public void CycleMaterials()
+    {
+        materialIndex = (materialIndex + 1) % ComparisonManager.Instance.overlayMats.Length;
+
+        SetCurrentOverlayMaterial();
+    }
+
+    /// <summary>
+    /// Display the currently active overlay material;
+    /// </summary>
+    public void SetCurrentOverlayMaterial()
+    {
+        SetMaterial(ComparisonManager.Instance.overlayMats[materialIndex]);
     }
 }
