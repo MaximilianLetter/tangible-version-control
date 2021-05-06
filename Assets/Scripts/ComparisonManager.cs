@@ -36,7 +36,7 @@ public class ComparisonManager : MonoBehaviour
     private Transform trackedTransform;
     private ComparisonObject comparisonObj;
     private Transform comparisonObjContainer;
-    private VirtualTwin virtualTwin;
+    private VersionObject virtualTwin;
     private LineRenderer comparisonLine;
 
     // State variables
@@ -53,8 +53,18 @@ public class ComparisonManager : MonoBehaviour
         // Get relevant gameobject logic
         informationPanel = GameObject.FindObjectOfType<InformationPanel>();
         trackedObj = GameObject.FindObjectOfType<TrackedObject>();
-        virtualTwin = GameObject.FindObjectOfType<VirtualTwin>();
         comparisonLine = GameObject.FindObjectOfType<LineRenderer>();
+        
+        // Find the virtual twin between the version objects
+        var vObjs = GameObject.FindObjectsOfType<VersionObject>();
+        foreach (var obj in vObjs)
+        {
+            if (obj.virtualTwin)
+            {
+                virtualTwin = obj;
+                break;
+            }
+        }
 
         comparisonObj = GameObject.FindObjectOfType<ComparisonObject>();
         comparisonObjContainer = comparisonObj.transform.parent;
@@ -75,9 +85,11 @@ public class ComparisonManager : MonoBehaviour
     /// </summary>
     /// <param name="physicalObj"></param>
     /// <param name="versionObj"></param>
-    public void StartComparison(GameObject physicalObj, GameObject versionObj)
+    public void StartComparison(GameObject physicalObj, GameObject virtualObj)
     {
-        if (versionObj.GetComponent<VirtualTwin>() != null)
+        VersionObject versionObj = virtualObj.GetComponentInParent<VersionObject>();
+
+        if (versionObj.virtualTwin)
         {
             Debug.Log("Comparing against virtual twin");
             return;
@@ -95,16 +107,17 @@ public class ComparisonManager : MonoBehaviour
         Debug.Log("Comparison started");
 
         // Save reference to object for avoiding reinitializing the same comparison
-        versionHistoryObj = versionObj;
+        versionHistoryObj = virtualObj;
 
+        // NOTE: Order matters, first clone the object, then activate the comparison
+        comparisonObj.Activate(virtualObj);
         HighlightComparison();
         inComparison = true;
-        comparisonObj.Activate(versionObj);
 
         // Calculate floating distance based on object sizes
         // NOTE: this could further be improved by calculating the maximum diaginonal distance
         var coll1 = physicalObj.GetComponent<Collider>().bounds.size;
-        var coll2 = versionObj.GetComponent<Collider>().bounds.size;
+        var coll2 = virtualObj.GetComponent<Collider>().bounds.size;
 
         float coll1max = Mathf.Max(Mathf.Max(coll1.x, coll1.y), coll1.z);
         float coll2max = Mathf.Max(Mathf.Max(coll2.x, coll2.z), coll2.z);
@@ -113,7 +126,7 @@ public class ComparisonManager : MonoBehaviour
 
         // Fill information panel with content and show
         informationPanel.gameObject.SetActive(true);
-        informationPanel.SetContents(virtualTwin.GetComponent<VersionObject>(), versionObj.GetComponent<VersionObject>(), floatingDistance);
+        informationPanel.SetContents(virtualTwin, versionObj, floatingDistance);
 
         DisplayComparison();
     }
@@ -162,7 +175,7 @@ public class ComparisonManager : MonoBehaviour
         // Disable highlight on version object
         if (versionHistoryObj != null)
         {
-            versionHistoryObj.GetComponent<MeshOutline>().enabled = false;
+            versionHistoryObj.GetComponentInParent<VersionObject>().ToggleOutlines(false);
             comparisonLine.enabled = false;
             versionHistoryObj = null;
         }
@@ -181,10 +194,10 @@ public class ComparisonManager : MonoBehaviour
     private void HighlightComparison()
     {
         // Highlight the versionObj as being compared against
-        versionHistoryObj.GetComponent<MeshOutline>().enabled = true;
+        versionHistoryObj.GetComponentInParent<VersionObject>().ToggleOutlines(true);
 
-        float height1 = virtualTwin.GetComponent<Collider>().bounds.size.y;
-        float height2 = versionHistoryObj.GetComponent<Collider>().bounds.size.y;
+        float height1 = virtualTwin.GetComponentInChildren<Collider>().bounds.size.y;
+        float height2 = versionHistoryObj.GetComponentInChildren<Collider>().bounds.size.y;
 
         Vector3 posStart = virtualTwin.transform.position + new Vector3(0, height1 / 2, 0);
         Vector3 posEnd = versionHistoryObj.transform.position + new Vector3(0, height2 / 2, 0);

@@ -16,12 +16,10 @@ public class PlacementManager : MonoBehaviour
     [SerializeField]
     private GameObject startUpPanel;
     [SerializeField]
-    private Material displayMaterial;
-    [SerializeField]
     private Material placementMaterial;
 
     private TapToPlace tapToPlace;
-    private GameObject[] versionObjs;
+    private VersionObject[] versionObjs;
 
     private bool ready;
     private bool inPlacement;
@@ -29,12 +27,12 @@ public class PlacementManager : MonoBehaviour
     private void Start()
     {
         int objCount = versionHistoryObj.transform.childCount;
-        versionObjs = new GameObject[objCount];
+        versionObjs = new VersionObject[objCount];
 
         // Fill list of sub objects
         for (int i = 0; i < objCount; i++)
         {
-            versionObjs[i] = versionHistoryObj.transform.GetChild(i).gameObject;
+            versionObjs[i] = versionHistoryObj.transform.GetChild(i).GetComponent<VersionObject>();
         }
 
         tapToPlace = versionHistoryObj.GetComponent<TapToPlace>();
@@ -52,16 +50,21 @@ public class PlacementManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Toggle between transparent material during positioning and opaque material after the placement finished.
+    /// Toggle between transparent material during positioning and the default materials after the placement finished.
     /// </summary>
     /// <param name="status">True equals the placement material, false equals the normal display material.</param>
     private void ToggleMaterials(bool status)
     {
-        Material mat = status ? placementMaterial : displayMaterial;
-
         foreach (var obj in versionObjs)
         {
-            obj.GetComponent<MeshRenderer>().material = mat;
+            if (status)
+            {
+                obj.SetMaterial(placementMaterial);
+            }
+            else
+            {
+                obj.ResetToBaseMaterial();
+            }
         }
     }
 

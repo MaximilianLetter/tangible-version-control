@@ -5,12 +5,13 @@ using Microsoft.MixedReality.Toolkit.Utilities;
 
 public class VirtualTwin : MonoBehaviour
 {
-    private MeshOutline outline;
-
     void Start()
     {
-        outline = GetComponent<MeshOutline>();
+        var outline = GetComponentsInChildren<MeshOutline>();
 
-        outline.enabled = true;
+        foreach (var line in outline)
+        {
+            line.enabled = true;
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Microsoft.MixedReality.Toolkit.Utilities;
 
 public class ComparisonObject : MonoBehaviour
 {
@@ -8,9 +9,7 @@ public class ComparisonObject : MonoBehaviour
     private Transform trackedObjTransform;
 
     // Internal references
-    private MeshFilter meshFilter;
-    private MeshRenderer meshRenderer;
-    private Material baseMat;
+    private GameObject[] parts;
 
     // Side by side variables
     private float floatingDistance;
@@ -20,17 +19,14 @@ public class ComparisonObject : MonoBehaviour
     // Overlay variables
     private int materialIndex;
 
+    private MeshRenderer[] childRenderers;
+    private Material[] childMats;
     private Transform transformInUse;
     private bool bottomPivot;
     private bool ready;
 
     void Start()
     {
-        // Setup component references and starting material
-        meshFilter = gameObject.GetComponent<MeshFilter>();
-        meshRenderer = gameObject.GetComponent<MeshRenderer>();
-        baseMat = meshRenderer.material;
-
         // Get references to necessary gameobjects
         trackedObjTransform = GameObject.Find("TrackedContainer").transform;
 
@@ -91,7 +87,10 @@ public class ComparisonObject : MonoBehaviour
     /// <param name="mat">Material to display</param>
     public void SetMaterial(Material mat)
     {
-        meshRenderer.material = mat;
+        foreach (var child in childRenderers)
+        {
+            child.material = mat;
+        }
     }
 
     /// <summary>
@@ -101,9 +100,9 @@ public class ComparisonObject : MonoBehaviour
     {
         sideBySide = false;
 
-        if (meshRenderer != null)
+        for (int i = 0; i < childRenderers.Length; i++)
         {
-            meshRenderer.material = baseMat;
+            childRenderers[i].material = childMats[i];
         }
     }
 
@@ -114,8 +113,24 @@ public class ComparisonObject : MonoBehaviour
     public void Activate(GameObject toClone)
     {
         // Copy information from original object
-        meshFilter.mesh = toClone.GetComponent<MeshFilter>().mesh;
-        transform.localScale = toClone.transform.localScale;
+        parts = new GameObject[toClone.transform.childCount];
+        childRenderers = new MeshRenderer[toClone.transform.childCount];
+        childMats = new Material[toClone.transform.childCount];
+
+        for (int i = 0; i < toClone.transform.childCount; i++)
+        {
+            // Clone each part of the object, remove the MeshOutline Script
+            GameObject part = Instantiate(toClone.transform.GetChild(i).gameObject, transform);
+            //Destroy(part.GetComponent<MeshOutline>());
+            
+            // Store necessary information about part, renderers and materials
+            parts[i] = part;
+            childRenderers[i] = part.GetComponent<MeshRenderer>();
+            childMats[i] = childRenderers[i].material;
+        }
+
+        //meshFilter.mesh = toClone.GetComponent<MeshFilter>().mesh;
+        //transform.localScale = toClone.transform.localScale;
 
         // Set pivot point according the the current mode
         if (bottomPivot) SetPivotPointBottom();
@@ -130,7 +145,15 @@ public class ComparisonObject : MonoBehaviour
     public void Deactivate()
     {
         // Reset mesh and scale
-        meshFilter.mesh = null;
+        //meshFilter.mesh = null;
+        foreach (var part in parts)
+        {
+            Destroy(part);
+        }
+
+        parts = null;
+        childRenderers = null;
+        childMats = null;
         transform.localScale = Vector3.one;
 
         gameObject.SetActive(false);

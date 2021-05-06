@@ -5,34 +5,49 @@ using UnityEngine;
 public class TrackedObject : MonoBehaviour
 {
     public Material phantomMat;
-    public Material virtualMat;
 
-    private MeshRenderer meshRenderer;
-    private Material baseMat;
+    private MeshRenderer[] childRenderers;
+    private Material[] childMats;
 
     void Start()
     {
-        meshRenderer = GetComponent<MeshRenderer>();
+        // Save a reference to the base materials
+        childRenderers = new MeshRenderer[transform.childCount];
+        childMats = new Material[transform.childCount];
+
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            childRenderers[i] = transform.GetChild(i).GetComponent<MeshRenderer>();
+            childMats[i] = childRenderers[i].material;
+        }
 
         // Switch the default material based on global setting
         if (ComparisonManager.Instance.usePhysical)
         {
-            baseMat = phantomMat;
-        } else
-        {
-            baseMat = virtualMat;
+            SetMaterial(phantomMat);
         }
-
-        meshRenderer.material = baseMat;
     }
 
+    /// <summary>
+    /// Replaces all materials by the given material.
+    /// </summary>
+    /// <param name="mat">Material to display.</param>
     public void SetMaterial(Material mat)
     {
-        meshRenderer.material = mat;
+        foreach (var child in childRenderers)
+        {
+            child.material = mat;
+        }
     }
 
+    /// <summary>
+    /// Resets all materials to the base materials.
+    /// </summary>
     public void ResetMaterial()
     {
-        meshRenderer.material = baseMat;
+        for (int i = 0; i < childRenderers.Length; i++)
+        {
+            childRenderers[i].material = childMats[i];
+        }
     }
 }
