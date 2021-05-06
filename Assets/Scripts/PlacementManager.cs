@@ -63,7 +63,7 @@ public class PlacementManager : MonoBehaviour
             }
             else
             {
-                obj.ResetToBaseMaterial();
+                obj.ResetMaterial();
             }
         }
     }

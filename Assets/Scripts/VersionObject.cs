@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Microsoft.MixedReality.Toolkit.Utilities;
 
+[RequireComponent(typeof(ObjectParts))]
 public class VersionObject : MonoBehaviour
 {
     public bool virtualTwin;
@@ -11,29 +11,13 @@ public class VersionObject : MonoBehaviour
     public string createdAt;
     public string createdBy;
 
-    private Transform objContainer;
-    private MeshRenderer[] childRenderers;
-    private Material[] childMats;
-    private MeshOutline[] outlines;
-    //private Material[] baseMats;
-    //private int matCount;
-    //private MeshRenderer meshRenderer;
+    private ObjectParts parts;
 
     private void Start()
     {
-        objContainer = transform.GetChild(0);
-        childRenderers = new MeshRenderer[objContainer.childCount];
-        childMats = new Material[objContainer.childCount];
+        parts = GetComponent<ObjectParts>();
 
-        for (int i = 0; i < objContainer.childCount; i++)
-        {
-            childRenderers[i] = objContainer.GetChild(i).GetComponent<MeshRenderer>();
-            childMats[i] = childRenderers[i].material;
-        }
-
-        outlines = GetComponentsInChildren<MeshOutline>();
-        
-        if (!virtualTwin) ToggleOutlines(false);
+        if (!virtualTwin) parts.ToggleOutlines(false);
     }
 
     /// <summary>
@@ -42,36 +26,14 @@ public class VersionObject : MonoBehaviour
     /// <param name="mat">Material to display.</param>
     public void SetMaterial(Material mat)
     {
-        //    var matArray = new Material[matCount];
-        //    for (int i = 0; i < matCount; i++)
-        //    {
-        //        matArray[i] = mat;
-        //    }
-
-        //    meshRenderer.materials = matArray;
-        foreach (var child in childRenderers)
-        {
-            child.material = mat;
-        }
+        parts.SetMaterial(mat);
     }
 
     /// <summary>
     /// Reset all materials to the default materials.
     /// </summary>
-    public void ResetToBaseMaterial()
+    public void ResetMaterial()
     {
-        //meshRenderer.materials = baseMats;
-        for (int i = 0; i < childRenderers.Length; i++)
-        {
-            childRenderers[i].material = childMats[i];
-        }
-    }
-
-    public void ToggleOutlines(bool state)
-    {
-        foreach (var line in outlines)
-        {
-            line.enabled = state;
-        }
+        parts.ResetMaterial();
     }
 }

@@ -135,9 +135,11 @@ public class ComparisonManager : MonoBehaviour
     /// Displays a comparison operation based on the currently active comparison mode.
     /// </summary>
     private void DisplayComparison()
-    {        
+    {
         // Reset properties of tracked object and comparison object
+        Debug.Log("Reset comparison object materials");
         comparisonObj.Reset();
+        Debug.Log("reset complete");
         trackedObj.ResetMaterial();
 
         // Activate effects based on activated mode
@@ -152,7 +154,8 @@ public class ComparisonManager : MonoBehaviour
             comparisonObj.transform.localPosition = Vector3.zero;
 
             trackedObj.SetMaterial(phantomMat);
-            comparisonObj.SetCurrentOverlayMaterial();
+            Debug.Log("Set overlay material");
+            comparisonObj.SetOverlayMaterial();
         }
         else if (mode == ComparisonMode.Differences)
         {
@@ -161,7 +164,8 @@ public class ComparisonManager : MonoBehaviour
 
             // NOTE: This will be replaced by another comparison operation
             trackedObj.SetMaterial(phantomMat);
-            comparisonObj.SetCurrentOverlayMaterial(); // TODO
+            Debug.Log("Set overlay material");
+            comparisonObj.SetOverlayMaterial(); // TODO
         }
 
         informationPanel.SetOptions();
@@ -175,7 +179,7 @@ public class ComparisonManager : MonoBehaviour
         // Disable highlight on version object
         if (versionHistoryObj != null)
         {
-            versionHistoryObj.GetComponentInParent<VersionObject>().ToggleOutlines(false);
+            versionHistoryObj.GetComponentInParent<ObjectParts>().ToggleOutlines(false);
             comparisonLine.enabled = false;
             versionHistoryObj = null;
         }
@@ -194,7 +198,7 @@ public class ComparisonManager : MonoBehaviour
     private void HighlightComparison()
     {
         // Highlight the versionObj as being compared against
-        versionHistoryObj.GetComponentInParent<VersionObject>().ToggleOutlines(true);
+        versionHistoryObj.GetComponentInParent<ObjectParts>().ToggleOutlines(true);
 
         float height1 = virtualTwin.GetComponentInChildren<Collider>().bounds.size.y;
         float height2 = versionHistoryObj.GetComponentInChildren<Collider>().bounds.size.y;

@@ -6,20 +6,11 @@ public class TrackedObject : MonoBehaviour
 {
     public Material phantomMat;
 
-    private MeshRenderer[] childRenderers;
-    private Material[] childMats;
+    private ObjectParts parts;
 
     void Start()
     {
-        // Save a reference to the base materials
-        childRenderers = new MeshRenderer[transform.childCount];
-        childMats = new Material[transform.childCount];
-
-        for (int i = 0; i < transform.childCount; i++)
-        {
-            childRenderers[i] = transform.GetChild(i).GetComponent<MeshRenderer>();
-            childMats[i] = childRenderers[i].material;
-        }
+        parts = GetComponent<ObjectParts>();
 
         // Switch the default material based on global setting
         if (ComparisonManager.Instance.usePhysical)
@@ -34,10 +25,7 @@ public class TrackedObject : MonoBehaviour
     /// <param name="mat">Material to display.</param>
     public void SetMaterial(Material mat)
     {
-        foreach (var child in childRenderers)
-        {
-            child.material = mat;
-        }
+        parts.SetMaterial(mat);
     }
 
     /// <summary>
@@ -45,9 +33,6 @@ public class TrackedObject : MonoBehaviour
     /// </summary>
     public void ResetMaterial()
     {
-        for (int i = 0; i < childRenderers.Length; i++)
-        {
-            childRenderers[i].material = childMats[i];
-        }
+        parts.ResetMaterial();
     }
 }

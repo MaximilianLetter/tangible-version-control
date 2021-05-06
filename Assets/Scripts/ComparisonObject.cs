@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Utilities;
 
+[RequireComponent(typeof(ObjectParts))]
 public class ComparisonObject : MonoBehaviour
 {
     // External references
@@ -10,6 +11,7 @@ public class ComparisonObject : MonoBehaviour
 
     // Internal references
     private GameObject[] parts;
+    private ObjectParts partMgmt;
 
     // Side by side variables
     private float floatingDistance;
@@ -19,8 +21,6 @@ public class ComparisonObject : MonoBehaviour
     // Overlay variables
     private int materialIndex;
 
-    private MeshRenderer[] childRenderers;
-    private Material[] childMats;
     private Transform transformInUse;
     private bool bottomPivot;
     private bool ready;
@@ -29,6 +29,7 @@ public class ComparisonObject : MonoBehaviour
     {
         // Get references to necessary gameobjects
         trackedObjTransform = GameObject.Find("TrackedContainer").transform;
+        partMgmt = GetComponent<ObjectParts>();
 
         transformInUse = transform;
         bottomPivot = false;
@@ -82,28 +83,13 @@ public class ComparisonObject : MonoBehaviour
     }
 
     /// <summary>
-    /// Sets the material of the object to the given material.
-    /// </summary>
-    /// <param name="mat">Material to display</param>
-    public void SetMaterial(Material mat)
-    {
-        foreach (var child in childRenderers)
-        {
-            child.material = mat;
-        }
-    }
-
-    /// <summary>
     /// Resets any applied comparison operations to default.
     /// </summary>
     public void Reset()
     {
         sideBySide = false;
 
-        for (int i = 0; i < childRenderers.Length; i++)
-        {
-            childRenderers[i].material = childMats[i];
-        }
+        partMgmt.CollectRenderersAndMaterials();
     }
 
     /// <summary>
@@ -112,25 +98,20 @@ public class ComparisonObject : MonoBehaviour
     /// <param name="toClone">Object to obtain mesh and scale from.</param>
     public void Activate(GameObject toClone)
     {
-        // Copy information from original object
         parts = new GameObject[toClone.transform.childCount];
-        childRenderers = new MeshRenderer[toClone.transform.childCount];
-        childMats = new Material[toClone.transform.childCount];
 
         for (int i = 0; i < toClone.transform.childCount; i++)
         {
             // Clone each part of the object, remove the MeshOutline Script
             GameObject part = Instantiate(toClone.transform.GetChild(i).gameObject, transform);
-            //Destroy(part.GetComponent<MeshOutline>());
             
-            // Store necessary information about part, renderers and materials
+            // NOTE: Outlines are FOR NOW not necessary on comparison objects
+            Destroy(part.GetComponent<MeshOutline>());
+            
+            // Store necessary information about parts
             parts[i] = part;
-            childRenderers[i] = part.GetComponent<MeshRenderer>();
-            childMats[i] = childRenderers[i].material;
         }
-
-        //meshFilter.mesh = toClone.GetComponent<MeshFilter>().mesh;
-        //transform.localScale = toClone.transform.localScale;
+        partMgmt.CollectRenderersAndMaterials();
 
         // Set pivot point according the the current mode
         if (bottomPivot) SetPivotPointBottom();
@@ -145,15 +126,12 @@ public class ComparisonObject : MonoBehaviour
     public void Deactivate()
     {
         // Reset mesh and scale
-        //meshFilter.mesh = null;
         foreach (var part in parts)
         {
             Destroy(part);
         }
 
         parts = null;
-        childRenderers = null;
-        childMats = null;
         transform.localScale = Vector3.one;
 
         gameObject.SetActive(false);
@@ -218,14 +196,15 @@ public class ComparisonObject : MonoBehaviour
     {
         materialIndex = (materialIndex + 1) % ComparisonManager.Instance.overlayMats.Length;
 
-        SetCurrentOverlayMaterial();
+        SetOverlayMaterial();
     }
 
     /// <summary>
-    /// Display the currently active overlay material;
+    /// Sets the currently active overlay material.
     /// </summary>
-    public void SetCurrentOverlayMaterial()
+    public void SetOverlayMaterial()
     {
-        SetMaterial(ComparisonManager.Instance.overlayMats[materialIndex]);
+        if (materialIndex == 0) partMgmt.ResetMaterial();
+        else partMgmt.SetMaterial(ComparisonManager.Instance.overlayMats[materialIndex]);
     }
 }
