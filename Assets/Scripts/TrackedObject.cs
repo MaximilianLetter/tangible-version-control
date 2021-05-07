@@ -5,34 +5,34 @@ using UnityEngine;
 public class TrackedObject : MonoBehaviour
 {
     public Material phantomMat;
-    public Material virtualMat;
 
-    private MeshRenderer meshRenderer;
-    private Material baseMat;
+    private ObjectParts parts;
 
     void Start()
     {
-        meshRenderer = GetComponent<MeshRenderer>();
+        parts = GetComponent<ObjectParts>();
 
         // Switch the default material based on global setting
         if (ComparisonManager.Instance.usePhysical)
         {
-            baseMat = phantomMat;
-        } else
-        {
-            baseMat = virtualMat;
+            SetMaterial(phantomMat);
         }
-
-        meshRenderer.material = baseMat;
     }
 
+    /// <summary>
+    /// Replaces all materials by the given material.
+    /// </summary>
+    /// <param name="mat">Material to display.</param>
     public void SetMaterial(Material mat)
     {
-        meshRenderer.material = mat;
+        parts.SetMaterial(mat);
     }
 
+    /// <summary>
+    /// Resets all materials to the base materials.
+    /// </summary>
     public void ResetMaterial()
     {
-        meshRenderer.material = baseMat;
+        parts.ResetMaterial();
     }
 }

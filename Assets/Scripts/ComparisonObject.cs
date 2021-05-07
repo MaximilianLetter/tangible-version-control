@@ -1,16 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Microsoft.MixedReality.Toolkit.Utilities;
 
+[RequireComponent(typeof(ObjectParts))]
 public class ComparisonObject : MonoBehaviour
 {
     // External references
     private Transform trackedObjTransform;
 
     // Internal references
-    private MeshFilter meshFilter;
-    private MeshRenderer meshRenderer;
-    private Material baseMat;
+    private GameObject[] parts;
+    private ObjectParts partMgmt;
 
     // Side by side variables
     private float floatingDistance;
@@ -21,21 +22,17 @@ public class ComparisonObject : MonoBehaviour
     private int materialIndex;
 
     private Transform transformInUse;
-    private bool bottomPivot;
+    private bool pivotCenter;
     private bool ready;
 
     void Start()
     {
-        // Setup component references and starting material
-        meshFilter = gameObject.GetComponent<MeshFilter>();
-        meshRenderer = gameObject.GetComponent<MeshRenderer>();
-        baseMat = meshRenderer.material;
-
         // Get references to necessary gameobjects
         trackedObjTransform = GameObject.Find("TrackedContainer").transform;
+        partMgmt = GetComponent<ObjectParts>();
 
         transformInUse = transform;
-        bottomPivot = false;
+        pivotCenter = false;
         hoverSide = false;
         ready = true;
     }
@@ -86,25 +83,13 @@ public class ComparisonObject : MonoBehaviour
     }
 
     /// <summary>
-    /// Sets the material of the object to the given material.
-    /// </summary>
-    /// <param name="mat">Material to display</param>
-    public void SetMaterial(Material mat)
-    {
-        meshRenderer.material = mat;
-    }
-
-    /// <summary>
     /// Resets any applied comparison operations to default.
     /// </summary>
     public void Reset()
     {
         sideBySide = false;
 
-        if (meshRenderer != null)
-        {
-            meshRenderer.material = baseMat;
-        }
+        partMgmt.CollectRenderersAndMaterials();
     }
 
     /// <summary>
@@ -113,13 +98,24 @@ public class ComparisonObject : MonoBehaviour
     /// <param name="toClone">Object to obtain mesh and scale from.</param>
     public void Activate(GameObject toClone)
     {
-        // Copy information from original object
-        meshFilter.mesh = toClone.GetComponent<MeshFilter>().mesh;
-        transform.localScale = toClone.transform.localScale;
+        parts = new GameObject[toClone.transform.childCount];
+
+        for (int i = 0; i < toClone.transform.childCount; i++)
+        {
+            // Clone each part of the object, remove the MeshOutline Script
+            GameObject part = Instantiate(toClone.transform.GetChild(i).gameObject, transform);
+            
+            // NOTE: Outlines are FOR NOW not necessary on comparison objects
+            Destroy(part.GetComponent<MeshOutline>());
+            
+            // Store necessary information about parts
+            parts[i] = part;
+        }
+        partMgmt.CollectRenderersAndMaterials();
 
         // Set pivot point according the the current mode
-        if (bottomPivot) SetPivotPointBottom();
-        else SetPivotPointCenter();
+        if (pivotCenter) SetPivotPointCenter();
+        else SetPivotPointBottom();
 
         gameObject.SetActive(true);
     }
@@ -129,8 +125,15 @@ public class ComparisonObject : MonoBehaviour
     /// </summary>
     public void Deactivate()
     {
+        Reset();
+
         // Reset mesh and scale
-        meshFilter.mesh = null;
+        foreach (var part in parts)
+        {
+            Destroy(part);
+        }
+
+        parts = null;
         transform.localScale = Vector3.one;
 
         gameObject.SetActive(false);
@@ -154,25 +157,34 @@ public class ComparisonObject : MonoBehaviour
     /// </summary>
     public void SwitchPivotPoint()
     {
-        bottomPivot = !bottomPivot;
+        pivotCenter = !pivotCenter;
 
         // Set pivot point according to the new mode
-        if (bottomPivot) SetPivotPointBottom();
-        else SetPivotPointCenter();
+        if (pivotCenter) SetPivotPointCenter();
+        else SetPivotPointBottom();
     }
 
     /// <summary>
     /// Set the pivot point to bottom by updating the parent transform and offsetting the object to match the tracked object's bottom point.
     /// </summary>
-    private void SetPivotPointBottom()
+    private void SetPivotPointCenter()
     {
         transformInUse = transform.parent;
         transform.localRotation = Quaternion.identity;
 
         // Calculate the needed offset to match the tracked object's bottom point
-        float heightCompObj = transform.GetComponent<MeshFilter>().mesh.bounds.size.y * transform.localScale.y;
-        float heightTrackedObj = trackedObjTransform.GetComponent<Collider>().bounds.size.y * trackedObjTransform.localScale.y;
-        float offset = (heightCompObj / 2) - (heightTrackedObj / 2);
+        float heightCompObj = CalculateParentBounds().size.y;
+        float heightTrackedObj = trackedObjTransform.GetChild(0).GetComponent<Collider>().bounds.size.y;
+
+        float offset;
+        if (heightTrackedObj > heightCompObj)
+        {
+            offset = (heightTrackedObj / 2) - (heightCompObj / 2);
+        }
+        else
+        {
+            offset = (heightCompObj / 2) - (heightTrackedObj / 2);
+        }
 
         // NOTE: The pivot point is the bottom of the object, regardless of orientation
         // This could result in unexpected behavior
@@ -180,9 +192,39 @@ public class ComparisonObject : MonoBehaviour
     }
 
     /// <summary>
+    /// Calculates bounds based on the children objects.
+    /// Taken from https://stackoverflow.com/questions/11949463/how-to-get-size-of-parent-game-object
+    /// </summary>
+    /// <returns></returns>
+    private Bounds CalculateParentBounds()
+    {
+        Renderer[] children = GetComponentsInChildren<Renderer>();
+
+        // First find a center for your bounds
+        Vector3 center = Vector3.zero;
+
+        foreach (Renderer child in children)
+        {
+            center += child.bounds.center;
+        }
+        center /= transform.childCount; //center is average center of children
+
+        //Now you have a center, calculate the bounds by creating a zero sized 'Bounds', 
+        Bounds bounds = new Bounds(center, Vector3.zero);
+
+        foreach (Renderer child in children)
+        {
+            bounds.Encapsulate(child.bounds);
+        }
+
+        return bounds;
+    }
+
+
+    /// <summary>
     /// Set the pivot point to center by directly modifying its transform position.
     /// </summary>
-    private void SetPivotPointCenter()
+    private void SetPivotPointBottom()
     {
         transform.parent.position = Vector3.zero;
         transformInUse = transform;
@@ -195,14 +237,15 @@ public class ComparisonObject : MonoBehaviour
     {
         materialIndex = (materialIndex + 1) % ComparisonManager.Instance.overlayMats.Length;
 
-        SetCurrentOverlayMaterial();
+        SetOverlayMaterial();
     }
 
     /// <summary>
-    /// Display the currently active overlay material;
+    /// Sets the currently active overlay material.
     /// </summary>
-    public void SetCurrentOverlayMaterial()
+    public void SetOverlayMaterial()
     {
-        SetMaterial(ComparisonManager.Instance.overlayMats[materialIndex]);
+        if (materialIndex == 0) partMgmt.ResetMaterial();
+        else partMgmt.SetMaterial(ComparisonManager.Instance.overlayMats[materialIndex]);
     }
 }
