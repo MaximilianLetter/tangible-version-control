@@ -33,6 +33,15 @@
         "com.unity.textmeshpro": "2.1.4"
       }
     },
+    "com.ptc.vuforia.engine": {
+      "version": "git+https://git-packages.developer.vuforia.com#9.8.5",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0"
+      },
+      "hash": "28847b1d9fcf851fa7717711a3b07d2441cf25b1"
+    },
     "com.unity.collab-proxy": {
       "version": "1.2.16",
       "depth": 0,
@@ -103,6 +112,20 @@
         "com.unity.modules.ui": "1.0.0",
         "com.unity.modules.imgui": "1.0.0"
       }
+    },
+    "com.unity.xr.oculus.standalone": {
+      "version": "2.38.4",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.xr.openvr.standalone": {
+      "version": "2.0.5",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
     },
     "com.unity.xr.windowsmr.metro": {
       "version": "4.2.3",

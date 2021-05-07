@@ -25,6 +25,10 @@ public class ComparisonObject : MonoBehaviour
     private bool pivotCenter;
     private bool ready;
 
+    public float floatingDistance = 0.15f;
+    public int minAngle = 10;
+    public bool hoverNext;
+
     void Start()
     {
         // Get references to necessary gameobjects

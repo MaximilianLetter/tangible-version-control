@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Utilities.Solvers;
+using Vuforia;
 
 public class PlacementManager : MonoBehaviour
 {
@@ -106,6 +107,9 @@ public class PlacementManager : MonoBehaviour
         comparisonPanel.SetActive(true);
 
         inPlacement = false;
+
+        // Start vuforia tracking
+        Camera.main.GetComponent<VuforiaBehaviour>().enabled = true;
     }
 
     public bool GetInPlacement()
