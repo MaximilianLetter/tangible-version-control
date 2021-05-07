@@ -27,6 +27,7 @@ public class ComparisonManager : MonoBehaviour
 
     // Comparison properties
     public Material phantomMat;
+    public Material invisibleMat;
     public Material[] overlayMats;
     public float staticFloatingDistance;
 
@@ -151,7 +152,9 @@ public class ComparisonManager : MonoBehaviour
             comparisonObj.transform.parent = trackedTransform;
             comparisonObj.transform.localPosition = Vector3.zero;
 
-            trackedObj.SetMaterial(phantomMat);
+            // NOTE: the phantom Mat occludes the overlayed mat, short term solution > invisible material
+            //trackedObj.SetMaterial(phantomMat);
+            trackedObj.SetMaterial(invisibleMat);
             Debug.Log("Set overlay material");
             comparisonObj.SetOverlayMaterial();
         }

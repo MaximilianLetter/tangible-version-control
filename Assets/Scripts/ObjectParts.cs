@@ -30,13 +30,6 @@ public class ObjectParts : MonoBehaviour
         }
     }
 
-    public void ClearRenderersAndMaterials()
-    {
-        outlines = null;
-        childRenderers = null;
-        childMats = null;
-    }
-
     /// <summary>
     /// Replaces the material of each part of the object with the given material.
     /// </summary>
