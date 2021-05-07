@@ -137,9 +137,7 @@ public class ComparisonManager : MonoBehaviour
     private void DisplayComparison()
     {
         // Reset properties of tracked object and comparison object
-        Debug.Log("Reset comparison object materials");
         comparisonObj.Reset();
-        Debug.Log("reset complete");
         trackedObj.ResetMaterial();
 
         // Activate effects based on activated mode
@@ -210,8 +208,8 @@ public class ComparisonManager : MonoBehaviour
         comparisonLine.positionCount = 4;
         comparisonLine.SetPositions(new[] {
             posStart,
-            posStart + virtualTwin.transform.up * height2,
-            posEnd +  versionHistoryObj.transform.up * height1,
+            posStart + (virtualTwin.transform.up * height2) + (virtualTwin.transform.up * height1 / 2),
+            posEnd +  (versionHistoryObj.transform.up * height1) + (versionHistoryObj.transform.up * height2 / 2),
             posEnd
         });
     }
