@@ -3578,6 +3578,7 @@ MonoBehaviour:
   sideBySideOptions: {fileID: 5629629421345131194}
   overlayOptions: {fileID: 6579564447947605673}
   differencesOptions: {fileID: 8801777730469860054}
+  floatingOffsetZ: -0.15
 --- !u!114 &6981897093422119782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3699,7 +3700,7 @@ Transform:
   m_GameObject: {fileID: 3935146675959720228}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_Children:
   - {fileID: 746948234860669191}
   - {fileID: 3934282506152989910}

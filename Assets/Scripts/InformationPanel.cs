@@ -18,8 +18,9 @@ public class InformationPanel : MonoBehaviour
     public GameObject differencesOptions;
 
     // Internal variables used for calculating the floating distance
+    public float floatingOffsetZ;
     private float floatingOffset;
-    private float height;
+    //private float height;
 
     private Transform trackedObjTransform;
 
@@ -29,7 +30,7 @@ public class InformationPanel : MonoBehaviour
     {
         trackedObjTransform = GameObject.Find("TrackedContainer").transform;
         floatingOffset = 0f;
-        height = backPanel.bounds.size.y;
+        //height = backPanel.bounds.size.y;
 
         ready = true;
     }
@@ -53,7 +54,8 @@ public class InformationPanel : MonoBehaviour
         obj2_title.text = obj2.title;
         obj2_desc.text = obj2.description + "\n\n" + obj2.createdAt + "\n" + obj2.createdBy;
 
-        floatingOffset = dist + (height / 2);
+        floatingOffset = dist; // + (height / 2);
+        transform.localPosition = new Vector3(0, -dist / 2, transform.localPosition.z);
 
         SetOptions();
     }
@@ -83,11 +85,5 @@ public class InformationPanel : MonoBehaviour
         {
             differencesOptions.SetActive(true);
         }
-    }
-
-    void Update()
-    {
-        transform.position = trackedObjTransform.position + (Vector3.down * floatingOffset);
-        // TODO: Also bring the panel closer to the camera and meanwhile decrease its size
     }
 }
