@@ -2,25 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TrackedObject : MonoBehaviour
+[RequireComponent(typeof(ObjectParts))]
+public class VersionObject : MonoBehaviour
 {
-    public Material phantomMat;
+    public bool virtualTwin;
+    public string title;
+    public string description;
+    public string createdAt;
+    public string createdBy;
 
     private ObjectParts parts;
 
-    void Start()
+    private void Start()
     {
         parts = GetComponent<ObjectParts>();
 
-        // Switch the default material based on global setting
-        if (ComparisonManager.Instance.usePhysical)
-        {
-            SetMaterial(phantomMat);
-        }
+        if (!virtualTwin) parts.ToggleOutlines(false);
     }
 
     /// <summary>
-    /// Replaces all materials by the given material.
+    /// Replaces every material of the object with a placement material.
     /// </summary>
     /// <param name="mat">Material to display.</param>
     public void SetMaterial(Material mat)
@@ -29,7 +30,7 @@ public class TrackedObject : MonoBehaviour
     }
 
     /// <summary>
-    /// Resets all materials to the base materials.
+    /// Reset all materials to the default materials.
     /// </summary>
     public void ResetMaterial()
     {
