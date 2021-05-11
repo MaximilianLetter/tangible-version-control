@@ -10,9 +10,17 @@ public class ObjectParts : MonoBehaviour
     private Material[] childMats;
     private MeshOutline[] outlines;
 
+    private bool ready;
+
     void Start()
     {
         CollectRenderersAndMaterials();
+        ready = true;
+    }
+
+    public bool IsReady()
+    {
+        return ready;
     }
 
     /// <summary>

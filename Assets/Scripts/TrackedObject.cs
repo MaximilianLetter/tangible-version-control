@@ -6,14 +6,24 @@ public class TrackedObject : MonoBehaviour
 {
     private ObjectParts parts;
 
-    void Start()
+    IEnumerator Start()
     {
         parts = GetComponent<ObjectParts>();
+
+        // Wait until all component references are gathered
+        while (true)
+        {
+            if (parts.IsReady()) break;
+
+            yield return null;
+        }
 
         // Switch the default material based on global setting
         if (ComparisonManager.Instance.usePhysical)
         {
+            // Set and override base material as phantom
             SetMaterial(ComparisonManager.Instance.phantomMat);
+            parts.CollectRenderersAndMaterials();
         }
     }
 
