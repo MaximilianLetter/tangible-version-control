@@ -146,6 +146,7 @@ public class ComparisonManager : MonoBehaviour
         {
             comparisonObj.transform.parent = comparisonObjContainer;
             comparisonObj.SetSideBySide(floatingDistance);
+            comparisonObj.SetOverlayMaterial(true);
         }
         else if (mode == ComparisonMode.Overlay)
         {

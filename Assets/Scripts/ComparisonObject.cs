@@ -243,8 +243,10 @@ public class ComparisonObject : MonoBehaviour
     /// <summary>
     /// Sets the currently active overlay material.
     /// </summary>
-    public void SetOverlayMaterial()
+    public void SetOverlayMaterial(bool reset = false)
     {
+        if (reset) materialIndex = 0;
+
         if (materialIndex == 0) partMgmt.ResetMaterial();
         else partMgmt.SetMaterial(ComparisonManager.Instance.overlayMats[materialIndex]);
     }
