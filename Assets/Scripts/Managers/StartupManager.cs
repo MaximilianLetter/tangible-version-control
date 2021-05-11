@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Vuforia;
 
 public class StartupManager : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class StartupManager : MonoBehaviour
 
     public GameObject[] sceneObjects;
 
+    private TrackingManager trackingManager;
     private PlacementManager placementManager;
     private InformationPanel informationPanel;
     private ComparisonObject comparisonObject;
@@ -19,6 +21,7 @@ public class StartupManager : MonoBehaviour
 
         // Get necessary references
         placementManager = FindObjectOfType<PlacementManager>();
+        trackingManager = FindObjectOfType<TrackingManager>();
         informationPanel = FindObjectOfType<InformationPanel>();
         comparisonObject = FindObjectOfType<ComparisonObject>();
 
@@ -26,6 +29,7 @@ public class StartupManager : MonoBehaviour
         while (true)
         {
             if (placementManager.IsReady() &&
+                (!trackingManager || trackingManager.IsReady()) && // To use in non-tracking scenes
                 informationPanel.IsReady() &&
                 ComparisonManager.Instance.IsReady() &&
                 comparisonObject.IsReady()
@@ -35,6 +39,27 @@ public class StartupManager : MonoBehaviour
             }
             yield return null;
         }
+        Debug.Log("Managers loaded, ready for scene setup.");
+
+
+        // NOTE: this is not clean, this should rather be a callback of Vuforia setup, should then be placed in the TrackingManager
+#if UNITY_EDITOR
+        if (VuforiaRuntime.Instance != null) // To use in non-tracking scenes
+        {
+            // Make sure Vuforia is fully instantiated to disable Positionial Device Tracking
+            while (true)
+            {
+                if (VuforiaRuntime.Instance.InitializationState == VuforiaRuntime.InitState.INITIALIZED)
+                {
+                    break;
+                }
+                yield return null;
+            }
+
+            var pdt = TrackerManager.Instance.GetTracker<PositionalDeviceTracker>();
+            pdt.Stop();
+        }
+#endif
 
         // Setup the scene
         foreach (var obj in sceneObjects)
@@ -43,5 +68,7 @@ public class StartupManager : MonoBehaviour
         }
 
         startupPanel.SetActive(true);
+
+        Debug.Log("Startup finished.");
     }
 }
