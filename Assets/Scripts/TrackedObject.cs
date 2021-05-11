@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class TrackedObject : MonoBehaviour
 {
-    public Material phantomMat;
-
     private ObjectParts parts;
 
     void Start()
@@ -15,7 +13,7 @@ public class TrackedObject : MonoBehaviour
         // Switch the default material based on global setting
         if (ComparisonManager.Instance.usePhysical)
         {
-            SetMaterial(phantomMat);
+            SetMaterial(ComparisonManager.Instance.phantomMat);
         }
     }
 
