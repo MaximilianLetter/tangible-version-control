@@ -13,9 +13,16 @@ public class VersionObject : MonoBehaviour
 
     private ObjectParts parts;
 
-    private void Start()
+    IEnumerator Start()
     {
         parts = GetComponent<ObjectParts>();
+
+        while (true)
+        {
+            if (parts.IsReady()) break;
+
+            yield return null;
+        }
 
         if (!virtualTwin) parts.ToggleOutlines(false);
     }

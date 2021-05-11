@@ -38,11 +38,13 @@ public class PlacementManager : MonoBehaviour
 
         tapToPlace = versionHistoryObj.GetComponent<TapToPlace>();
 
-        // Setup internal values
+        ready = true;
+    }
+
+    public void SetScene()
+    {
         ToggleMaterials(false);
         inPlacement = false;
-
-        ready = true;
     }
 
     public bool IsReady()

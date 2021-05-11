@@ -8,7 +8,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/EditorScene.unity
     guid: e120caac096256c469dbace0bfaea1bb
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 1
     path: Assets/Scenes/VuforiaScene.unity
-    guid: 671a936c58d17b149b39607cf19820ad
+    guid: d207590d2e9783545b73597f55e04242
   m_configObjects: {}

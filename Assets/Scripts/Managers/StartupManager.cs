@@ -19,6 +19,26 @@ public class StartupManager : MonoBehaviour
         // Wait one frame for other objects to instantiate
         yield return null;
 
+        // Wait for all parts to be initialized
+        ObjectParts[] parts = FindObjectsOfType<ObjectParts>();
+
+        bool allReady = false;
+        while (true)
+        {
+            allReady = true;
+            foreach (var part in parts)
+            {
+                if (!part.IsReady())
+                {
+                    allReady = false;
+                }
+            }
+
+            if (allReady) break;
+
+            yield return null;
+        }
+
         // Get necessary references
         placementManager = FindObjectOfType<PlacementManager>();
         trackingManager = FindObjectOfType<TrackingManager>();
@@ -62,6 +82,7 @@ public class StartupManager : MonoBehaviour
 #endif
 
         // Setup the scene
+        placementManager.SetScene();
         foreach (var obj in sceneObjects)
         {
             obj.SetActive(false);
