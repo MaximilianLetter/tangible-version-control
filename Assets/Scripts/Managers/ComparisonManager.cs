@@ -103,7 +103,7 @@ public class ComparisonManager : MonoBehaviour
         // Check for existing comparison, suppress reinitializing the same comparison
         if (inComparison)
         {
-            if (versionObj == versionHistoryObj) return;
+            if (virtualObj == versionHistoryObj) return;
 
             // Reset if a new comparison is about to start
             ResetComparison();

@@ -26,10 +26,22 @@ public class ObjectParts : MonoBehaviour
     /// <summary>
     /// Set up references to each part's renderer and get the default material.
     /// </summary>
-    public void CollectRenderersAndMaterials()
+    public void CollectRenderersAndMaterials(GameObject[] parts = null)
     {
-        outlines = GetComponentsInChildren<MeshOutline>();
-        childRenderers = GetComponentsInChildren<MeshRenderer>();
+        // This is the case for the comparison object only for collecting references while the old parts are being destroyed
+        if (parts != null)
+        {
+            childRenderers = new MeshRenderer[parts.Length];
+            for (var i = 0; i < parts.Length; i++)
+            {
+                childRenderers[i] = parts[i].GetComponent<MeshRenderer>();
+            }
+        }
+        else
+        {
+            childRenderers = GetComponentsInChildren<MeshRenderer>();
+            outlines = GetComponentsInChildren<MeshOutline>();
+        }
 
         childMats = new Material[childRenderers.Length];
         for (int i = 0; i < childRenderers.Length; i++)
@@ -37,6 +49,16 @@ public class ObjectParts : MonoBehaviour
             childMats[i] = childRenderers[i].material;
         }
     }
+
+    //public void ResetRenderersAndMaterials()
+    //{
+    //    outlines = null;
+    //    childRenderers = null;
+    //    childMats = null;
+
+    //    Debug.Log("__*_reset happened");
+    //    Debug.Log(childRenderers);
+    //}
 
     /// <summary>
     /// Replaces the material of each part of the object with the given material.

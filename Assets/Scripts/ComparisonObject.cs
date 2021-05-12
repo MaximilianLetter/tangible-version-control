@@ -89,7 +89,7 @@ public class ComparisonObject : MonoBehaviour
     {
         sideBySide = false;
 
-        partMgmt.CollectRenderersAndMaterials();
+        partMgmt.ResetMaterial();
     }
 
     /// <summary>
@@ -111,7 +111,7 @@ public class ComparisonObject : MonoBehaviour
             // Store necessary information about parts
             parts[i] = part;
         }
-        partMgmt.CollectRenderersAndMaterials();
+        partMgmt.CollectRenderersAndMaterials(parts);
 
         // Set pivot point according the the current mode
         if (pivotCenter) SetPivotPointCenter();
@@ -125,16 +125,14 @@ public class ComparisonObject : MonoBehaviour
     /// </summary>
     public void Deactivate()
     {
-        Reset();
-
         // Reset mesh and scale
-        foreach (var part in parts)
+        foreach (Transform child in transform)
         {
-            Destroy(part);
+            Destroy(child.gameObject);
         }
 
         parts = null;
-        transform.localScale = Vector3.one;
+        partMgmt.CollectRenderersAndMaterials(new GameObject[0]);
 
         gameObject.SetActive(false);
     }

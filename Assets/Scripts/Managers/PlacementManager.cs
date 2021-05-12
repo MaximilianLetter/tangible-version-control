@@ -111,7 +111,8 @@ public class PlacementManager : MonoBehaviour
         inPlacement = false;
 
         // Start vuforia tracking
-        Camera.main.GetComponent<VuforiaBehaviour>().enabled = true;
+        var vuforiaTracking = Camera.main.GetComponent<VuforiaBehaviour>();
+        if (vuforiaTracking != null) vuforiaTracking.enabled = true;
     }
 
     public bool GetInPlacement()
