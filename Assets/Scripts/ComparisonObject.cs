@@ -222,7 +222,7 @@ public class ComparisonObject : MonoBehaviour
     /// <summary>
     /// Set the pivot point to center by directly modifying its transform position.
     /// </summary>
-    private void SetPivotPointBottom()
+    public void SetPivotPointBottom()
     {
         transform.parent.position = Vector3.zero;
         transformInUse = transform;

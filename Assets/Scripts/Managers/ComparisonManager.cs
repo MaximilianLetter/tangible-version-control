@@ -154,6 +154,7 @@ public class ComparisonManager : MonoBehaviour
         }
         else if (mode == ComparisonMode.Overlay)
         {
+            comparisonObj.SetPivotPointBottom();
             comparisonObj.transform.parent = trackedTransform;
             comparisonObj.transform.localPosition = Vector3.zero;
 
@@ -165,6 +166,7 @@ public class ComparisonManager : MonoBehaviour
         }
         else if (mode == ComparisonMode.Differences)
         {
+            comparisonObj.SetPivotPointBottom();
             comparisonObj.transform.parent = trackedTransform;
             comparisonObj.transform.localPosition = Vector3.zero;
 
