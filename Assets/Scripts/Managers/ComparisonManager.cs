@@ -72,9 +72,10 @@ public class ComparisonManager : MonoBehaviour
 
         // Get relevant transform information
         trackedTransform = trackedObj.transform.parent;
-        if (trackedTransform.childCount > 1)
+        var markerPlane = trackedTransform.Find("MarkerPlane");
+        if (markerPlane != null)
         {
-            trackedTransform.GetChild(1).GetComponent<Renderer>().material = phantomMat;
+            markerPlane.GetComponent<Renderer>().material = phantomMat;
         }
 
         // Initialize states
@@ -170,10 +171,8 @@ public class ComparisonManager : MonoBehaviour
             comparisonObj.transform.parent = trackedTransform;
             comparisonObj.transform.localPosition = Vector3.zero;
 
-            // NOTE: This will be replaced by another comparison operation
-            trackedObj.SetMaterial(phantomMat);
-            Debug.Log("Set overlay material");
-            comparisonObj.SetOverlayMaterial(); // TODO
+            trackedObj.SetMaterial(invisibleMat);
+            comparisonObj.HighlightDifferences(); // TODO
         }
 
         informationPanel.SetOptions();

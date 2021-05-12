@@ -8,6 +8,7 @@ public class ComparisonObject : MonoBehaviour
 {
     // External references
     private Transform trackedObjTransform;
+    private GameObject differencesObj;
 
     // Internal references
     private GameObject[] parts;
@@ -29,6 +30,7 @@ public class ComparisonObject : MonoBehaviour
     {
         // Get references to necessary gameobjects
         trackedObjTransform = GameObject.Find("TrackedContainer").transform;
+        differencesObj = trackedObjTransform.Find("DifferencesObject").gameObject;
         partMgmt = GetComponent<ObjectParts>();
 
         transformInUse = transform;
@@ -90,6 +92,7 @@ public class ComparisonObject : MonoBehaviour
         sideBySide = false;
 
         partMgmt.ResetMaterial();
+        ClearDifferenceHighlights();
     }
 
     /// <summary>
@@ -106,7 +109,7 @@ public class ComparisonObject : MonoBehaviour
             GameObject part = Instantiate(toClone.transform.GetChild(i).gameObject, transform);
             
             // NOTE: Outlines are FOR NOW not necessary on comparison objects
-            Destroy(part.GetComponent<MeshOutline>());
+            //Destroy(part.GetComponent<MeshOutline>());
             
             // Store necessary information about parts
             parts[i] = part;
@@ -135,6 +138,57 @@ public class ComparisonObject : MonoBehaviour
         partMgmt.CollectRenderersAndMaterials(new GameObject[0]);
 
         gameObject.SetActive(false);
+    }
+
+    public void HighlightDifferences()
+    {
+        partMgmt.SetMaterial(ComparisonManager.Instance.invisibleMat);
+
+        var partsScript = differencesObj.GetComponent<ObjectParts>();
+
+        var differences = DetectDifferences(trackedObjTransform.gameObject, gameObject);
+
+        foreach (var diff in differences)
+        {
+            Instantiate(diff, differencesObj.transform);
+        }
+        partsScript.CollectRenderersAndMaterials();
+        partsScript.SetMaterial(ComparisonManager.Instance.phantomMat);
+        partsScript.ToggleOutlines(true);
+    }
+
+    private void ClearDifferenceHighlights()
+    {
+        foreach (Transform child in differencesObj.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        SetOverlayMaterial(true);
+    }
+
+    private GameObject[] DetectDifferences(GameObject obj1, GameObject obj2)
+    {
+        GameObject[] differences;
+
+        int length1 = obj1.transform.childCount;
+        int length2 = obj2.transform.childCount;
+
+        int start = Mathf.Min(length1, length2);
+        int end = Mathf.Max(length1, length2);
+
+        Transform higherVersion = length1 > length2 ? obj1.transform : obj2.transform;
+
+        differences = new GameObject[Mathf.Abs(length1 - length2)];
+
+        int diffIndex = 0;
+        for (int i = start; i < end; i++)
+        {
+            differences[diffIndex] = higherVersion.GetChild(i).gameObject;
+            diffIndex++;
+        }
+
+        return differences;
     }
 
     public bool IsReady()
