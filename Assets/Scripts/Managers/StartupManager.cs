@@ -64,7 +64,7 @@ public class StartupManager : MonoBehaviour
 
         // NOTE: this is not clean, this should rather be a callback of Vuforia setup, should then be placed in the TrackingManager
 #if UNITY_EDITOR
-        if (VuforiaRuntime.Instance != null) // To use in non-tracking scenes
+        if (Camera.main.GetComponent<VuforiaBehaviour>() != null) // To use in non-tracking scenes
         {
             // Make sure Vuforia is fully instantiated to disable Positionial Device Tracking
             while (true)

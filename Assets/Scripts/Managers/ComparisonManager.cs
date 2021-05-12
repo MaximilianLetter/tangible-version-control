@@ -72,7 +72,10 @@ public class ComparisonManager : MonoBehaviour
 
         // Get relevant transform information
         trackedTransform = trackedObj.transform.parent;
-        trackedTransform.GetChild(1).GetComponent<Renderer>().material = phantomMat;
+        if (trackedTransform.childCount > 1)
+        {
+            trackedTransform.GetChild(1).GetComponent<Renderer>().material = phantomMat;
+        }
 
         // Initialize states
         comparisonLine.enabled = false;
