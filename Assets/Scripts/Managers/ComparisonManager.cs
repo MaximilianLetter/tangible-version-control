@@ -72,11 +72,13 @@ public class ComparisonManager : MonoBehaviour
 
         // Get relevant transform information
         trackedTransform = trackedObj.transform.parent;
-        var markerPlane = trackedTransform.Find("MarkerPlane");
-        if (markerPlane != null)
-        {
-            markerPlane.GetComponent<Renderer>().material = phantomMat;
-        }
+        
+        // NOTE: giving the markerPlane a phantom materials results in unwanted behavior occluding the comparison object
+        //var markerPlane = trackedTransform.Find("MarkerPlane");
+        //if (markerPlane != null)
+        //{
+        //    markerPlane.GetComponent<Renderer>().material = phantomMat;
+        //}
 
         // Initialize states
         comparisonLine.enabled = false;
