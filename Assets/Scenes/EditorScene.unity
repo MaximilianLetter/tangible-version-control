@@ -289,7 +289,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   usePhysical: 0
-  phantomMat: {fileID: 2100000, guid: 7ead2c1f628a56646bef4507222cb94a, type: 2}
+  phantomMat: {fileID: 2100000, guid: 61238261a8dc1134db68eb7094ee170a, type: 2}
   invisibleMat: {fileID: 2100000, guid: 680ce2717dd7a0349b5547614be44abf, type: 2}
   overlayMats:
   - {fileID: 0}

@@ -172,7 +172,7 @@ public class ComparisonManager : MonoBehaviour
             comparisonObj.transform.localPosition = Vector3.zero;
 
             trackedObj.SetMaterial(invisibleMat);
-            comparisonObj.HighlightDifferences(); // TODO
+            comparisonObj.HighlightDifferences();
         }
 
         informationPanel.SetOptions();

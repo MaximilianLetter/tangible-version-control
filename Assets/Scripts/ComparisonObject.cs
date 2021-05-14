@@ -108,9 +108,6 @@ public class ComparisonObject : MonoBehaviour
             // Clone each part of the object, remove the MeshOutline Script
             GameObject part = Instantiate(toClone.transform.GetChild(i).gameObject, transform);
             
-            // NOTE: Outlines are FOR NOW not necessary on comparison objects
-            //Destroy(part.GetComponent<MeshOutline>());
-            
             // Store necessary information about parts
             parts[i] = part;
         }
@@ -140,23 +137,32 @@ public class ComparisonObject : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public void HighlightDifferences()
     {
-        partMgmt.SetMaterial(ComparisonManager.Instance.invisibleMat);
-
-        var partsScript = differencesObj.GetComponent<ObjectParts>();
-
+        // Get references to the now relevant differences obj
+        var diffPartsScript = differencesObj.GetComponent<ObjectParts>();
         var differences = DetectDifferences(trackedObjTransform.gameObject, gameObject);
 
         foreach (var diff in differences)
         {
             Instantiate(diff, differencesObj.transform);
         }
-        partsScript.CollectRenderersAndMaterials();
-        partsScript.SetMaterial(ComparisonManager.Instance.phantomMat);
-        partsScript.ToggleOutlines(true);
+        // Set the differences obj as phantom with outlines
+        // NOTE: order matters! collect > outlines > material
+        diffPartsScript.CollectRenderersAndMaterials();
+        diffPartsScript.ToggleOutlines(true);
+        diffPartsScript.SetMaterial(ComparisonManager.Instance.phantomMat);
+
+        // Set the comparison obj itself completely invisible
+        partMgmt.SetMaterial(ComparisonManager.Instance.invisibleMat);
     }
 
+    /// <summary>
+    /// Removes all children from the difference object and resets the overlay material of the comparison obj.
+    /// </summary>
     private void ClearDifferenceHighlights()
     {
         foreach (Transform child in differencesObj.transform)
@@ -241,6 +247,8 @@ public class ComparisonObject : MonoBehaviour
         // NOTE: The pivot point is the bottom of the object, regardless of orientation
         // This could result in unexpected behavior
         transform.localPosition = trackedObjTransform.localRotation *  new Vector3(0, offset, 0);
+
+        pivotCenter = true;
     }
 
     /// <summary>
@@ -278,8 +286,12 @@ public class ComparisonObject : MonoBehaviour
     /// </summary>
     public void SetPivotPointBottom()
     {
+        if (!pivotCenter) return;
+
         transform.parent.position = Vector3.zero;
         transformInUse = transform;
+
+        pivotCenter = false;
     }
 
     /// <summary>
