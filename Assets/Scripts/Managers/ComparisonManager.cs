@@ -24,12 +24,18 @@ public class ComparisonManager : MonoBehaviour
 
     // Use tracking and physical objects
     public bool usePhysical;
+    public float staticFloatingDistance;
 
-    // Comparison properties
+    [Header("Object Materials")]
     public Material phantomMat;
     public Material invisibleMat;
     public Material[] overlayMats;
-    public float staticFloatingDistance;
+
+    //[Space(10)]
+    [Header("Outline Materials")]
+    public Material neutralHighlight;
+    public Material greenHighlight;
+    public Material redHighlight;
 
     // Required object references
     private InformationPanel informationPanel;
@@ -45,6 +51,8 @@ public class ComparisonManager : MonoBehaviour
     private GameObject versionHistoryObj;
     private float floatingDistance;
     private bool inComparison;
+
+    [Space(14)]
     public ComparisonMode mode;
 
     private void Awake()

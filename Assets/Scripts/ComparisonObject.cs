@@ -19,6 +19,9 @@ public class ComparisonObject : MonoBehaviour
     private bool sideBySide;
     private bool hoverSide;
 
+    // Differences variables
+    private Material diffOutline;
+
     // Overlay variables
     private int materialIndex;
 
@@ -143,16 +146,23 @@ public class ComparisonObject : MonoBehaviour
     public void HighlightDifferences()
     {
         // Get references to the now relevant differences obj
+        GameObject actualObj = trackedObjTransform.GetChild(0).gameObject;
         var diffPartsScript = differencesObj.GetComponent<ObjectParts>();
-        var differences = DetectDifferences(trackedObjTransform.gameObject, gameObject);
+        var differences = DetectDifferences(actualObj, gameObject);
 
         foreach (var diff in differences)
         {
-            Instantiate(diff, differencesObj.transform);
+            var newGO = Instantiate(diff, differencesObj.transform);
+            if (newGO.GetComponent<MeshOutline>() == null)
+            {
+                var outline = newGO.AddComponent<MeshOutline>();
+                outline.OutlineWidth = 0.001f;
+            }
         }
         // Set the differences obj as phantom with outlines
         // NOTE: order matters! collect > outlines > material
         diffPartsScript.CollectRenderersAndMaterials();
+        diffPartsScript.SetOutlineMaterial(diffOutline);
         diffPartsScript.ToggleOutlines(true);
         diffPartsScript.SetMaterial(ComparisonManager.Instance.phantomMat);
 
@@ -173,6 +183,12 @@ public class ComparisonObject : MonoBehaviour
         SetOverlayMaterial(true);
     }
 
+    /// <summary>
+    /// Detect block differences between objects based on the part order.
+    /// </summary>
+    /// <param name="obj1">The physical object.</param>
+    /// <param name="obj2">The virtual version object.</param>
+    /// <returns>List of parts that differ between the two given objects.</returns>
     private GameObject[] DetectDifferences(GameObject obj1, GameObject obj2)
     {
         GameObject[] differences;
@@ -183,8 +199,21 @@ public class ComparisonObject : MonoBehaviour
         int start = Mathf.Min(length1, length2);
         int end = Mathf.Max(length1, length2);
 
-        Transform higherVersion = length1 > length2 ? obj1.transform : obj2.transform;
+        // Decide if the objects are added to the current physical object or subtracted.
+        Transform higherVersion;
 
+        if (length1 > length2)
+        {
+            higherVersion = obj1.transform;
+            diffOutline = ComparisonManager.Instance.redHighlight;
+        }
+        else
+        {
+            higherVersion = obj2.transform;
+            diffOutline = ComparisonManager.Instance.greenHighlight;
+        }
+
+        // Fill array with gameobjects that differ
         differences = new GameObject[Mathf.Abs(length1 - length2)];
 
         int diffIndex = 0;

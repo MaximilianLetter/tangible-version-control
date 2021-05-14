@@ -83,6 +83,14 @@ public class ObjectParts : MonoBehaviour
         }
     }
 
+    public void SetOutlineMaterial(Material mat)
+    {
+        foreach (var line in outlines)
+        {
+            line.OutlineMaterial = mat;
+        }
+    }
+
     /// <summary>
     /// Toggle outlines on and off.
     /// </summary>
