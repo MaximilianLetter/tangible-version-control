@@ -153,7 +153,7 @@ public class ComparisonObject : MonoBehaviour
         // Get references to the now relevant differences obj
         GameObject actualObj = trackedObjTransform.GetChild(0).gameObject;
         var diffPartsScript = differencesObj.GetComponent<ObjectParts>();
-        var differences = DetectDifferences(actualObj, gameObject);
+        var differences = DetectDifferences(actualObj, parts);
 
         foreach (var diff in differences)
         {
@@ -192,29 +192,36 @@ public class ComparisonObject : MonoBehaviour
     /// Detect block differences between objects based on the part order, replacement of existing parts is not supported.
     /// </summary>
     /// <param name="obj1">The physical object.</param>
-    /// <param name="obj2">The virtual version object.</param>
+    /// <param name="obj2Parts">This is always the comparison object, which has its parts stored in a separate variable.</param>
     /// <returns>List of parts that differ between the two given objects.</returns>
-    private GameObject[] DetectDifferences(GameObject obj1, GameObject obj2)
+    private GameObject[] DetectDifferences(GameObject obj1, GameObject[] obj2Parts)
     {
         GameObject[] differingParts;
 
-        int length1 = obj1.transform.childCount;
-        int length2 = obj2.transform.childCount;
+        // Transfer child information in array to be in line with obj2Parts
+        GameObject[] obj1Parts = new GameObject[obj1.transform.childCount];
+        for (int i = 0; i < obj1.transform.childCount; i++)
+        {
+            obj1Parts[i] = obj1.transform.GetChild(i).gameObject;
+        }
+
+        int length1 = obj1Parts.Length;
+        int length2 = obj2Parts.Length;
 
         int start = Mathf.Min(length1, length2);
         int end = Mathf.Max(length1, length2);
 
         // Decide if the objects are added to the current physical object or subtracted.
-        Transform higherVersion;
+        GameObject[] longerList;
 
         if (length1 > length2)
         {
-            higherVersion = obj1.transform;
+            longerList = obj1Parts;
             diffOutline = ComparisonManager.Instance.redHighlight;
         }
         else
         {
-            higherVersion = obj2.transform;
+            longerList = obj2Parts;
             diffOutline = ComparisonManager.Instance.greenHighlight;
         }
 
@@ -224,7 +231,7 @@ public class ComparisonObject : MonoBehaviour
         int diffIndex = 0;
         for (int i = start; i < end; i++)
         {
-            differingParts[diffIndex] = higherVersion.GetChild(i).gameObject;
+            differingParts[diffIndex] = longerList[i];
             diffIndex++;
         }
 
