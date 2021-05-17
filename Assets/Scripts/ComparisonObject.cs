@@ -137,11 +137,16 @@ public class ComparisonObject : MonoBehaviour
         parts = null;
         partMgmt.CollectRenderersAndMaterials(new GameObject[0]);
 
+        if (ComparisonManager.Instance.mode == ComparisonMode.Differences)
+        {
+            ClearDifferenceHighlights();
+        }
+
         gameObject.SetActive(false);
     }
 
     /// <summary>
-    /// 
+    /// Highlight the detected differing object parts.
     /// </summary>
     public void HighlightDifferences()
     {
@@ -184,14 +189,14 @@ public class ComparisonObject : MonoBehaviour
     }
 
     /// <summary>
-    /// Detect block differences between objects based on the part order.
+    /// Detect block differences between objects based on the part order, replacement of existing parts is not supported.
     /// </summary>
     /// <param name="obj1">The physical object.</param>
     /// <param name="obj2">The virtual version object.</param>
     /// <returns>List of parts that differ between the two given objects.</returns>
     private GameObject[] DetectDifferences(GameObject obj1, GameObject obj2)
     {
-        GameObject[] differences;
+        GameObject[] differingParts;
 
         int length1 = obj1.transform.childCount;
         int length2 = obj2.transform.childCount;
@@ -214,16 +219,16 @@ public class ComparisonObject : MonoBehaviour
         }
 
         // Fill array with gameobjects that differ
-        differences = new GameObject[Mathf.Abs(length1 - length2)];
+        differingParts = new GameObject[Mathf.Abs(length1 - length2)];
 
         int diffIndex = 0;
         for (int i = start; i < end; i++)
         {
-            differences[diffIndex] = higherVersion.GetChild(i).gameObject;
+            differingParts[diffIndex] = higherVersion.GetChild(i).gameObject;
             diffIndex++;
         }
 
-        return differences;
+        return differingParts;
     }
 
     public bool IsReady()
