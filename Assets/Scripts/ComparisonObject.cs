@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Utilities;
 
+public enum DifferencesDisplayMode { OutlinesOnly, HighlightColor, OriginalColor }
+
 [RequireComponent(typeof(ObjectParts))]
 public class ComparisonObject : MonoBehaviour
 {
@@ -19,11 +21,14 @@ public class ComparisonObject : MonoBehaviour
     private bool sideBySide;
     private bool hoverSide;
 
-    // Differences variables
-    private Material diffOutline;
-
     // Overlay variables
     private int materialIndex;
+
+    // Differences variables
+    private Material diffOutline;
+    private DifferencesDisplayMode diffMode;
+    private bool removeParts;
+    private bool addParts;
 
     private Transform transformInUse;
     private bool pivotCenter;
@@ -36,9 +41,16 @@ public class ComparisonObject : MonoBehaviour
         differencesObj = trackedObjTransform.Find("DifferencesObject").gameObject;
         partMgmt = GetComponent<ObjectParts>();
 
+        // Side by side variables
         transformInUse = transform;
         pivotCenter = false;
         hoverSide = false;
+
+        // Differences variables
+        diffMode = DifferencesDisplayMode.OutlinesOnly;
+        removeParts = false;
+        addParts = false;
+
         ready = true;
     }
 
@@ -87,12 +99,43 @@ public class ComparisonObject : MonoBehaviour
         sideBySide = true;
     }
 
+    public void CycleDifferencesDisplay()
+    {
+        diffMode = (DifferencesDisplayMode)(((int)diffMode + 1) % 3);
+
+        SetDifferenceMode(diffMode);
+    }
+
+    private void SetDifferenceMode(DifferencesDisplayMode mode)
+    {
+        diffMode = mode;
+        ObjectParts diffPartsScript = differencesObj.GetComponent<ObjectParts>();
+
+        if (diffMode == DifferencesDisplayMode.OutlinesOnly)
+        {
+            diffPartsScript.SetMaterial(ComparisonManager.Instance.phantomMat);
+        }
+        else if (diffMode == DifferencesDisplayMode.HighlightColor)
+        {
+            bool green = diffOutline == ComparisonManager.Instance.greenHighlight;
+            diffPartsScript.SetMaterial(green ? ComparisonManager.Instance.greenMat : ComparisonManager.Instance.redMat);
+        }
+        else if (diffMode == DifferencesDisplayMode.OriginalColor)
+        {
+            diffPartsScript.ResetMaterial(removeParts && !addParts);
+        }
+    }
+
+
     /// <summary>
     /// Resets any applied comparison operations to default.
     /// </summary>
     public void Reset()
     {
         sideBySide = false;
+
+        removeParts = false;
+        addParts = false;
 
         partMgmt.ResetMaterial();
         ClearDifferenceHighlights();
@@ -155,6 +198,11 @@ public class ComparisonObject : MonoBehaviour
         var diffPartsScript = differencesObj.GetComponent<ObjectParts>();
         var differences = DetectDifferences(actualObj, parts);
 
+        // NOTE: The boolean comparison is kind of a workaround to identify if overall objects need to be added or are missing
+        Debug.Log("remove: " + removeParts);
+        Debug.Log("add: " + addParts);
+        actualObj.GetComponent<ObjectParts>().ResetMaterial(removeParts && !addParts);
+
         foreach (var diff in differences)
         {
             var newGO = Instantiate(diff, differencesObj.transform);
@@ -169,7 +217,10 @@ public class ComparisonObject : MonoBehaviour
         diffPartsScript.CollectRenderersAndMaterials();
         diffPartsScript.SetOutlineMaterial(diffOutline);
         diffPartsScript.ToggleOutlines(true);
-        diffPartsScript.SetMaterial(ComparisonManager.Instance.phantomMat);
+        //diffPartsScript.SetMaterial(ComparisonManager.Instance.phantomMat);
+        SetDifferenceMode(diffMode);
+
+        actualObj.GetComponent<ObjectParts>().SetMaterial(ComparisonManager.Instance.invisibleMat);
 
         // Set the comparison obj itself completely invisible
         partMgmt.SetMaterial(ComparisonManager.Instance.invisibleMat);
@@ -196,6 +247,9 @@ public class ComparisonObject : MonoBehaviour
     /// <returns>List of parts that differ between the two given objects.</returns>
     private GameObject[] DetectDifferences(GameObject obj1, GameObject[] obj2Parts)
     {
+        addParts = false;
+        removeParts = false;
+
         GameObject[] differingParts;
 
         // Transfer child information in array to be in line with obj2Parts
@@ -218,11 +272,13 @@ public class ComparisonObject : MonoBehaviour
         {
             longerList = obj1Parts;
             diffOutline = ComparisonManager.Instance.redHighlight;
+            removeParts = true;
         }
         else
         {
             longerList = obj2Parts;
             diffOutline = ComparisonManager.Instance.greenHighlight;
+            addParts = true;
         }
 
         // Fill array with gameobjects that differ

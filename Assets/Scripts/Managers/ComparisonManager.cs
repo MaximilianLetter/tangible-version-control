@@ -29,6 +29,8 @@ public class ComparisonManager : MonoBehaviour
     [Header("Object Materials")]
     public Material phantomMat;
     public Material invisibleMat;
+    public Material greenMat;
+    public Material redMat;
     public Material[] overlayMats;
 
     //[Space(10)]

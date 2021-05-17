@@ -75,8 +75,24 @@ public class ObjectParts : MonoBehaviour
     /// <summary>
     /// Reset the material of each part of the object to the default.
     /// </summary>
-    public void ResetMaterial()
+    /// <param name="getPreservedMaterial">Use the preserved material, this is currently only possible for the tracked object.</param>
+    public void ResetMaterial(bool getPreservedMaterial = false)
     {
+        Debug.Log("boolean getPresrvedmaterial " + getPreservedMaterial);
+        if (getPreservedMaterial)
+        {
+            Debug.Log("PRESERVED MAT");
+            PreserveMaterial[] preserved = GetComponentsInChildren<PreserveMaterial>();
+
+            for (int i = 0; i < childRenderers.Length; i++)
+            {
+                var mat = preserved[i].GetBaseMat();
+                childRenderers[i].material = mat;
+            }
+            return;
+        }
+
+        // In a normal case, reset to the 
         for (int i = 0; i < childRenderers.Length; i++)
         {
             childRenderers[i].material = childMats[i];
