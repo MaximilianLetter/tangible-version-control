@@ -4,14 +4,11 @@ using UnityEngine;
 
 public class CollisionInteraction : MonoBehaviour
 {
-
     private PlacementManager placementManager;
-    private ComparisonManager comparisonManager;
 
     void Start()
     {
         placementManager = GameObject.Find("PlacementManager").GetComponent<PlacementManager>();
-        comparisonManager = GameObject.Find("ComparisonManager").GetComponent<ComparisonManager>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -24,7 +21,7 @@ public class CollisionInteraction : MonoBehaviour
         if (other.gameObject.CompareTag("VersionObject"))
         {
             Debug.Log("Trigger comparison script");
-            comparisonManager.StartComparison(gameObject, other.gameObject);
+            ComparisonManager.Instance.StartComparison(gameObject, other.gameObject);
         }
     }
 }

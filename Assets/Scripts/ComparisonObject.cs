@@ -10,7 +10,7 @@ public class ComparisonObject : MonoBehaviour
 {
     // External references
     private Transform trackedObjTransform;
-    private GameObject differencesObj;
+    private ObjectParts differencesMgmt;
 
     // Internal references
     private GameObject[] parts;
@@ -38,7 +38,7 @@ public class ComparisonObject : MonoBehaviour
     {
         // Get references to necessary gameobjects
         trackedObjTransform = GameObject.Find("TrackedContainer").transform;
-        differencesObj = trackedObjTransform.Find("DifferencesObject").gameObject;
+        differencesMgmt = trackedObjTransform.Find("DifferencesObject").GetComponent<ObjectParts>();
         partMgmt = GetComponent<ObjectParts>();
 
         // Side by side variables
@@ -109,21 +109,24 @@ public class ComparisonObject : MonoBehaviour
     private void SetDifferenceMode(DifferencesDisplayMode mode)
     {
         diffMode = mode;
-        ObjectParts diffPartsScript = differencesObj.GetComponent<ObjectParts>();
+
+        // TODO bug seems to lie here
+
+        Debug.Log("bugbefore");
 
         if (diffMode == DifferencesDisplayMode.OutlinesOnly)
         {
-            diffPartsScript.SetMaterial(ComparisonManager.Instance.phantomMat);
+            differencesMgmt.SetMaterial(ComparisonManager.Instance.phantomMat);
         }
         else if (diffMode == DifferencesDisplayMode.HighlightColor)
         {
-            bool green = diffOutline == ComparisonManager.Instance.greenHighlight;
-            diffPartsScript.SetMaterial(green ? ComparisonManager.Instance.greenMat : ComparisonManager.Instance.redMat);
+            differencesMgmt.SetMaterial(addParts ? ComparisonManager.Instance.greenMat : ComparisonManager.Instance.redMat);
         }
         else if (diffMode == DifferencesDisplayMode.OriginalColor)
         {
-            diffPartsScript.ResetMaterial(removeParts && !addParts);
+            differencesMgmt.ResetMaterial(removeParts && !addParts);
         }
+        Debug.Log("bugafter");
     }
 
 
@@ -193,19 +196,17 @@ public class ComparisonObject : MonoBehaviour
     /// </summary>
     public void HighlightDifferences()
     {
+        Debug.Log("____ HIGHLIGHT DIFFERENCES _____");
         // Get references to the now relevant differences obj
         GameObject actualObj = trackedObjTransform.GetChild(0).gameObject;
-        var diffPartsScript = differencesObj.GetComponent<ObjectParts>();
         var differences = DetectDifferences(actualObj, parts);
 
         // NOTE: The boolean comparison is kind of a workaround to identify if overall objects need to be added or are missing
-        Debug.Log("remove: " + removeParts);
-        Debug.Log("add: " + addParts);
         actualObj.GetComponent<ObjectParts>().ResetMaterial(removeParts && !addParts);
 
         foreach (var diff in differences)
         {
-            var newGO = Instantiate(diff, differencesObj.transform);
+            var newGO = Instantiate(diff, differencesMgmt.transform);
             if (newGO.GetComponent<MeshOutline>() == null)
             {
                 var outline = newGO.AddComponent<MeshOutline>();
@@ -214,12 +215,13 @@ public class ComparisonObject : MonoBehaviour
         }
         // Set the differences obj as phantom with outlines
         // NOTE: order matters! collect > outlines > material
-        diffPartsScript.CollectRenderersAndMaterials();
-        diffPartsScript.SetOutlineMaterial(diffOutline);
-        diffPartsScript.ToggleOutlines(true);
+        differencesMgmt.CollectRenderersAndMaterials();
+        differencesMgmt.SetOutlineMaterial(diffOutline);
+        differencesMgmt.ToggleOutlines(true);
         //diffPartsScript.SetMaterial(ComparisonManager.Instance.phantomMat);
         SetDifferenceMode(diffMode);
 
+        // HACK
         actualObj.GetComponent<ObjectParts>().SetMaterial(ComparisonManager.Instance.invisibleMat);
 
         // Set the comparison obj itself completely invisible
@@ -231,7 +233,7 @@ public class ComparisonObject : MonoBehaviour
     /// </summary>
     private void ClearDifferenceHighlights()
     {
-        foreach (Transform child in differencesObj.transform)
+        foreach (Transform child in differencesMgmt.transform)
         {
             Destroy(child.gameObject);
         }

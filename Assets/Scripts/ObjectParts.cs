@@ -68,7 +68,7 @@ public class ObjectParts : MonoBehaviour
     {
         foreach (var child in childRenderers)
         {
-            child.material = mat;
+            if (child) child.material = mat;
         }
     }
 
