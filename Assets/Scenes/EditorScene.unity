@@ -450,7 +450,7 @@ PrefabInstance:
     - target: {fileID: 3934286987034513394, guid: 32ebbb34b5c41cc4fb295fbb3535adaf,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5541713780847040269, guid: 32ebbb34b5c41cc4fb295fbb3535adaf,
         type: 3}
@@ -502,7 +502,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &423965088
 Transform:
   m_ObjectHideFlags: 0
@@ -513,8 +513,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1816418196}
+  m_Children: []
   m_Father: {fileID: 963194228}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1609,13 +1608,38 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 423965088}
+    m_TransformParent: {fileID: 1577122677}
     m_Modifications:
     - target: {fileID: 277283211118903948, guid: 6ecb9eb000586c746b9334bd8cb30f84,
         type: 3}
       propertyPath: iconQuadTexture
       value: 
       objectReference: {fileID: 2800000, guid: 5ced9c7e98be2e941a88b5d0a16b2a3b, type: 3}
+    - target: {fileID: 1484409725221579346, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1739723448494722305, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1548253609}
+    - target: {fileID: 1739723448494722305, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: CycleDifferencesDisplay
+      objectReference: {fileID: 0}
+    - target: {fileID: 1777628774491641706, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1548253609}
+    - target: {fileID: 1777628774491641706, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SwitchPivotPoint
+      objectReference: {fileID: 0}
     - target: {fileID: 2281421716700064131, guid: 6ecb9eb000586c746b9334bd8cb30f84,
         type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -1631,6 +1655,11 @@ PrefabInstance:
       propertyPath: iconQuadTexture
       value: 
       objectReference: {fileID: 2800000, guid: bb1b4a9241fba2042a81428e917afd5d, type: 3}
+    - target: {fileID: 3890801682583743589, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3931292186744188710, guid: 6ecb9eb000586c746b9334bd8cb30f84,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -1649,12 +1678,17 @@ PrefabInstance:
     - target: {fileID: 3931475628669796798, guid: 6ecb9eb000586c746b9334bd8cb30f84,
         type: 3}
       propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3931475628669796798, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3931475628669796798, guid: 6ecb9eb000586c746b9334bd8cb30f84,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.5819
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3931475628669796798, guid: 6ecb9eb000586c746b9334bd8cb30f84,
         type: 3}
@@ -1694,7 +1728,7 @@ PrefabInstance:
     - target: {fileID: 3934286987034513394, guid: 6ecb9eb000586c746b9334bd8cb30f84,
         type: 3}
       propertyPath: m_Name
-      value: InformationPanel
+      value: ActionPanel
       objectReference: {fileID: 0}
     - target: {fileID: 3934286987034513394, guid: 6ecb9eb000586c746b9334bd8cb30f84,
         type: 3}
@@ -1710,6 +1744,36 @@ PrefabInstance:
         type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: FlipHoverSide
+      objectReference: {fileID: 0}
+    - target: {fileID: 5930694614415685295, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 313482408}
+    - target: {fileID: 5930694614415685295, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SwitchComparisonMode
+      objectReference: {fileID: 0}
+    - target: {fileID: 5962184305653404488, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1548253609}
+    - target: {fileID: 5962184305653404488, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: FlipHoverSide
+      objectReference: {fileID: 0}
+    - target: {fileID: 6466431241016459688, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1548253609}
+    - target: {fileID: 6466431241016459688, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: CycleMaterials
       objectReference: {fileID: 0}
     - target: {fileID: 6988090535308380588, guid: 6ecb9eb000586c746b9334bd8cb30f84,
         type: 3}
@@ -1735,6 +1799,11 @@ PrefabInstance:
         type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: CycleMaterials
+      objectReference: {fileID: 0}
+    - target: {fileID: 7632907500642805559, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.07
       objectReference: {fileID: 0}
     - target: {fileID: 8251052710770736108, guid: 6ecb9eb000586c746b9334bd8cb30f84,
         type: 3}
@@ -2077,6 +2146,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e11ff18d6315a8c4397140523dbd9934, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  panel: {fileID: 1816418196}
 --- !u!114 &1548253610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2118,6 +2188,7 @@ Transform:
   m_Children:
   - {fileID: 382480057}
   - {fileID: 6072768156700032564}
+  - {fileID: 1816418196}
   m_Father: {fileID: 1166894994}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

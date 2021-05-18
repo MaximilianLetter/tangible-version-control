@@ -11,7 +11,7 @@ public class StartupManager : MonoBehaviour
 
     private TrackingManager trackingManager;
     private PlacementManager placementManager;
-    private InformationPanel informationPanel;
+    private ActionPanel actionPanel;
     private ComparisonObject comparisonObject;
 
     IEnumerator Start()
@@ -42,7 +42,7 @@ public class StartupManager : MonoBehaviour
         // Get necessary references
         placementManager = FindObjectOfType<PlacementManager>();
         trackingManager = FindObjectOfType<TrackingManager>();
-        informationPanel = FindObjectOfType<InformationPanel>();
+        actionPanel = FindObjectOfType<ActionPanel>();
         comparisonObject = FindObjectOfType<ComparisonObject>();
 
         // Wait for other objects getting ready
@@ -50,7 +50,7 @@ public class StartupManager : MonoBehaviour
         {
             if (placementManager.IsReady() &&
                 (!trackingManager || trackingManager.IsReady()) && // To use in non-tracking scenes
-                informationPanel.IsReady() &&
+                actionPanel.IsReady() &&
                 ComparisonManager.Instance.IsReady() &&
                 comparisonObject.IsReady()
                 )

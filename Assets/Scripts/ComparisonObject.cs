@@ -11,6 +11,7 @@ public class ComparisonObject : MonoBehaviour
     // External references
     private Transform trackedObjTransform;
     private ObjectParts differencesMgmt;
+    public Transform panel;
 
     // Internal references
     private GameObject[] parts;
@@ -56,36 +57,45 @@ public class ComparisonObject : MonoBehaviour
 
     void Update()
     {
+        if (!ComparisonManager.Instance.IsInComparison()) return;
+
+        Vector3 offset, menuOffset;
+        Transform camTransform = Camera.main.transform;
+        Vector3 trackedPos = trackedObjTransform.position;
+
+        // Get distance and direction relative to camera
+        float distance = Vector3.Distance(camTransform.position, trackedPos);
+        Vector3 direction = (trackedPos - camTransform.position).normalized;
+            
+        //Vector2 splitDirection = new Vector2(direction.x, direction.z).normalized;
+        //direction.x = splitDirection.x;
+        //direction.z = splitDirection.y;
+
+        // Calculate angle based on triangulation
+        float angleF = Mathf.Asin(floatingDistance / Vector3.Distance(camTransform.position, trackedPos));
+        float yAngle = (angleF * 180) / Mathf.PI;
+
+        // Flip the floating side if specified
+        if (hoverSide) yAngle = 360 - yAngle;
+
+        // Calculate offset based on angle, direction and distance
+        // In case of a steep camera angle the positioning bugs out
+        offset = Quaternion.Euler(0, yAngle, 0) * direction * distance;
+
         if (sideBySide)
         {
-            Vector3 offset;
-            Transform camTransform = Camera.main.transform;
-            Vector3 trackedPos = trackedObjTransform.position;
-
-            // Get distance and direction relative to camera
-            float distance = Vector3.Distance(camTransform.position, trackedPos);
-            Vector3 direction = (trackedPos - camTransform.position).normalized;
-            
-            //Vector2 splitDirection = new Vector2(direction.x, direction.z).normalized;
-            //direction.x = splitDirection.x;
-            //direction.z = splitDirection.y;
-
-            // Calculate angle based on triangulation
-            float angleF = Mathf.Asin(floatingDistance / Vector3.Distance(camTransform.position, trackedPos));
-            float yAngle = (angleF * 180) / Mathf.PI;
-
-            // Flip the floating side if specified
-            if (hoverSide) yAngle = 360 - yAngle;
-
-            // Calculate offset based on angle, direction and distance
-            // In case of a steep camera angle the positioning bugs out
-            offset = Quaternion.Euler(0, yAngle, 0) * direction * distance;
-
             // Apply calculated position and rotation
             transformInUse.SetPositionAndRotation(
                 camTransform.position + offset,
                 trackedObjTransform.rotation
             );
+        }
+
+        // Position the panel on the other side
+        if (panel.gameObject.activeSelf)
+        {
+            menuOffset = Quaternion.Euler(0, 360 - yAngle, 0) * direction * distance;
+            panel.position = camTransform.position + menuOffset;
         }
     }
 

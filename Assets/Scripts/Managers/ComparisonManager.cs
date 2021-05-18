@@ -43,7 +43,7 @@ public class ComparisonManager : MonoBehaviour
     public Color32 textDefault;
 
     // Required object references
-    private InformationPanel informationPanel;
+    private ActionPanel actionPanel;
     private TrackedObject trackedObj;
     private Transform trackedTransform;
     private ComparisonObject comparisonObj;
@@ -65,7 +65,7 @@ public class ComparisonManager : MonoBehaviour
         _instance = this;
 
         // Get relevant gameobject logic
-        informationPanel = GameObject.FindObjectOfType<InformationPanel>();
+        actionPanel = GameObject.FindObjectOfType<ActionPanel>();
         trackedObj = GameObject.FindObjectOfType<TrackedObject>();
         comparisonLine = GameObject.FindObjectOfType<LineRenderer>();
         
@@ -142,8 +142,8 @@ public class ComparisonManager : MonoBehaviour
         floatingDistance = CalculateFloatingDistance(physicalObj, virtualObj);
 
         // Fill information panel with content and show
-        informationPanel.gameObject.SetActive(true);
-        informationPanel.SetContents(virtualTwin, versionObj, floatingDistance);
+        actionPanel.gameObject.SetActive(true);
+        //actionPanel.SetContents(virtualTwin, versionObj, floatingDistance);
 
         DisplayComparison();
     }
@@ -202,7 +202,7 @@ public class ComparisonManager : MonoBehaviour
             comparisonObj.HighlightDifferences();
         }
 
-        informationPanel.SetOptions();
+        actionPanel.SetOptions();
     }
 
     /// <summary>
@@ -219,7 +219,7 @@ public class ComparisonManager : MonoBehaviour
             versionHistoryObj = null;
         }
 
-        informationPanel.gameObject.SetActive(false);
+        actionPanel.gameObject.SetActive(false);
 
         comparisonObj.Deactivate();
         trackedObj.ResetMaterial();
@@ -266,6 +266,11 @@ public class ComparisonManager : MonoBehaviour
         {
             DisplayComparison();
         }
+    }
+
+    public bool IsInComparison()
+    {
+        return inComparison;
     }
 
     public bool IsReady()

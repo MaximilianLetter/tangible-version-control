@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class InformationPanel : MonoBehaviour
+public class ActionPanel : MonoBehaviour
 {
     // Text objects that can be populated
     public TMP_Text obj1_title;
@@ -46,19 +46,19 @@ public class InformationPanel : MonoBehaviour
     /// <param name="obj1">Static information about the movable object, most propably the virtual twin of the physical object.</param>
     /// <param name="obj2">Static information about the compared version.</param>
     /// <param name="dist">Distance between the two objects.</param>
-    public void SetContents(VersionObject obj1, VersionObject obj2, float dist)
-    {
-        obj1_title.text = obj1.title;
-        obj1_desc.text = obj1.description + "\n\n" + obj1.createdAt + "\n" + obj1.createdBy;
+    //public void SetContents(VersionObject obj1, VersionObject obj2, float dist)
+    //{
+    //    obj1_title.text = obj1.title;
+    //    obj1_desc.text = obj1.description + "\n\n" + obj1.createdAt + "\n" + obj1.createdBy;
 
-        obj2_title.text = obj2.title;
-        obj2_desc.text = obj2.description + "\n\n" + obj2.createdAt + "\n" + obj2.createdBy;
+    //    obj2_title.text = obj2.title;
+    //    obj2_desc.text = obj2.description + "\n\n" + obj2.createdAt + "\n" + obj2.createdBy;
 
-        //floatingOffset = dist; // + (height / 2);
-        transform.localPosition = new Vector3(0, -dist / 2, transform.localPosition.z);
+    //    //floatingOffset = dist; // + (height / 2);
+    //    transform.localPosition = new Vector3(0, -dist / 2, transform.localPosition.z);
 
-        SetOptions();
-    }
+    //    SetOptions();
+    //}
 
     /// <summary>
     /// Activates the fitting options based on the active comparison mode.
