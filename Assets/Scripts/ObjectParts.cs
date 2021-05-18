@@ -50,15 +50,12 @@ public class ObjectParts : MonoBehaviour
         }
     }
 
-    //public void ResetRenderersAndMaterials()
-    //{
-    //    outlines = null;
-    //    childRenderers = null;
-    //    childMats = null;
-
-    //    Debug.Log("__*_reset happened");
-    //    Debug.Log(childRenderers);
-    //}
+    public void ResetRenderersAndMaterials()
+    {
+        outlines = new MeshOutline[0];
+        childRenderers = new MeshRenderer[0];
+        childMats = new Material[0];
+    }
 
     /// <summary>
     /// Replaces the material of each part of the object with the given material.
@@ -66,6 +63,11 @@ public class ObjectParts : MonoBehaviour
     /// <param name="mat">Material to display.</param>
     public void SetMaterial(Material mat)
     {
+        //if (childRenderers.Length != transform.childCount)
+        //{
+        //    childRenderers = GetComponentsInChildren<MeshRenderer>();
+        //}
+
         foreach (var child in childRenderers)
         {
             if (child) child.material = mat;
@@ -78,24 +80,29 @@ public class ObjectParts : MonoBehaviour
     /// <param name="getPreservedMaterial">Use the preserved material, this is currently only possible for the tracked object.</param>
     public void ResetMaterial(bool getPreservedMaterial = false)
     {
-        Debug.Log("boolean getPresrvedmaterial " + getPreservedMaterial);
+        //if (childRenderers.Length != transform.childCount)
+        //{
+        //    childRenderers = GetComponentsInChildren<MeshRenderer>();
+        //}
+
         if (getPreservedMaterial)
         {
-            Debug.Log("PRESERVED MAT");
-            PreserveMaterial[] preserved = GetComponentsInChildren<PreserveMaterial>();
+            //PreserveMaterial[] preserved = GetComponentsInChildren<PreserveMaterial>();
 
             for (int i = 0; i < childRenderers.Length; i++)
             {
-                var mat = preserved[i].GetBaseMat();
+                if (!childRenderers[i]) continue;
+                
+                var mat = childRenderers[i].GetComponent<PreserveMaterial>().GetBaseMat();
                 childRenderers[i].material = mat;
             }
             return;
         }
 
-        // In a normal case, reset to the 
+        // In a normal case, reset to the referenced materials
         for (int i = 0; i < childRenderers.Length; i++)
         {
-            childRenderers[i].material = childMats[i];
+            if (childRenderers[i]) childRenderers[i].material = childMats[i];
         }
     }
 

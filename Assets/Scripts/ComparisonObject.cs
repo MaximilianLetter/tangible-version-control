@@ -177,11 +177,12 @@ public class ComparisonObject : MonoBehaviour
         // Reset mesh and scale
         foreach (Transform child in transform)
         {
+            child.gameObject.SetActive(false);
             Destroy(child.gameObject);
         }
 
         parts = null;
-        partMgmt.CollectRenderersAndMaterials(new GameObject[0]);
+        partMgmt.ResetRenderersAndMaterials();
 
         if (ComparisonManager.Instance.mode == ComparisonMode.Differences)
         {

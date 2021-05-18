@@ -109,20 +109,24 @@ public class ComparisonManager : MonoBehaviour
 
         if (versionObj.virtualTwin)
         {
-            Debug.Log("Comparing against virtual twin");
+            Debug.Log("Comparing against virtual twin; ABORT COMPARISON.");
             return;
         }
 
         // Check for existing comparison, suppress reinitializing the same comparison
         if (inComparison)
         {
-            if (virtualObj == versionHistoryObj) return;
+            if (virtualObj == versionHistoryObj)
+            {
+                Debug.Log("This comparison is already active; ABORT COMPARISON.");
+                return;
+            }
 
             // Reset if a new comparison is about to start
-            ResetComparison();
+            StopComparison();
         }
 
-        Debug.Log("Comparison started");
+        Debug.Log("A new comparison is initiated.");
 
         // Save reference to object for avoiding reinitializing the same comparison
         versionHistoryObj = virtualObj;
@@ -132,21 +136,29 @@ public class ComparisonManager : MonoBehaviour
         HighlightComparison();
         inComparison = true;
 
-        // Calculate floating distance based on object sizes
-        // NOTE: this could further be improved by calculating the maximum diaginonal distance
-        var coll1 = physicalObj.GetComponent<Collider>().bounds.size;
-        var coll2 = virtualObj.GetComponent<Collider>().bounds.size;
-
-        float coll1max = Mathf.Max(Mathf.Max(coll1.x, coll1.y), coll1.z);
-        float coll2max = Mathf.Max(Mathf.Max(coll2.x, coll2.z), coll2.z);
-
-        floatingDistance = (coll1max / 2) + (coll2max / 2) + staticFloatingDistance;
+        floatingDistance = CalculateFloatingDistance(physicalObj, virtualObj);
 
         // Fill information panel with content and show
         informationPanel.gameObject.SetActive(true);
         informationPanel.SetContents(virtualTwin, versionObj, floatingDistance);
 
         DisplayComparison();
+    }
+
+    private float CalculateFloatingDistance(GameObject obj1, GameObject obj2)
+    {
+        float dist = 0;
+        // Calculate floating distance based on object sizes
+        // NOTE: this could further be improved by calculating the maximum diaginonal distance
+        var coll1 = obj1.GetComponent<Collider>().bounds.size;
+        var coll2 = obj2.GetComponent<Collider>().bounds.size;
+
+        float coll1max = Mathf.Max(Mathf.Max(coll1.x, coll1.y), coll1.z);
+        float coll2max = Mathf.Max(Mathf.Max(coll2.x, coll2.z), coll2.z);
+
+        dist = (coll1max / 2) + (coll2max / 2) + staticFloatingDistance;
+
+        return dist;
     }
 
     /// <summary>
@@ -193,7 +205,7 @@ public class ComparisonManager : MonoBehaviour
     /// <summary>
     /// Resets the status of tracked and comparison object, also resets internal values.
     /// </summary>
-    public void ResetComparison()
+    public void StopComparison()
     {
         // Disable highlight on version object
         if (versionHistoryObj != null)
@@ -203,12 +215,12 @@ public class ComparisonManager : MonoBehaviour
             versionHistoryObj = null;
         }
 
-        inComparison = false;
-
         informationPanel.gameObject.SetActive(false);
 
         comparisonObj.Deactivate();
         trackedObj.ResetMaterial();
+
+        inComparison = false;
     }
 
     /// <summary>
