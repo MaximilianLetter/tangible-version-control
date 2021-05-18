@@ -315,10 +315,7 @@ public class ComparisonObject : MonoBehaviour
     /// </summary>
     public void SwitchPivotPoint()
     {
-        pivotCenter = !pivotCenter;
-
-        // Set pivot point according to the new mode
-        if (pivotCenter) SetPivotPointCenter();
+        if (!pivotCenter) SetPivotPointCenter();
         else SetPivotPointBottom();
     }
 
@@ -327,6 +324,8 @@ public class ComparisonObject : MonoBehaviour
     /// </summary>
     private void SetPivotPointCenter()
     {
+        if (pivotCenter) return;
+
         transformInUse = transform.parent;
         transform.localRotation = Quaternion.identity;
 
