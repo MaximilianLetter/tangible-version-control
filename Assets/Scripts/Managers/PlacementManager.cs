@@ -13,7 +13,7 @@ public class PlacementManager : MonoBehaviour
     [SerializeField]
     private GameObject versionHistoryContainer;
     [SerializeField]
-    private GameObject comparisonPanel;
+    private GameObject menuPanel;
     [SerializeField]
     private GameObject startUpPanel;
     [SerializeField]
@@ -70,7 +70,7 @@ public class PlacementManager : MonoBehaviour
     public void PlacementStarts()
     {
         // Activate necessary objects and scripts
-        comparisonPanel.SetActive(false);
+        menuPanel.SetActive(false);
         versionHistoryContainer.SetActive(true);
         tapToPlace.enabled = true;
         tapToPlace.StartPlacement();
@@ -97,9 +97,9 @@ public class PlacementManager : MonoBehaviour
 #endif
 
         // Place the comparison panel according to version history positioning
-        comparisonPanel.transform.rotation = versionHistoryContainer.transform.rotation;
-        comparisonPanel.transform.position = versionHistoryContainer.transform.position + (versionHistoryContainer.transform.rotation * comparisonPanelPositionOffset);
-        comparisonPanel.SetActive(true);
+        //comparisonPanel.transform.rotation = versionHistoryContainer.transform.rotation;
+        //comparisonPanel.transform.position = versionHistoryContainer.transform.position + (versionHistoryContainer.transform.rotation * comparisonPanelPositionOffset);
+        menuPanel.SetActive(true);
 
         inPlacement = false;
 
