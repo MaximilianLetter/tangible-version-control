@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 [RequireComponent(typeof(ObjectParts))]
 public class VersionObject : MonoBehaviour
@@ -11,10 +12,19 @@ public class VersionObject : MonoBehaviour
     public string createdAt;
     public string createdBy;
 
+    [Space(14)]
+    public Transform textBlock;
+
     private ObjectParts parts;
+    private TMP_Text textTitle;
+    private TMP_Text textDesc;
 
     IEnumerator Start()
     {
+        textTitle = textBlock.GetChild(0).GetComponent<TMP_Text>();
+        textDesc = textBlock.GetChild(1).GetComponent<TMP_Text>();
+        SetTextInformation();
+
         parts = GetComponent<ObjectParts>();
 
         while (true)
@@ -24,7 +34,14 @@ public class VersionObject : MonoBehaviour
             yield return null;
         }
 
-        if (!virtualTwin) parts.ToggleOutlines(false);
+        if (!virtualTwin)
+        {
+            parts.ToggleOutlines(false);
+        }
+        else
+        {
+            ChangeTextColor(ComparisonManager.Instance.textHighlight);
+        }
     }
 
     /// <summary>
@@ -42,5 +59,24 @@ public class VersionObject : MonoBehaviour
     public void ResetMaterial()
     {
         parts.ResetMaterial();
+    }
+
+    /// <summary>
+    /// Set the text to the specified information.
+    /// </summary>
+    private void SetTextInformation()
+    {
+        textTitle.text = title;
+        textDesc.text = description + "\n\n" + createdAt + "\n" + createdBy;
+    }
+
+    /// <summary>
+    /// Change the color of the referenced text to the given color.
+    /// </summary>
+    /// <param name="col">The color the text should be in, either default or highlight color.</param>
+    public void ChangeTextColor(Color32 col)
+    {
+        textTitle.color = col;
+        textDesc.color = col;
     }
 }

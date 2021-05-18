@@ -39,6 +39,9 @@ public class ComparisonManager : MonoBehaviour
     public Material greenHighlight;
     public Material redHighlight;
 
+    public Color32 textHighlight;
+    public Color32 textDefault;
+
     // Required object references
     private InformationPanel informationPanel;
     private TrackedObject trackedObj;
@@ -133,7 +136,7 @@ public class ComparisonManager : MonoBehaviour
 
         // NOTE: Order matters, first clone the object, then activate the comparison
         comparisonObj.Activate(virtualObj);
-        HighlightComparison();
+        HighlightInHistory();
         inComparison = true;
 
         floatingDistance = CalculateFloatingDistance(physicalObj, virtualObj);
@@ -211,6 +214,7 @@ public class ComparisonManager : MonoBehaviour
         if (versionHistoryObj != null)
         {
             versionHistoryObj.GetComponentInParent<ObjectParts>().ToggleOutlines(false);
+            versionHistoryObj.GetComponentInParent<VersionObject>().ChangeTextColor(textDefault);
             comparisonLine.enabled = false;
             versionHistoryObj = null;
         }
@@ -226,10 +230,11 @@ public class ComparisonManager : MonoBehaviour
     /// <summary>
     /// Activate outlines on the version object and draw a line between virtual twin and version object.
     /// </summary>
-    private void HighlightComparison()
+    private void HighlightInHistory()
     {
         // Highlight the versionObj as being compared against
         versionHistoryObj.GetComponentInParent<ObjectParts>().ToggleOutlines(true);
+        versionHistoryObj.GetComponentInParent<VersionObject>().ChangeTextColor(textHighlight);
 
         float height1 = virtualTwin.GetComponentInChildren<Collider>().bounds.size.y;
         float height2 = versionHistoryObj.GetComponentInChildren<Collider>().bounds.size.y;

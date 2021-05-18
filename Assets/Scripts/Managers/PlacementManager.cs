@@ -11,7 +11,7 @@ public class PlacementManager : MonoBehaviour
     [SerializeField]
     private GameObject floor;
     [SerializeField]
-    private GameObject versionHistoryObj;
+    private GameObject versionHistoryContainer;
     [SerializeField]
     private GameObject comparisonPanel;
     [SerializeField]
@@ -27,16 +27,9 @@ public class PlacementManager : MonoBehaviour
 
     private void Start()
     {
-        int objCount = versionHistoryObj.transform.childCount;
-        versionObjs = new VersionObject[objCount];
+        versionObjs = versionHistoryContainer.GetComponentsInChildren<VersionObject>();
 
-        // Fill list of sub objects
-        for (int i = 0; i < objCount; i++)
-        {
-            versionObjs[i] = versionHistoryObj.transform.GetChild(i).GetComponent<VersionObject>();
-        }
-
-        tapToPlace = versionHistoryObj.GetComponent<TapToPlace>();
+        tapToPlace = versionHistoryContainer.GetComponent<TapToPlace>();
 
         ready = true;
     }
@@ -78,7 +71,7 @@ public class PlacementManager : MonoBehaviour
     {
         // Activate necessary objects and scripts
         comparisonPanel.SetActive(false);
-        versionHistoryObj.SetActive(true);
+        versionHistoryContainer.SetActive(true);
         tapToPlace.enabled = true;
         tapToPlace.StartPlacement();
         ToggleMaterials(true);
@@ -104,8 +97,8 @@ public class PlacementManager : MonoBehaviour
 #endif
 
         // Place the comparison panel according to version history positioning
-        comparisonPanel.transform.rotation = versionHistoryObj.transform.rotation;
-        comparisonPanel.transform.position = versionHistoryObj.transform.position + (versionHistoryObj.transform.rotation * comparisonPanelPositionOffset);
+        comparisonPanel.transform.rotation = versionHistoryContainer.transform.rotation;
+        comparisonPanel.transform.position = versionHistoryContainer.transform.position + (versionHistoryContainer.transform.rotation * comparisonPanelPositionOffset);
         comparisonPanel.SetActive(true);
 
         inPlacement = false;
