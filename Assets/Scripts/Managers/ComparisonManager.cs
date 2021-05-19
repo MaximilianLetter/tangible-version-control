@@ -98,6 +98,11 @@ public class ComparisonManager : MonoBehaviour
         inComparison = false;
         mode = ComparisonMode.SideBySide;
 
+#if UNITY_EDITOR
+        // A bigger floating distance is required on HoloLens
+        staticFloatingDistance = 0.045f;
+#endif
+
         ready = true;
     }
 
