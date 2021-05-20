@@ -155,7 +155,7 @@ public class ComparisonManager : MonoBehaviour
 
     private float CalculateFloatingDistance(GameObject obj1, GameObject obj2)
     {
-        float dist = 0;
+        float dist;
         // Calculate floating distance based on object sizes
         // NOTE: this could further be improved by calculating the maximum diaginonal distance
         var coll1 = obj1.GetComponent<Collider>().bounds.size;
