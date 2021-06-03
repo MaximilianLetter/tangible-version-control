@@ -361,6 +361,7 @@ MonoBehaviour:
   invisibleMat: {fileID: 2100000, guid: 680ce2717dd7a0349b5547614be44abf, type: 2}
   greenMat: {fileID: 2100000, guid: 33deef097b6bbf4479d82f02a3c8104d, type: 2}
   redMat: {fileID: 2100000, guid: 5177574b74b122b40943eac68443681a, type: 2}
+  yellowMat: {fileID: 2100000, guid: f72d5eef9f54d7c4da523b87dc07fba9, type: 2}
   overlayMats:
   - {fileID: 0}
   - {fileID: 2100000, guid: 0794c975da3543148b499d1e05dc0007, type: 2}
@@ -368,6 +369,7 @@ MonoBehaviour:
   neutralHighlight: {fileID: 2100000, guid: 6de577e17cb773143afa8a10b3c9b91b, type: 2}
   greenHighlight: {fileID: 2100000, guid: 158d60e9bc63b6947986b99c7fc76a9e, type: 2}
   redHighlight: {fileID: 2100000, guid: 01b06d10394b1b84ca13166aa786e651, type: 2}
+  yellowHighlight: {fileID: 2100000, guid: 6ff2677de0cee434fb67e2abe12c386b, type: 2}
   textHighlight:
     serializedVersion: 2
     rgba: 4294930432

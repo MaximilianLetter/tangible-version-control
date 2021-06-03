@@ -31,6 +31,7 @@ public class ComparisonManager : MonoBehaviour
     public Material invisibleMat;
     public Material greenMat;
     public Material redMat;
+    public Material yellowMat;
     public Material[] overlayMats;
 
     //[Space(10)]
@@ -38,6 +39,7 @@ public class ComparisonManager : MonoBehaviour
     public Material neutralHighlight;
     public Material greenHighlight;
     public Material redHighlight;
+    public Material yellowHighlight;
 
     public Color32 textHighlight;
     public Color32 textDefault;

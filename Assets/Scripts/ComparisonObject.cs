@@ -9,11 +9,13 @@ struct Differences
 {
     public GameObject[] added;
     public GameObject[] removed;
+    public GameObject[] modified;
 
-    public Differences(GameObject[] added, GameObject[] removed)
+    public Differences(GameObject[] added, GameObject[] removed, GameObject[] modified)
     {
         this.added = added;
         this.removed = removed;
+        this.modified = modified;
     }
 }
 
@@ -137,6 +139,7 @@ public class ComparisonObject : MonoBehaviour
         {
             differencesMgmt.SetMaterial(ComparisonManager.Instance.greenMat, differences.added);
             differencesMgmt.SetMaterial(ComparisonManager.Instance.redMat, differences.removed);
+            differencesMgmt.SetMaterial(ComparisonManager.Instance.yellowMat, differences.modified);
         }
         else if (diffMode == DifferencesDisplayMode.OriginalColor)
         {
@@ -258,9 +261,26 @@ public class ComparisonObject : MonoBehaviour
             i++;
         }
 
+        i = 0;
+        GameObject[] diffPartsModified = new GameObject[differences.modified.Length];
+        foreach (var diff in differences.modified)
+        {
+            var newGO = Instantiate(diff, differencesMgmt.transform);
+            MeshOutline outL = newGO.GetComponent<MeshOutline>();
+            if (outL == null)
+            {
+                outL = newGO.AddComponent<MeshOutline>();
+                outL.OutlineWidth = 0.001f;
+            }
+            outL.OutlineMaterial = ComparisonManager.Instance.yellowHighlight;
+
+            diffPartsModified[i] = newGO;
+            i++;
+        }
+
         // Override the difference instance with the newly created objects
         // so they can be individually altered
-        differences = new Differences(diffPartsAdded, diffPartsRemoved);
+        differences = new Differences(diffPartsAdded, diffPartsRemoved, diffPartsModified);
 
         // Set the differences obj as phantom with outlines
         // NOTE: order matters! collect > outlines > material
@@ -305,6 +325,7 @@ public class ComparisonObject : MonoBehaviour
 
         List<GameObject> parts1 = new List<GameObject>(obj1Parts);
         List<GameObject> parts2 = new List<GameObject>(obj2Parts);
+        List<GameObject> modifiedParts = new List<GameObject>();
 
         // Compare each part with each in a double loop
         GameObject part1, part2;
@@ -324,10 +345,15 @@ public class ComparisonObject : MonoBehaviour
             {
                 part2 = parts2[j];
 
-                if (part1.name == part2.name &&
-                    part1.transform.position == part2.transform.position &&
+                if (part1.transform.position == part2.transform.position &&
                     part1.transform.localRotation == part2.transform.localRotation)
                 {
+                    // If the name does not fit, the parts were modified
+                    if (part1.name != part2.name)
+                    {
+                        modifiedParts.Add(part2);
+                    }
+
                     parts1.RemoveAt(i);
                     parts2.RemoveAt(j);
 
@@ -342,7 +368,7 @@ public class ComparisonObject : MonoBehaviour
         List<GameObject> addedParts = parts2;
         List<GameObject> removedParts = parts1;
 
-        Differences diffs = new Differences(addedParts.ToArray(), removedParts.ToArray());
+        Differences diffs = new Differences(addedParts.ToArray(), removedParts.ToArray(), modifiedParts.ToArray());
 
         return diffs;
     }
