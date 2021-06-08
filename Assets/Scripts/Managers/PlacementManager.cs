@@ -69,6 +69,12 @@ public class PlacementManager : MonoBehaviour
     /// </summary>
     public void PlacementStarts()
     {
+        // For replacing the timeline while a comparison is running
+        if (ComparisonManager.Instance.IsInComparison())
+        {
+            ComparisonManager.Instance.StopComparison();
+        }
+
         // Activate necessary objects and scripts
         menuPanel.SetActive(false);
         versionHistoryContainer.SetActive(true);
