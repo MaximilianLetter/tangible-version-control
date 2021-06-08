@@ -155,7 +155,7 @@ MonoBehaviour:
   versionHistoryContainer: {fileID: 2027823327}
   menuPanel: {fileID: 1365599894}
   startUpPanel: {fileID: 6075570422553964664}
-  placementMaterial: {fileID: 2100000, guid: 0794c975da3543148b499d1e05dc0007, type: 2}
+  placementMaterial: {fileID: 2100000, guid: 7ead2c1f628a56646bef4507222cb94a, type: 2}
 --- !u!4 &242140790
 Transform:
   m_ObjectHideFlags: 0
@@ -222,7 +222,7 @@ MonoBehaviour:
   yellowMat: {fileID: 2100000, guid: f72d5eef9f54d7c4da523b87dc07fba9, type: 2}
   overlayMats:
   - {fileID: 0}
-  - {fileID: 2100000, guid: 0794c975da3543148b499d1e05dc0007, type: 2}
+  - {fileID: 2100000, guid: 7ead2c1f628a56646bef4507222cb94a, type: 2}
   - {fileID: 2100000, guid: 8a2eb0a7f7ce218499260558df6c19d7, type: 2}
   neutralHighlight: {fileID: 2100000, guid: 6de577e17cb773143afa8a10b3c9b91b, type: 2}
   greenHighlight: {fileID: 2100000, guid: 158d60e9bc63b6947986b99c7fc76a9e, type: 2}
