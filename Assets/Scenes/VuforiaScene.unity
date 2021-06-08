@@ -627,6 +627,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: VersionHistory
       objectReference: {fileID: 0}
+    - target: {fileID: 8924536794528467295, guid: 998dd0517929b2044bdd8b07f9ea1a56,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 242140789}
+    - target: {fileID: 8924536794528467295, guid: 998dd0517929b2044bdd8b07f9ea1a56,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PlacementStarts
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924536795589236066, guid: 998dd0517929b2044bdd8b07f9ea1a56,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 313482408}
+    - target: {fileID: 8924536795589236066, guid: 998dd0517929b2044bdd8b07f9ea1a56,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: StopComparison
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 998dd0517929b2044bdd8b07f9ea1a56, type: 3}
 --- !u!1 &495971929 stripped
