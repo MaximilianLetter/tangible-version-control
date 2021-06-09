@@ -8,18 +8,26 @@ public class PlacementManager : MonoBehaviour
 {
     public Vector3 comparisonPanelPositionOffset;
 
+    // Objects
     [SerializeField]
     private GameObject floor;
     [SerializeField]
     private GameObject versionHistoryContainer;
     [SerializeField]
+    private Transform trackedContent;
+
+    // Panels
+    [SerializeField]
     private GameObject menuPanel;
     [SerializeField]
     private GameObject startUpPanel;
     [SerializeField]
+    private GameObject placementPanel;
+
+    // Material
+    [SerializeField]
     private Material placementMaterial;
 
-    private TapToPlace tapToPlace;
     private VersionObject[] versionObjs;
 
     private bool ready;
@@ -29,9 +37,15 @@ public class PlacementManager : MonoBehaviour
     {
         versionObjs = versionHistoryContainer.GetComponentsInChildren<VersionObject>();
 
-        tapToPlace = versionHistoryContainer.GetComponent<TapToPlace>();
-
         ready = true;
+    }
+
+    private void Update()
+    {
+        if (inPlacement)
+        {
+            versionHistoryContainer.transform.SetPositionAndRotation(trackedContent.position, trackedContent.rotation);
+        }
     }
 
     public void SetScene()
@@ -76,10 +90,10 @@ public class PlacementManager : MonoBehaviour
         }
 
         // Activate necessary objects and scripts
+        placementPanel.SetActive(true);
         menuPanel.SetActive(false);
         versionHistoryContainer.SetActive(true);
-        tapToPlace.enabled = true;
-        tapToPlace.StartPlacement();
+
         ToggleMaterials(true);
 
 #if UNITY_EDITOR
@@ -94,8 +108,6 @@ public class PlacementManager : MonoBehaviour
     /// </summary>
     public void PlacementFinished()
     {
-        // Stop the ability to move the version history
-        tapToPlace.enabled = false;
         ToggleMaterials(false);
 
 #if UNITY_EDITOR
@@ -106,6 +118,7 @@ public class PlacementManager : MonoBehaviour
         //comparisonPanel.transform.rotation = versionHistoryContainer.transform.rotation;
         //comparisonPanel.transform.position = versionHistoryContainer.transform.position + (versionHistoryContainer.transform.rotation * comparisonPanelPositionOffset);
         menuPanel.SetActive(true);
+        placementPanel.SetActive(false);
 
         inPlacement = false;
 
