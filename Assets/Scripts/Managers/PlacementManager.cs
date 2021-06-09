@@ -6,11 +6,7 @@ using Vuforia;
 
 public class PlacementManager : MonoBehaviour
 {
-    public Vector3 comparisonPanelPositionOffset;
-
-    // Objects
-    [SerializeField]
-    private GameObject floor;
+    // GameObjects to align during placement
     [SerializeField]
     private GameObject versionHistoryContainer;
     [SerializeField]
@@ -28,6 +24,7 @@ public class PlacementManager : MonoBehaviour
     [SerializeField]
     private Material placementMaterial;
 
+    // Individual versions in the timeline
     private VersionObject[] versionObjs;
 
     private bool ready;
@@ -36,27 +33,19 @@ public class PlacementManager : MonoBehaviour
     private void Start()
     {
         versionObjs = versionHistoryContainer.GetComponentsInChildren<VersionObject>();
+        
+        inPlacement = false;
 
         ready = true;
     }
 
     private void Update()
     {
+        // Only align timeline and physical artifact during placement
         if (inPlacement)
         {
             versionHistoryContainer.transform.SetPositionAndRotation(trackedContent.position, trackedContent.rotation);
         }
-    }
-
-    public void SetScene()
-    {
-        ToggleMaterials(false);
-        inPlacement = false;
-    }
-
-    public bool IsReady()
-    {
-        return ready;
     }
 
     /// <summary>
@@ -96,10 +85,6 @@ public class PlacementManager : MonoBehaviour
 
         ToggleMaterials(true);
 
-#if UNITY_EDITOR
-        floor.SetActive(true);
-#endif
-
         inPlacement = true;
     }
 
@@ -108,27 +93,20 @@ public class PlacementManager : MonoBehaviour
     /// </summary>
     public void PlacementFinished()
     {
-        ToggleMaterials(false);
-
-#if UNITY_EDITOR
-        floor.SetActive(false);
-#endif
-
-        // Place the comparison panel according to version history positioning
-        //comparisonPanel.transform.rotation = versionHistoryContainer.transform.rotation;
-        //comparisonPanel.transform.position = versionHistoryContainer.transform.position + (versionHistoryContainer.transform.rotation * comparisonPanelPositionOffset);
         menuPanel.SetActive(true);
         placementPanel.SetActive(false);
 
-        inPlacement = false;
+        ToggleMaterials(false);
 
-        // Start vuforia tracking
-        var vuforiaTracking = Camera.main.GetComponent<VuforiaBehaviour>();
-        if (vuforiaTracking != null) vuforiaTracking.enabled = true;
+        inPlacement = false;
     }
 
     public bool GetInPlacement()
     {
         return inPlacement;
+    }
+    public bool IsReady()
+    {
+        return ready;
     }
 }

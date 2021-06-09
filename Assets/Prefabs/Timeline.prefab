@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4626603232124461318}
   - component: {fileID: 4626603232124461319}
   m_Layer: 0
-  m_Name: VersionHistory
+  m_Name: Timeline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

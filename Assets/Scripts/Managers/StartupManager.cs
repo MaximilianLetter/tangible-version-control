@@ -82,7 +82,6 @@ public class StartupManager : MonoBehaviour
 #endif
 
         // Setup the scene
-        placementManager.SetScene();
         foreach (var obj in sceneObjects)
         {
             obj.SetActive(false);
