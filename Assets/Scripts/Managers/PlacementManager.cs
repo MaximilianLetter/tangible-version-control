@@ -48,6 +48,13 @@ public class PlacementManager : MonoBehaviour
         }
     }
 
+    public void ToggleVisibilityDuringPlacement(bool status)
+    {
+        if (!inPlacement) return;
+
+        versionHistoryContainer.SetActive(status);
+    }
+
     /// <summary>
     /// Toggle between transparent material during positioning and the default materials after the placement finished.
     /// </summary>
@@ -81,7 +88,14 @@ public class PlacementManager : MonoBehaviour
         // Activate necessary objects and scripts
         placementPanel.SetActive(true);
         menuPanel.SetActive(false);
-        versionHistoryContainer.SetActive(true);
+
+        // Hide timeline if the physical artifact is not visible
+        // TODO this is not the optimal way of getting the current tracking state
+        var trackingState = trackedContent.GetComponent<DefaultTrackableEventHandler>().StatusFilter;
+        if (trackingState == DefaultTrackableEventHandler.TrackingStatusFilter.Tracked)
+        {
+            versionHistoryContainer.SetActive(true); // it is enabled if the marker is found
+        }
 
         ToggleMaterials(true);
 
