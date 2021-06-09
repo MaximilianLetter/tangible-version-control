@@ -216,7 +216,6 @@ public class ComparisonObject : MonoBehaviour
     /// </summary>
     public void HighlightDifferences()
     {
-        Debug.Log("____ HIGHLIGHT DIFFERENCES _____");
         // Get references to the now relevant differences obj
         GameObject actualObj = trackedObjTransform.GetChild(0).gameObject;
         differences = DetectDifferences(actualObj, parts);

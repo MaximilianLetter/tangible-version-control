@@ -136,7 +136,7 @@ public class ComparisonManager : MonoBehaviour
             StopComparison();
         }
 
-        Debug.Log("A new comparison is initiated.");
+        Debug.Log("A new comparison is initiated. START COMPARISON");
 
         // Save reference to object for avoiding reinitializing the same comparison
         versionHistoryObj = virtualObj;
@@ -196,7 +196,6 @@ public class ComparisonManager : MonoBehaviour
             // NOTE: the phantom Mat occludes the overlayed mat, short term solution > invisible material
             //trackedObj.SetMaterial(phantomMat);
             trackedObj.SetMaterial(invisibleMat);
-            Debug.Log("Set overlay material");
             comparisonObj.SetOverlayMaterial();
         }
         else if (mode == ComparisonMode.Differences)
