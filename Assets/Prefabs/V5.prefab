@@ -1231,6 +1231,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5516007247957804166, guid: cd38c914dbcaa2d46854b34ac58296ad,
+        type: 3}
+      propertyPath: title
+      value: Version 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5516007247957804166, guid: cd38c914dbcaa2d46854b34ac58296ad,
+        type: 3}
+      propertyPath: createdAt
+      value: 05.03.2021
+      objectReference: {fileID: 0}
+    - target: {fileID: 5516007247957804166, guid: cd38c914dbcaa2d46854b34ac58296ad,
+        type: 3}
+      propertyPath: createdBy
+      value: Alex
+      objectReference: {fileID: 0}
+    - target: {fileID: 5516007247957804166, guid: cd38c914dbcaa2d46854b34ac58296ad,
+        type: 3}
+      propertyPath: description
+      value: Complex structure with more dense setup.
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cd38c914dbcaa2d46854b34ac58296ad, type: 3}
 --- !u!4 &5338616123711413709 stripped

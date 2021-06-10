@@ -351,6 +351,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5516007247957804166, guid: cd38c914dbcaa2d46854b34ac58296ad,
+        type: 3}
+      propertyPath: title
+      value: Version 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5516007247957804166, guid: cd38c914dbcaa2d46854b34ac58296ad,
+        type: 3}
+      propertyPath: createdAt
+      value: 02.02.2021
+      objectReference: {fileID: 0}
+    - target: {fileID: 5516007247957804166, guid: cd38c914dbcaa2d46854b34ac58296ad,
+        type: 3}
+      propertyPath: createdBy
+      value: Max
+      objectReference: {fileID: 0}
+    - target: {fileID: 5516007247957804166, guid: cd38c914dbcaa2d46854b34ac58296ad,
+        type: 3}
+      propertyPath: description
+      value: Add surrounding red bricks.
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cd38c914dbcaa2d46854b34ac58296ad, type: 3}
 --- !u!4 &1858115561329405829 stripped
