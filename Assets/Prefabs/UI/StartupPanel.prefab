@@ -1130,8 +1130,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -0.09}
-  m_SizeDelta: {x: 1107.8, y: 230}
+  m_AnchoredPosition: {x: 0, y: -0.1083}
+  m_SizeDelta: {x: 1107.8, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3857494996468610884
 CanvasRenderer:
@@ -1173,8 +1173,20 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Airtap on a surface to spawn a view of the version history. Move the physical
-    model near a version to compare the two.
+  m_Text: 'Move the physical artifact to a place where a virtual timeline of versions
+    should be placed. Activate the "Place Timeline" button to fix its position.
+
+
+    Move
+    the physical artifact physically to explore alternative versions.
+
+
+    The "Comparison
+    mode" button can be used to switch between the comparison modes SideBySide, Overlay,
+    and Differences.
+
+
+'
 --- !u!1 &3934193084778556702
 GameObject:
   m_ObjectHideFlags: 0
@@ -1203,7 +1215,7 @@ Transform:
   m_GameObject: {fileID: 3934193084778556702}
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: -0.004582405}
-  m_LocalScale: {x: 0.013220016, y: 0.35819, z: 0.61351055}
+  m_LocalScale: {x: 0.013220016, y: 0.42, z: 0.61351055}
   m_Children: []
   m_Father: {fileID: 3931292186744188710}
   m_RootOrder: 1
@@ -1345,9 +1357,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'HoloLens
+  m_Text: 'HoloLens v1
 
-    Immersive headset'
+    HoloLens v2'
 --- !u!1 &3934222628013525032
 GameObject:
   m_ObjectHideFlags: 0
@@ -1755,7 +1767,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.0001, y: 0}
+  m_AnchoredPosition: {x: -0.0001, y: 0.0233}
   m_SizeDelta: {x: 1107.8, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3857799798152401764
@@ -1869,7 +1881,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -0.32}
+  m_AnchoredPosition: {x: 0, y: -0.29}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &8369165370645653408
