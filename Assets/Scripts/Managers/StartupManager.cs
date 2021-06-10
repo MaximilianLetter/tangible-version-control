@@ -39,6 +39,26 @@ public class StartupManager : MonoBehaviour
             yield return null;
         }
 
+        // Wait for all parts to be initialized
+        VersionObject[] vos = FindObjectsOfType<VersionObject>();
+
+        allReady = false;
+        while (true)
+        {
+            allReady = true;
+            foreach (var vo in vos)
+            {
+                if (!vo.IsReady())
+                {
+                    allReady = false;
+                }
+            }
+
+            if (allReady) break;
+
+            yield return null;
+        }
+
         // Get necessary references
         placementManager = FindObjectOfType<PlacementManager>();
         trackingManager = FindObjectOfType<TrackingManager>();

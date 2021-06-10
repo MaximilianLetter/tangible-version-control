@@ -19,6 +19,8 @@ public class VersionObject : MonoBehaviour
     private TMP_Text textTitle;
     private TMP_Text textDesc;
 
+    private bool ready = false;
+
     IEnumerator Start()
     {
         textTitle = textBlock.GetChild(0).GetComponent<TMP_Text>();
@@ -42,6 +44,8 @@ public class VersionObject : MonoBehaviour
         {
             ChangeTextColor(ComparisonManager.Instance.textHighlight);
         }
+
+        ready = true;
     }
 
     /// <summary>
@@ -78,5 +82,10 @@ public class VersionObject : MonoBehaviour
     {
         textTitle.color = col;
         textDesc.color = col;
+    }
+
+    public bool IsReady()
+    {
+        return ready;
     }
 }

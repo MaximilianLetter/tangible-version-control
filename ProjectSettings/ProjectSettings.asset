@@ -624,7 +624,7 @@ PlayerSettings:
   metroCertificateSubject: ML
   metroCertificateIssuer: ML
   metroCertificateNotAfter: 006dd3901c4cd801
-  metroApplicationDescription: Template_3D
+  metroApplicationDescription: Tangible Version Control on HoloLens1
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0
