@@ -89,12 +89,15 @@ public class PlacementManager : MonoBehaviour
         placementPanel.SetActive(true);
         menuPanel.SetActive(false);
 
-        // Hide timeline if the physical artifact is not visible
-        // TODO this is not the optimal way of getting the current tracking state
-        var trackingState = trackedContent.GetComponent<DefaultTrackableEventHandler>().StatusFilter;
-        if (trackingState == DefaultTrackableEventHandler.TrackingStatusFilter.Tracked)
+        if (ComparisonManager.Instance.usePhysical)
         {
-            versionHistoryContainer.SetActive(true); // it is enabled if the marker is found
+            // Hide timeline if the physical artifact is not visible
+            // TODO this is not the optimal way of getting the current tracking state
+            var trackingState = trackedContent.GetComponent<DefaultTrackableEventHandler>().StatusFilter;
+            if (trackingState == DefaultTrackableEventHandler.TrackingStatusFilter.Tracked)
+            {
+                versionHistoryContainer.SetActive(true); // it is enabled if the marker is found
+            }
         }
 
         ToggleMaterials(true);
