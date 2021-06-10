@@ -69,7 +69,7 @@ public class ComparisonManager : MonoBehaviour
         // Get relevant gameobject logic
         actionPanel = GameObject.FindObjectOfType<ActionPanel>();
         trackedObj = GameObject.FindObjectOfType<TrackedObject>();
-        comparisonLine = GameObject.FindObjectOfType<LineRenderer>();
+        comparisonLine = GameObject.Find("ComparisonLine").GetComponent<LineRenderer>();
         
         // Find the virtual twin between the version objects
         var vObjs = GameObject.FindObjectsOfType<VersionObject>();

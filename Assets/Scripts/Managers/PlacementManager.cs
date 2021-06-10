@@ -26,6 +26,7 @@ public class PlacementManager : MonoBehaviour
 
     // Individual versions in the timeline
     private VersionObject[] versionObjs;
+    private GroundRay[] groundRays;
 
     private bool ready;
     private bool inPlacement;
@@ -33,7 +34,8 @@ public class PlacementManager : MonoBehaviour
     private void Start()
     {
         versionObjs = versionHistoryContainer.GetComponentsInChildren<VersionObject>();
-        
+        groundRays = versionHistoryContainer.GetComponentsInChildren<GroundRay>();
+
         inPlacement = false;
 
         ready = true;
@@ -59,17 +61,19 @@ public class PlacementManager : MonoBehaviour
     /// Toggle between transparent material during positioning and the default materials after the placement finished.
     /// </summary>
     /// <param name="status">True equals the placement material, false equals the normal display material.</param>
-    private void ToggleMaterials(bool status)
+    private void ToggleMaterialsAndRays(bool status)
     {
-        foreach (var obj in versionObjs)
+        for (int i = 0; i < versionObjs.Length; i++)
         {
             if (status)
             {
-                obj.SetMaterial(placementMaterial);
+                versionObjs[i].SetMaterial(placementMaterial);
+                groundRays[i].HideLine();
             }
             else
             {
-                obj.ResetMaterial();
+                versionObjs[i].ResetMaterial();
+                groundRays[i].DrawLine(versionObjs[i].transform.position);
             }
         }
     }
@@ -97,7 +101,7 @@ public class PlacementManager : MonoBehaviour
             versionHistoryContainer.SetActive(true); // it is enabled if the marker is found
         }
 
-        ToggleMaterials(true);
+        ToggleMaterialsAndRays(true);
 
         inPlacement = true;
     }
@@ -110,7 +114,7 @@ public class PlacementManager : MonoBehaviour
         menuPanel.SetActive(true);
         placementPanel.SetActive(false);
 
-        ToggleMaterials(false);
+        ToggleMaterialsAndRays(false);
 
         inPlacement = false;
     }

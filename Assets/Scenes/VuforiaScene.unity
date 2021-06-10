@@ -1095,6 +1095,34 @@ Transform:
   m_Father: {fileID: 643524461}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!21 &471559791
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 'LEGO_baseplate_128mmMaterial
+
+    21418'
+  m_Shader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: e626612ff33d452eabb2cc634e0df3de, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats: []
+    m_Colors:
+    - _Color: {r: 0.82089555, g: 0.82089555, b: 0.82089555, a: 1}
 --- !u!1001 &495971928
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1157,57 +1185,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4626603232124461318, guid: 998dd0517929b2044bdd8b07f9ea1a56,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4626603232124461318, guid: 998dd0517929b2044bdd8b07f9ea1a56,
-        type: 3}
-      propertyPath: onPlacingStarted.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 242140789}
-    - target: {fileID: 4626603232124461318, guid: 998dd0517929b2044bdd8b07f9ea1a56,
-        type: 3}
-      propertyPath: onPlacingStopped.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 242140789}
-    - target: {fileID: 4626603232124461318, guid: 998dd0517929b2044bdd8b07f9ea1a56,
-        type: 3}
-      propertyPath: onPlacingStarted.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: PlacementStarts
-      objectReference: {fileID: 0}
-    - target: {fileID: 4626603232124461318, guid: 998dd0517929b2044bdd8b07f9ea1a56,
-        type: 3}
-      propertyPath: onPlacingStopped.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: PlacementFinished
-      objectReference: {fileID: 0}
     - target: {fileID: 4626603232124461368, guid: 998dd0517929b2044bdd8b07f9ea1a56,
         type: 3}
       propertyPath: m_Name
       value: Timeline
       objectReference: {fileID: 0}
-    - target: {fileID: 8924536794528467295, guid: 998dd0517929b2044bdd8b07f9ea1a56,
-        type: 3}
-      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 242140789}
-    - target: {fileID: 8924536794528467295, guid: 998dd0517929b2044bdd8b07f9ea1a56,
-        type: 3}
-      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: PlacementStarts
-      objectReference: {fileID: 0}
-    - target: {fileID: 8924536795589236066, guid: 998dd0517929b2044bdd8b07f9ea1a56,
-        type: 3}
-      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 313482408}
-    - target: {fileID: 8924536795589236066, guid: 998dd0517929b2044bdd8b07f9ea1a56,
-        type: 3}
-      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: StopComparison
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4626603232124461318, guid: 998dd0517929b2044bdd8b07f9ea1a56, type: 3}
+    - {fileID: 4626603232124461319, guid: 998dd0517929b2044bdd8b07f9ea1a56, type: 3}
+    - {fileID: 4626603232124461317, guid: 998dd0517929b2044bdd8b07f9ea1a56, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 998dd0517929b2044bdd8b07f9ea1a56, type: 3}
 --- !u!1 &495971929 stripped
 GameObject:
@@ -1284,7 +1270,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2036034217}
+  - {fileID: 471559791}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1716,7 +1702,7 @@ PrefabInstance:
     - target: {fileID: 3931475628669796798, guid: 6ecb9eb000586c746b9334bd8cb30f84,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3931475628669796798, guid: 6ecb9eb000586c746b9334bd8cb30f84,
         type: 3}
@@ -2616,13 +2602,13 @@ LineRenderer:
   m_Positions: []
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.1
+    widthMultiplier: 0.0005
     widthCurve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.04794599
+        value: 1
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -3205,34 +3191,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!21 &2036034217
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 'LEGO_baseplate_128mmMaterial
-
-    40100'
-  m_Shader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: e626612ff33d452eabb2cc634e0df3de, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats: []
-    m_Colors:
-    - _Color: {r: 0.82089555, g: 0.82089555, b: 0.82089555, a: 1}
 --- !u!1 &2114247844
 GameObject:
   m_ObjectHideFlags: 0
@@ -3348,7 +3306,7 @@ PrefabInstance:
     - target: {fileID: 3931475628669796798, guid: 2abad73297eaf1c489714b703353c042,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3931475628669796798, guid: 2abad73297eaf1c489714b703353c042,
         type: 3}
