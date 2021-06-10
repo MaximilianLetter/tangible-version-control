@@ -6,20 +6,25 @@ using Vuforia;
 
 public class PlacementManager : MonoBehaviour
 {
-    public Vector3 comparisonPanelPositionOffset;
-
-    [SerializeField]
-    private GameObject floor;
+    // GameObjects to align during placement
     [SerializeField]
     private GameObject versionHistoryContainer;
+    [SerializeField]
+    private Transform trackedContent;
+
+    // Panels
     [SerializeField]
     private GameObject menuPanel;
     [SerializeField]
     private GameObject startUpPanel;
     [SerializeField]
+    private GameObject placementPanel;
+
+    // Material
+    [SerializeField]
     private Material placementMaterial;
 
-    private TapToPlace tapToPlace;
+    // Individual versions in the timeline
     private VersionObject[] versionObjs;
 
     private bool ready;
@@ -28,21 +33,26 @@ public class PlacementManager : MonoBehaviour
     private void Start()
     {
         versionObjs = versionHistoryContainer.GetComponentsInChildren<VersionObject>();
-
-        tapToPlace = versionHistoryContainer.GetComponent<TapToPlace>();
+        
+        inPlacement = false;
 
         ready = true;
     }
 
-    public void SetScene()
+    private void Update()
     {
-        ToggleMaterials(false);
-        inPlacement = false;
+        // Only align timeline and physical artifact during placement
+        if (inPlacement)
+        {
+            versionHistoryContainer.transform.SetPositionAndRotation(trackedContent.position, trackedContent.rotation);
+        }
     }
 
-    public bool IsReady()
+    public void ToggleVisibilityDuringPlacement(bool status)
     {
-        return ready;
+        if (!inPlacement) return;
+
+        versionHistoryContainer.SetActive(status);
     }
 
     /// <summary>
@@ -69,16 +79,25 @@ public class PlacementManager : MonoBehaviour
     /// </summary>
     public void PlacementStarts()
     {
-        // Activate necessary objects and scripts
-        menuPanel.SetActive(false);
-        versionHistoryContainer.SetActive(true);
-        tapToPlace.enabled = true;
-        tapToPlace.StartPlacement();
-        ToggleMaterials(true);
+        // For replacing the timeline while a comparison is running
+        if (ComparisonManager.Instance.IsInComparison())
+        {
+            ComparisonManager.Instance.StopComparison();
+        }
 
-#if UNITY_EDITOR
-        floor.SetActive(true);
-#endif
+        // Activate necessary objects and scripts
+        placementPanel.SetActive(true);
+        menuPanel.SetActive(false);
+
+        // Hide timeline if the physical artifact is not visible
+        // TODO this is not the optimal way of getting the current tracking state
+        var trackingState = trackedContent.GetComponent<DefaultTrackableEventHandler>().StatusFilter;
+        if (trackingState == DefaultTrackableEventHandler.TrackingStatusFilter.Tracked)
+        {
+            versionHistoryContainer.SetActive(true); // it is enabled if the marker is found
+        }
+
+        ToggleMaterials(true);
 
         inPlacement = true;
     }
@@ -88,28 +107,20 @@ public class PlacementManager : MonoBehaviour
     /// </summary>
     public void PlacementFinished()
     {
-        // Stop the ability to move the version history
-        tapToPlace.enabled = false;
+        menuPanel.SetActive(true);
+        placementPanel.SetActive(false);
+
         ToggleMaterials(false);
 
-#if UNITY_EDITOR
-        floor.SetActive(false);
-#endif
-
-        // Place the comparison panel according to version history positioning
-        //comparisonPanel.transform.rotation = versionHistoryContainer.transform.rotation;
-        //comparisonPanel.transform.position = versionHistoryContainer.transform.position + (versionHistoryContainer.transform.rotation * comparisonPanelPositionOffset);
-        menuPanel.SetActive(true);
-
         inPlacement = false;
-
-        // Start vuforia tracking
-        var vuforiaTracking = Camera.main.GetComponent<VuforiaBehaviour>();
-        if (vuforiaTracking != null) vuforiaTracking.enabled = true;
     }
 
     public bool GetInPlacement()
     {
         return inPlacement;
+    }
+    public bool IsReady()
+    {
+        return ready;
     }
 }

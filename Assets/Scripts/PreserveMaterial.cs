@@ -9,7 +9,6 @@ public class PreserveMaterial : MonoBehaviour
     void Awake()
     {
         baseMat = GetComponent<MeshRenderer>().material;
-        Debug.Log("preserved Material : " + baseMat);
     }
 
     public void CopyPreservedMat(Material mat)
