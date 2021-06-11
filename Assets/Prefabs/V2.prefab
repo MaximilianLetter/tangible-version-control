@@ -591,6 +591,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5516007247957804166, guid: cd38c914dbcaa2d46854b34ac58296ad,
+        type: 3}
+      propertyPath: title
+      value: Version 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5516007247957804166, guid: cd38c914dbcaa2d46854b34ac58296ad,
+        type: 3}
+      propertyPath: createdAt
+      value: 13.02.2021
+      objectReference: {fileID: 0}
+    - target: {fileID: 5516007247957804166, guid: cd38c914dbcaa2d46854b34ac58296ad,
+        type: 3}
+      propertyPath: createdBy
+      value: Anna
+      objectReference: {fileID: 0}
+    - target: {fileID: 5516007247957804166, guid: cd38c914dbcaa2d46854b34ac58296ad,
+        type: 3}
+      propertyPath: description
+      value: Add a second level of bricks.
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cd38c914dbcaa2d46854b34ac58296ad, type: 3}
 --- !u!4 &1751814583085275397 stripped

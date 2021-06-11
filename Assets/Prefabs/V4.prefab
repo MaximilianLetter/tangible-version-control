@@ -911,6 +911,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5516007247957804166, guid: cd38c914dbcaa2d46854b34ac58296ad,
+        type: 3}
+      propertyPath: title
+      value: Version 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5516007247957804166, guid: cd38c914dbcaa2d46854b34ac58296ad,
+        type: 3}
+      propertyPath: createdAt
+      value: 03.03.2021
+      objectReference: {fileID: 0}
+    - target: {fileID: 5516007247957804166, guid: cd38c914dbcaa2d46854b34ac58296ad,
+        type: 3}
+      propertyPath: createdBy
+      value: Katrin
+      objectReference: {fileID: 0}
+    - target: {fileID: 5516007247957804166, guid: cd38c914dbcaa2d46854b34ac58296ad,
+        type: 3}
+      propertyPath: description
+      value: Revert complex structures to alternative build.
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cd38c914dbcaa2d46854b34ac58296ad, type: 3}
 --- !u!4 &3597874880886642793 stripped
