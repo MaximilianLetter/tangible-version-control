@@ -344,7 +344,7 @@ public class ComparisonObject : MonoBehaviour
             {
                 part2 = parts2[j];
 
-                if (part1.transform.position == part2.transform.position &&
+                if (part1.transform.localPosition == part2.transform.localPosition &&
                     part1.transform.localRotation == part2.transform.localRotation)
                 {
                     // If the name does not fit, the parts were modified
