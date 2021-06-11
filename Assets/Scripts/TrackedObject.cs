@@ -5,6 +5,7 @@ using UnityEngine;
 public class TrackedObject : MonoBehaviour
 {
     private ObjectParts parts;
+    private bool ready;
 
     IEnumerator Start()
     {
@@ -25,6 +26,8 @@ public class TrackedObject : MonoBehaviour
             SetMaterial(ComparisonManager.Instance.phantomMat);
             parts.CollectRenderersAndMaterials();
         }
+
+        ready = true;
     }
 
     /// <summary>
@@ -42,5 +45,10 @@ public class TrackedObject : MonoBehaviour
     public void ResetMaterial()
     {
         parts.ResetMaterial();
+    }
+
+    public bool IsReady()
+    {
+        return ready;
     }
 }

@@ -13,6 +13,7 @@ public class StartupManager : MonoBehaviour
     private PlacementManager placementManager;
     private ActionPanel actionPanel;
     private ComparisonObject comparisonObject;
+    private TrackedObject trackedObject;
 
     IEnumerator Start()
     {
@@ -64,6 +65,7 @@ public class StartupManager : MonoBehaviour
         trackingManager = FindObjectOfType<TrackingManager>();
         actionPanel = FindObjectOfType<ActionPanel>();
         comparisonObject = FindObjectOfType<ComparisonObject>();
+        trackedObject = FindObjectOfType<TrackedObject>();
 
         // Wait for other objects getting ready
         while (true)
@@ -72,7 +74,8 @@ public class StartupManager : MonoBehaviour
                 (!trackingManager || trackingManager.IsReady()) && // To use in non-tracking scenes
                 actionPanel.IsReady() &&
                 ComparisonManager.Instance.IsReady() &&
-                comparisonObject.IsReady()
+                comparisonObject.IsReady() &&
+                trackedObject.IsReady()
                 )
             {
                 break;
