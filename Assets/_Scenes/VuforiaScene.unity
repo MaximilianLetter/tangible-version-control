@@ -359,6 +359,7 @@ MonoBehaviour:
   staticFloatingDistance: 0.1
   phantomMat: {fileID: 2100000, guid: 61238261a8dc1134db68eb7094ee170a, type: 2}
   invisibleMat: {fileID: 2100000, guid: 680ce2717dd7a0349b5547614be44abf, type: 2}
+  edgesMat: {fileID: 2100000, guid: 7ead2c1f628a56646bef4507222cb94a, type: 2}
   greenMat: {fileID: 2100000, guid: 33deef097b6bbf4479d82f02a3c8104d, type: 2}
   redMat: {fileID: 2100000, guid: 5177574b74b122b40943eac68443681a, type: 2}
   yellowMat: {fileID: 2100000, guid: f72d5eef9f54d7c4da523b87dc07fba9, type: 2}
@@ -1144,7 +1145,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.1
+  near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
   orthographic: 0

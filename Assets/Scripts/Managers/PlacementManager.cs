@@ -26,6 +26,7 @@ public class PlacementManager : MonoBehaviour
 
     // Individual versions in the timeline
     private VersionObject[] versionObjs;
+    private VersionObject virtualTwin;
 
     private bool ready;
     private bool inPlacement;
@@ -33,6 +34,16 @@ public class PlacementManager : MonoBehaviour
     private void Start()
     {
         versionObjs = versionHistoryContainer.GetComponentsInChildren<VersionObject>();
+        
+        // Find the virtual twin in the timeline
+        foreach (var obj in versionObjs)
+        {
+            if (obj.virtualTwin)
+            {
+                virtualTwin = obj;
+                break;
+            }
+        }
         
         inPlacement = false;
 
@@ -114,6 +125,7 @@ public class PlacementManager : MonoBehaviour
         placementPanel.SetActive(false);
 
         ToggleMaterials(false);
+        virtualTwin.GetComponent<ObjectParts>().SetMaterial(placementMaterial);
 
         inPlacement = false;
     }
