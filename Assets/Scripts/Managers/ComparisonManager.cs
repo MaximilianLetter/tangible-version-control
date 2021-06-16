@@ -25,6 +25,8 @@ public class ComparisonManager : MonoBehaviour
     // Use tracking and physical objects
     public bool usePhysical;
     public float staticFloatingDistance;
+    public float pulseCadence;
+    public float pulseHold;
 
     [Header("Object Materials")]
     public Material phantomMat;

@@ -10,6 +10,10 @@ public class ObjectParts : MonoBehaviour
     private Material[] childMats;
     private MeshOutline[] outlines;
 
+    private bool pulseActive;
+    private float pulseCadence;
+    private float pulseHold;
+
     private bool ready;
 
     void Start()
@@ -130,5 +134,77 @@ public class ObjectParts : MonoBehaviour
         {
             line.enabled = state;
         }
+    }
+
+    /// <summary>
+    /// Starts the Coroutine of pulsing materials from transparent to solid.
+    /// </summary>
+    public void StartPulseParts()
+    {
+        CollectRenderersAndMaterials();
+
+        foreach (var mat in childMats)
+        {
+            MaterialExtensions.ToFadeMode(mat);
+        }
+
+        pulseActive = true;
+        pulseCadence = ComparisonManager.Instance.pulseCadence;
+        pulseHold = ComparisonManager.Instance.pulseHold;
+        StartCoroutine(PulseParts());
+    }
+
+    /// <summary>
+    /// Coroutine of pulsing materials from transparent to solid.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator PulseParts()
+    {
+        float passedTime = 0f;
+        bool pulseDirection = false;
+
+        while (pulseActive)
+        {
+            passedTime += Time.deltaTime;
+            if (passedTime >= pulseCadence)
+            {
+                passedTime = 0f;
+                pulseDirection = !pulseDirection;
+                yield return new WaitForSeconds(pulseHold);
+            }
+
+            float alpha = pulseDirection ? (1.0f - (passedTime / pulseCadence)) : (passedTime / pulseCadence);
+
+            foreach (var mat in childMats)
+            {
+                Color col = mat.color;
+                mat.color = new Color(col.r, col.g, col.b, alpha);
+            }
+
+            yield return null;
+        }
+
+        foreach (var mat in childMats)
+        {
+            Color col = mat.color;
+            mat.color = new Color(col.r, col.g, col.b, 1.0f);
+        }
+    }
+
+    /// <summary>
+    /// Stops the Coroutine of pulsing materials from transparent to solid.
+    /// </summary>
+    public void StopPulseParts()
+    {
+        // Quick escape when the function is called without an action necessary
+        if (!pulseActive) return;
+
+        foreach (var mat in childMats)
+        {
+            MaterialExtensions.ToOpaqueMode(mat);
+        }
+
+        StopCoroutine(PulseParts());
+        pulseActive = false;
     }
 }

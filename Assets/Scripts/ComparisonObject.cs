@@ -129,6 +129,7 @@ public class ComparisonObject : MonoBehaviour
 
     private void SetDifferenceMode(DifferencesDisplayMode mode)
     {
+        differencesMgmt.StopPulseParts();
         diffMode = mode;
 
         if (diffMode == DifferencesDisplayMode.OutlinesOnly)
@@ -144,6 +145,8 @@ public class ComparisonObject : MonoBehaviour
         else if (diffMode == DifferencesDisplayMode.OriginalColor)
         {
             differencesMgmt.ResetMaterial(true);
+
+            differencesMgmt.StartPulseParts();
         }
     }
 
