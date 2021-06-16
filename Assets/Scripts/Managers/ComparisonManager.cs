@@ -241,7 +241,7 @@ public class ComparisonManager : MonoBehaviour
     {
         // Highlight the versionObj as being compared against
         versionHistoryObj.GetComponentInParent<ObjectParts>().ToggleOutlines(true);
-        versionHistoryObj.GetComponentInParent<ObjectParts>().SetMaterial(edgesMat);
+        //versionHistoryObj.GetComponentInParent<ObjectParts>().SetMaterial(edgesMat);
         versionHistoryObj.GetComponentInParent<VersionObject>().ChangeTextColor(textHighlight);
 
         float height1 = virtualTwin.GetComponentInChildren<Collider>().bounds.size.y;
