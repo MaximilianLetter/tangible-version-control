@@ -27,12 +27,14 @@ public class PlacementManager : MonoBehaviour
     // Individual versions in the timeline
     private VersionObject[] versionObjs;
     private VersionObject virtualTwin;
+    private ConnectPhysicalObjectToTimeline connectionLine;
 
     private bool ready;
     private bool inPlacement;
 
     private void Start()
     {
+        connectionLine = FindObjectOfType<ConnectPhysicalObjectToTimeline>();
         versionObjs = versionHistoryContainer.GetComponentsInChildren<VersionObject>();
         
         // Find the virtual twin in the timeline
@@ -99,6 +101,7 @@ public class PlacementManager : MonoBehaviour
         // Activate necessary objects and scripts
         placementPanel.SetActive(true);
         menuPanel.SetActive(false);
+        connectionLine.enabled = false;
 
         if (ComparisonManager.Instance.usePhysical)
         {
@@ -123,6 +126,7 @@ public class PlacementManager : MonoBehaviour
     {
         menuPanel.SetActive(true);
         placementPanel.SetActive(false);
+        connectionLine.enabled = true;
 
         ToggleMaterials(false);
         virtualTwin.GetComponent<ObjectParts>().SetMaterial(placementMaterial);
