@@ -52,7 +52,7 @@ public class ComparisonObject : MonoBehaviour
     {
         // Get references to necessary gameobjects
         trackedObjTransform = GameObject.Find("TrackedContainer").transform;
-        differencesMgmt = trackedObjTransform.Find("DifferencesObject").GetComponent<ObjectParts>();
+        differencesMgmt =  GameObject.Find("DifferencesObject").GetComponent<ObjectParts>();
         partMgmt = GetComponent<ObjectParts>();
 
         // Side by side variables
