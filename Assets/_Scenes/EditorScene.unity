@@ -467,6 +467,12 @@ MonoBehaviour:
   textDefault:
     serializedVersion: 2
     rgba: 4294967295
+  red:
+    serializedVersion: 2
+    rgba: 658651
+  green:
+    serializedVersion: 2
+    rgba: 4638748
   mode: 0
 --- !u!1 &508819658
 GameObject:
@@ -1541,6 +1547,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1166894994}
     m_Modifications:
+    - target: {fileID: 509744128426379308, guid: 998dd0517929b2044bdd8b07f9ea1a56,
+        type: 3}
+      propertyPath: m_Name
+      value: 2x1_beige:test
+      objectReference: {fileID: 0}
     - target: {fileID: 1083114047031001758, guid: 998dd0517929b2044bdd8b07f9ea1a56,
         type: 3}
       propertyPath: m_Name
@@ -1625,6 +1636,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: 3x2_beige
+      objectReference: {fileID: 0}
+    - target: {fileID: 7251187856157434634, guid: 998dd0517929b2044bdd8b07f9ea1a56,
+        type: 3}
+      propertyPath: m_Name
+      value: 4x2_beige:test
       objectReference: {fileID: 0}
     - target: {fileID: 8924536794528467295, guid: 998dd0517929b2044bdd8b07f9ea1a56,
         type: 3}

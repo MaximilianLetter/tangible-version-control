@@ -140,7 +140,7 @@ public class ObjectParts : MonoBehaviour
     /// <summary>
     /// Starts the Coroutine of pulsing materials from transparent to solid.
     /// </summary>
-    public void StartPulseParts(GameObject[] specifiedParts = null)
+    public void StartPulseParts(GameObject[] specifiedParts = null, bool pulseOutlines = false)
     {
         CollectRenderersAndMaterials();
 
@@ -169,14 +169,14 @@ public class ObjectParts : MonoBehaviour
         }
         SetMaterial(ComparisonManager.Instance.phantomMat, pulseCloneObjs);
 
-        StartCoroutine(PulseParts(specifiedParts));
+        StartCoroutine(PulseParts(specifiedParts, pulseOutlines));
     }
 
     /// <summary>
     /// Coroutine of pulsing materials from transparent to solid.
     /// </summary>
     /// <returns></returns>
-    private IEnumerator PulseParts(GameObject[] specifiedParts)
+    private IEnumerator PulseParts(GameObject[] specifiedParts, bool pulseOutlines = false)
     {
         Material[] mats;
         if (specifiedParts == null)
@@ -189,6 +189,18 @@ public class ObjectParts : MonoBehaviour
             for (int i = 0; i < specifiedParts.Length; i++)
             {
                 mats[i] = specifiedParts[i].GetComponent<MeshRenderer>().material;
+            }
+        }
+
+        Material[] outlineMats = new Material[0];
+        Color32 col1 = ComparisonManager.Instance.red;
+        Color32 col2 = ComparisonManager.Instance.green;
+        if (pulseOutlines)
+        {
+            outlineMats = new Material[specifiedParts.Length];
+            for (int i = 0; i < specifiedParts.Length; i++)
+            {
+                outlineMats[i] = specifiedParts[i].GetComponent<MeshOutline>().OutlineMaterial;
             }
         }
 
@@ -206,6 +218,15 @@ public class ObjectParts : MonoBehaviour
             }
 
             float alpha = pulseDirection ? (1.0f - (passedTime / pulseCadence)) : (passedTime / pulseCadence);
+            if (pulseOutlines)
+            {
+                Color32 outlCol = Color32.Lerp(col1, col2, pulseDirection ? (1.0f - (passedTime / pulseCadence)) : (passedTime / pulseCadence));
+
+                foreach (var mat in outlineMats)
+                {
+                    mat.color = outlCol;
+                }
+            }
 
             foreach (var mat in mats)
             {

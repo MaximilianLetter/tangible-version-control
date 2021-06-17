@@ -1792,8 +1792,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4aaeefeae4bcb34c86af32c4a0051e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lowerDist: 0.25
-  upperDist: 0.5
+  lowerDist: 0.1
+  upperDist: 0.35
 --- !u!120 &1643862717
 LineRenderer:
   m_ObjectHideFlags: 0

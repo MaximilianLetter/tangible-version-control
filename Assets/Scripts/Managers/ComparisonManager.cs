@@ -46,6 +46,8 @@ public class ComparisonManager : MonoBehaviour
 
     public Color32 textHighlight;
     public Color32 textDefault;
+    public Color32 red;
+    public Color32 green;
 
     // Required object references
     private ActionPanel actionPanel;
