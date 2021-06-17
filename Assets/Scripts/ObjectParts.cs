@@ -13,6 +13,7 @@ public class ObjectParts : MonoBehaviour
     private bool pulseActive;
     private float pulseCadence;
     private float pulseHold;
+    private GameObject[] pulseCloneObjs;
 
     private bool ready;
 
@@ -139,7 +140,7 @@ public class ObjectParts : MonoBehaviour
     /// <summary>
     /// Starts the Coroutine of pulsing materials from transparent to solid.
     /// </summary>
-    public void StartPulseParts()
+    public void StartPulseParts(GameObject[] specifiedParts = null)
     {
         CollectRenderersAndMaterials();
 
@@ -151,15 +152,46 @@ public class ObjectParts : MonoBehaviour
         pulseActive = true;
         pulseCadence = ComparisonManager.Instance.pulseCadence;
         pulseHold = ComparisonManager.Instance.pulseHold;
-        StartCoroutine(PulseParts());
+
+        // Clone all pulsing parts as phantom behind, so that outlines only become visible
+        pulseCloneObjs = new GameObject[specifiedParts.Length];
+        for (int i = 0; i < pulseCloneObjs.Length; i++)
+        {
+            var cloneObj = Instantiate(specifiedParts[i], transform);
+            
+            cloneObj.GetComponent<MeshOutline>().enabled = false;
+            cloneObj.GetComponent<MeshSmoother>().enabled = false;
+
+            var rend = cloneObj.GetComponent<MeshRenderer>();
+            rend.materials = new Material[1] { rend.material };
+
+            pulseCloneObjs[i] = cloneObj;
+        }
+        SetMaterial(ComparisonManager.Instance.phantomMat, pulseCloneObjs);
+
+        StartCoroutine(PulseParts(specifiedParts));
     }
 
     /// <summary>
     /// Coroutine of pulsing materials from transparent to solid.
     /// </summary>
     /// <returns></returns>
-    private IEnumerator PulseParts()
+    private IEnumerator PulseParts(GameObject[] specifiedParts)
     {
+        Material[] mats;
+        if (specifiedParts == null)
+        {
+            mats = childMats;
+        }
+        else
+        {
+            mats = new Material[specifiedParts.Length];
+            for (int i = 0; i < specifiedParts.Length; i++)
+            {
+                mats[i] = specifiedParts[i].GetComponent<MeshRenderer>().material;
+            }
+        }
+
         float passedTime = 0f;
         bool pulseDirection = false;
 
@@ -175,7 +207,7 @@ public class ObjectParts : MonoBehaviour
 
             float alpha = pulseDirection ? (1.0f - (passedTime / pulseCadence)) : (passedTime / pulseCadence);
 
-            foreach (var mat in childMats)
+            foreach (var mat in mats)
             {
                 Color col = mat.color;
                 mat.color = new Color(col.r, col.g, col.b, alpha);
@@ -184,7 +216,7 @@ public class ObjectParts : MonoBehaviour
             yield return null;
         }
 
-        foreach (var mat in childMats)
+        foreach (var mat in mats)
         {
             Color col = mat.color;
             mat.color = new Color(col.r, col.g, col.b, 1.0f);
@@ -204,7 +236,13 @@ public class ObjectParts : MonoBehaviour
             MaterialExtensions.ToOpaqueMode(mat);
         }
 
-        StopCoroutine(PulseParts());
+        StopCoroutine(PulseParts(null));
+        foreach (var obj in pulseCloneObjs)
+        {
+            Destroy(obj);
+        }
+        pulseCloneObjs = new GameObject[0];
+
         pulseActive = false;
     }
 }

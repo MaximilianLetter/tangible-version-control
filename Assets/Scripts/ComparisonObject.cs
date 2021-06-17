@@ -145,8 +145,9 @@ public class ComparisonObject : MonoBehaviour
         else if (diffMode == DifferencesDisplayMode.OriginalColor)
         {
             differencesMgmt.ResetMaterial(true);
-
-            differencesMgmt.StartPulseParts();
+            differencesMgmt.StartPulseParts(differences.added);
+            differencesMgmt.SetMaterial(ComparisonManager.Instance.phantomMat, differences.removed);
+            differencesMgmt.SetMaterial(ComparisonManager.Instance.phantomMat, differences.modified);
         }
     }
 

@@ -445,8 +445,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usePhysical: 0
   staticFloatingDistance: 0.045
-  pulseCadence: 2
-  pulseHold: 1
+  pulseCadence: 1
+  pulseHold: 0.5
   phantomMat: {fileID: 2100000, guid: 61238261a8dc1134db68eb7094ee170a, type: 2}
   invisibleMat: {fileID: 2100000, guid: 680ce2717dd7a0349b5547614be44abf, type: 2}
   edgesMat: {fileID: 2100000, guid: 7ead2c1f628a56646bef4507222cb94a, type: 2}
@@ -478,7 +478,6 @@ GameObject:
   m_Component:
   - component: {fileID: 508819659}
   - component: {fileID: 508819660}
-  - component: {fileID: 508819661}
   m_Layer: 0
   m_Name: DifferencesObject
   m_TagString: Untagged
@@ -512,20 +511,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c213160ca74aca343b5e4dca45161b64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &508819661
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 508819658}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94f5a225c7404f14199c10f7d78bea49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineMaterial: {fileID: 2100000, guid: 6de577e17cb773143afa8a10b3c9b91b, type: 2}
-  outlineWidth: 0.001
 --- !u!1 &643524460
 GameObject:
   m_ObjectHideFlags: 0
@@ -1556,6 +1541,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1166894994}
     m_Modifications:
+    - target: {fileID: 1083114047031001758, guid: 998dd0517929b2044bdd8b07f9ea1a56,
+        type: 3}
+      propertyPath: m_Name
+      value: 2x1_black_mod:test
+      objectReference: {fileID: 0}
     - target: {fileID: 3446413761594978314, guid: 998dd0517929b2044bdd8b07f9ea1a56,
         type: 3}
       propertyPath: m_Name

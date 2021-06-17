@@ -357,8 +357,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usePhysical: 1
   staticFloatingDistance: 0.1
-  pulseCadence: 2
-  pulseHold: 1
+  pulseCadence: 1
+  pulseHold: 0.5
   phantomMat: {fileID: 2100000, guid: 61238261a8dc1134db68eb7094ee170a, type: 2}
   invisibleMat: {fileID: 2100000, guid: 680ce2717dd7a0349b5547614be44abf, type: 2}
   edgesMat: {fileID: 2100000, guid: 7ead2c1f628a56646bef4507222cb94a, type: 2}
