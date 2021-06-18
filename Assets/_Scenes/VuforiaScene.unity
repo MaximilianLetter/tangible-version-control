@@ -294,7 +294,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   versionHistoryContainer: {fileID: 495971929}
   trackedContent: {fileID: 643524461}
-  menuPanel: {fileID: 495971931}
   startUpPanel: {fileID: 6075570422553964664}
   placementPanel: {fileID: 353939866}
   placementMaterial: {fileID: 2100000, guid: 7ead2c1f628a56646bef4507222cb94a, type: 2}
@@ -549,12 +548,6 @@ GameObject:
 --- !u!4 &495971930 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4626603232124461316, guid: 998dd0517929b2044bdd8b07f9ea1a56,
-    type: 3}
-  m_PrefabInstance: {fileID: 495971928}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &495971931 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8924536794049954038, guid: 998dd0517929b2044bdd8b07f9ea1a56,
     type: 3}
   m_PrefabInstance: {fileID: 495971928}
   m_PrefabAsset: {fileID: 0}
@@ -1203,9 +1196,8 @@ MonoBehaviour:
   startupPanel: {fileID: 6075570422553964664}
   sceneObjects:
   - {fileID: 812168644}
-  - {fileID: 495971931}
-  - {fileID: 6075570422553964664}
   - {fileID: 495971929}
+  - {fileID: 6075570422553964664}
 --- !u!1001 &926822493
 PrefabInstance:
   m_ObjectHideFlags: 0

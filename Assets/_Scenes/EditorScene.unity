@@ -152,7 +152,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   versionHistoryContainer: {fileID: 2027823327}
   trackedContent: {fileID: 643524461}
-  menuPanel: {fileID: 1365599894}
   startUpPanel: {fileID: 6075570422553964664}
   placementPanel: {fileID: 1495318846}
   placementMaterial: {fileID: 2100000, guid: 7ead2c1f628a56646bef4507222cb94a, type: 2}
@@ -822,9 +821,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startupPanel: {fileID: 6075570422553964664}
   sceneObjects:
-  - {fileID: 1365599894}
-  - {fileID: 6075570422553964664}
   - {fileID: 1816418195}
+  - {fileID: 6075570422553964664}
   - {fileID: 1495318846}
 --- !u!1 &963194225
 GameObject:
@@ -1609,12 +1607,6 @@ Transform:
   m_Father: {fileID: 1166894994}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1365599894 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8924536794049954038, guid: 998dd0517929b2044bdd8b07f9ea1a56,
-    type: 3}
-  m_PrefabInstance: {fileID: 4626603230383423975}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1495318846 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2826586620091953602, guid: 30d5bb05d73449948b30b2c739a1e0c8,

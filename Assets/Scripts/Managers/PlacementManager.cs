@@ -14,8 +14,6 @@ public class PlacementManager : MonoBehaviour
 
     // Panels
     [SerializeField]
-    private GameObject menuPanel;
-    [SerializeField]
     private GameObject startUpPanel;
     [SerializeField]
     private GameObject placementPanel;
@@ -109,7 +107,6 @@ public class PlacementManager : MonoBehaviour
         replaceBtn.SetActive(false);
         placeBtn.SetActive(true);
 
-        menuPanel.SetActive(false);
         connectionLine.Reset();
 
         if (ComparisonManager.Instance.usePhysical)
@@ -133,7 +130,6 @@ public class PlacementManager : MonoBehaviour
     /// </summary>
     public void PlacementFinished()
     {
-        menuPanel.SetActive(true);
         placeBtn.SetActive(false);
         replaceBtn.SetActive(true);
         replaceBtn.GetComponent<TransitionToPosition>().StartTransition();
