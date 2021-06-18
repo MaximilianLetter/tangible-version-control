@@ -17,6 +17,8 @@ public class ActionPanel : MonoBehaviour
     public GameObject overlayOptions;
     public GameObject differencesOptions;
 
+    public Transform cancelBtnTransform;
+
     // Internal variables used for calculating the floating distance
     //public float floatingOffsetZ;
     //private float floatingOffset;
@@ -84,6 +86,27 @@ public class ActionPanel : MonoBehaviour
         else if (mode == ComparisonMode.Differences)
         {
             differencesOptions.SetActive(true);
+        }
+    }
+
+    public void MoveCancelButton(int index)
+    {
+        cancelBtnTransform.localRotation = Quaternion.identity;
+
+        switch (index)
+        {
+            case 0:
+                cancelBtnTransform.localPosition = new Vector3(-0.05f, 0.05f, 0f);
+                break;
+            case 1:
+                cancelBtnTransform.localPosition = new Vector3(-0.05f, 0f, 0f);
+                break;
+            case 2:
+                cancelBtnTransform.localPosition = new Vector3(-0.05f, -0.05f, 0f);
+                break;
+            default:
+                cancelBtnTransform.localPosition = new Vector3(-0.05f, 0.05f, 0f);
+                break;
         }
     }
 }
