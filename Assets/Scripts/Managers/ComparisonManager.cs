@@ -279,6 +279,22 @@ public class ComparisonManager : MonoBehaviour
             DisplayComparison();
         }
     }
+    
+    /// <summary>
+    /// Sets a specific ComparisonMode.
+    /// </summary>
+    /// <param name="inMode">The mode to activate</param>
+    public void SetComparisonMode(int inMode)
+    {
+        mode = (ComparisonMode)inMode;
+
+        Debug.Log("Comparison mode switched to: " + mode);
+
+        if (inComparison)
+        {
+            DisplayComparison();
+        }
+    }
 
     public bool IsInComparison()
     {
