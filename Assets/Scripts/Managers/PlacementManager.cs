@@ -19,6 +19,8 @@ public class PlacementManager : MonoBehaviour
     private GameObject startUpPanel;
     [SerializeField]
     private GameObject placementPanel;
+    private GameObject placeBtn;
+    private GameObject replaceBtn;
 
     // Material
     [SerializeField]
@@ -36,7 +38,10 @@ public class PlacementManager : MonoBehaviour
     {
         connectionLine = FindObjectOfType<ConnectPhysicalObjectToTimeline>();
         versionObjs = versionHistoryContainer.GetComponentsInChildren<VersionObject>();
-        
+
+        placeBtn = placementPanel.transform.GetChild(0).gameObject;
+        replaceBtn = placementPanel.transform.GetChild(1).gameObject;
+
         // Find the virtual twin in the timeline
         foreach (var obj in versionObjs)
         {
@@ -100,6 +105,10 @@ public class PlacementManager : MonoBehaviour
 
         // Activate necessary objects and scripts
         placementPanel.SetActive(true);
+        replaceBtn.GetComponent<TransitionToPosition>().ResetToStartPosition();
+        replaceBtn.SetActive(false);
+        placeBtn.SetActive(true);
+
         menuPanel.SetActive(false);
         connectionLine.enabled = false;
 
@@ -125,7 +134,10 @@ public class PlacementManager : MonoBehaviour
     public void PlacementFinished()
     {
         menuPanel.SetActive(true);
-        placementPanel.SetActive(false);
+        placeBtn.SetActive(false);
+        replaceBtn.SetActive(true);
+        replaceBtn.GetComponent<TransitionToPosition>().StartTransition();
+
         connectionLine.enabled = true;
 
         ToggleMaterials(false);
