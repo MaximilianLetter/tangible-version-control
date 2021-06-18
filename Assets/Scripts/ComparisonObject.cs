@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Utilities;
 
+
 public enum DifferencesDisplayMode { OutlinesOnly, HighlightColor, OriginalColor }
 
 struct Differences
@@ -146,7 +147,7 @@ public class ComparisonObject : MonoBehaviour
         {
             differencesMgmt.ResetMaterial(true);
             //differencesMgmt.StartPulseParts(differences.added);
-            differencesMgmt.StartPulseParts(differences.modified, true);
+            differencesMgmt.StartPulseParts(differences.added, differences.modified);
             differencesMgmt.SetMaterial(ComparisonManager.Instance.phantomMat, differences.removed);
         }
     }

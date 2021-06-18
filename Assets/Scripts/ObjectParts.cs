@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Utilities;
@@ -140,9 +141,11 @@ public class ObjectParts : MonoBehaviour
     /// <summary>
     /// Starts the Coroutine of pulsing materials from transparent to solid.
     /// </summary>
-    public void StartPulseParts(GameObject[] specifiedParts = null, bool pulseOutlines = false)
+    public void StartPulseParts(GameObject[] addedParts, GameObject[] modifiedParts)
     {
         CollectRenderersAndMaterials();
+
+        GameObject[] specifiedParts = addedParts.Concat(modifiedParts).ToArray();
 
         foreach (var mat in childMats)
         {
@@ -169,14 +172,15 @@ public class ObjectParts : MonoBehaviour
         }
         SetMaterial(ComparisonManager.Instance.phantomMat, pulseCloneObjs);
 
-        StartCoroutine(PulseParts(specifiedParts, pulseOutlines));
+        StartCoroutine(PulseParts(specifiedParts));
+        StartCoroutine(PulseOutlines(modifiedParts));
     }
 
     /// <summary>
     /// Coroutine of pulsing materials from transparent to solid.
     /// </summary>
     /// <returns></returns>
-    private IEnumerator PulseParts(GameObject[] specifiedParts, bool pulseOutlines = false)
+    private IEnumerator PulseParts(GameObject[] specifiedParts)
     {
         Material[] mats;
         if (specifiedParts == null)
@@ -189,18 +193,6 @@ public class ObjectParts : MonoBehaviour
             for (int i = 0; i < specifiedParts.Length; i++)
             {
                 mats[i] = specifiedParts[i].GetComponent<MeshRenderer>().material;
-            }
-        }
-
-        Material[] outlineMats = new Material[0];
-        Color32 col1 = ComparisonManager.Instance.red;
-        Color32 col2 = ComparisonManager.Instance.green;
-        if (pulseOutlines)
-        {
-            outlineMats = new Material[specifiedParts.Length];
-            for (int i = 0; i < specifiedParts.Length; i++)
-            {
-                outlineMats[i] = specifiedParts[i].GetComponent<MeshOutline>().OutlineMaterial;
             }
         }
 
@@ -218,15 +210,6 @@ public class ObjectParts : MonoBehaviour
             }
 
             float alpha = pulseDirection ? (1.0f - (passedTime / pulseCadence)) : (passedTime / pulseCadence);
-            if (pulseOutlines)
-            {
-                Color32 outlCol = Color32.Lerp(col1, col2, pulseDirection ? (1.0f - (passedTime / pulseCadence)) : (passedTime / pulseCadence));
-
-                foreach (var mat in outlineMats)
-                {
-                    mat.color = outlCol;
-                }
-            }
 
             foreach (var mat in mats)
             {
@@ -241,6 +224,42 @@ public class ObjectParts : MonoBehaviour
         {
             Color col = mat.color;
             mat.color = new Color(col.r, col.g, col.b, 1.0f);
+        }
+    }
+
+    IEnumerator PulseOutlines(GameObject[] specifiedParts)
+    {
+        Material[] outlineMats;
+        Color32 col1 = ComparisonManager.Instance.red;
+        Color32 col2 = ComparisonManager.Instance.green;
+
+        outlineMats = new Material[specifiedParts.Length];
+        for (int i = 0; i < specifiedParts.Length; i++)
+        {
+            outlineMats[i] = specifiedParts[i].GetComponent<MeshOutline>().OutlineMaterial;
+        }
+
+        float passedTime = 0f;
+        bool pulseDirection = false;
+
+        while (pulseActive)
+        {
+            passedTime += Time.deltaTime;
+            if (passedTime >= pulseCadence)
+            {
+                passedTime = 0f;
+                pulseDirection = !pulseDirection;
+                yield return new WaitForSeconds(pulseHold);
+            }
+
+            Color32 outlCol = Color32.Lerp(col1, col2, pulseDirection ? (1.0f - (passedTime / pulseCadence)) : (passedTime / pulseCadence));
+
+            foreach (var mat in outlineMats)
+            {
+                mat.color = outlCol;
+            }
+
+            yield return null;
         }
     }
 

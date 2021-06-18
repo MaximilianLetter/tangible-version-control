@@ -379,6 +379,12 @@ MonoBehaviour:
   textDefault:
     serializedVersion: 2
     rgba: 4294967295
+  red:
+    serializedVersion: 2
+    rgba: 658651
+  green:
+    serializedVersion: 2
+    rgba: 4638748
   mode: 0
 --- !u!1 &353939866 stripped
 GameObject:
@@ -489,6 +495,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Timeline
       objectReference: {fileID: 0}
+    - target: {fileID: 7540314077357681619, guid: 998dd0517929b2044bdd8b07f9ea1a56,
+        type: 3}
+      propertyPath: m_Name
+      value: 3x2_beige
+      objectReference: {fileID: 0}
+    - target: {fileID: 7799126490741192060, guid: 998dd0517929b2044bdd8b07f9ea1a56,
+        type: 3}
+      propertyPath: m_Name
+      value: 4x2_red
+      objectReference: {fileID: 0}
+    - target: {fileID: 8497550474668650972, guid: 998dd0517929b2044bdd8b07f9ea1a56,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f31898312e46fb84bb8a134012a78538, type: 2}
     - target: {fileID: 8924536794528467295, guid: 998dd0517929b2044bdd8b07f9ea1a56,
         type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -586,7 +607,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 1301102168}
+  - {fileID: 1369461389}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1386,7 +1407,7 @@ Transform:
   m_Father: {fileID: 1166894994}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!21 &1301102168
+--- !u!21 &1369461389
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
@@ -1395,7 +1416,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: 'LEGO_baseplate_128mmMaterial
 
-    21392'
+    117092'
   m_Shader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
