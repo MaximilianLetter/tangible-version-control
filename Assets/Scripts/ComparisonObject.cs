@@ -4,7 +4,7 @@ using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Utilities;
 
 
-public enum DifferencesDisplayMode { OutlinesOnly, HighlightColor, OriginalColor }
+public enum DifferencesDisplayMode { OutlinesOnly, HighlightColor, OriginalColor, AnimatedHighlights }
 
 struct Differences
 {
@@ -62,7 +62,7 @@ public class ComparisonObject : MonoBehaviour
         hoverSide = false;
 
         // Differences variables
-        diffMode = DifferencesDisplayMode.OutlinesOnly;
+        diffMode = DifferencesDisplayMode.AnimatedHighlights;
 
         ready = true;
     }
@@ -146,7 +146,10 @@ public class ComparisonObject : MonoBehaviour
         else if (diffMode == DifferencesDisplayMode.OriginalColor)
         {
             differencesMgmt.ResetMaterial(true);
-            //differencesMgmt.StartPulseParts(differences.added);
+        }
+        else if (diffMode == DifferencesDisplayMode.AnimatedHighlights)
+        {
+            differencesMgmt.ResetMaterial(true);
             differencesMgmt.StartPulseParts(differences.added, differences.modified);
             differencesMgmt.SetMaterial(ComparisonManager.Instance.phantomMat, differences.removed);
         }

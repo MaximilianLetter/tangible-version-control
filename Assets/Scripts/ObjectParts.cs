@@ -277,6 +277,8 @@ public class ObjectParts : MonoBehaviour
         }
 
         StopCoroutine(PulseParts(null));
+        StopCoroutine(PulseOutlines(null));
+
         foreach (var obj in pulseCloneObjs)
         {
             Destroy(obj);
