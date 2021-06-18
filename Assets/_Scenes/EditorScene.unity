@@ -323,8 +323,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4aaeefeae4bcb34c86af32c4a0051e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lowerDist: 0.25
-  upperDist: 0.5
+  lowerDist: 0.1
+  upperDist: 0.35
 --- !u!120 &294014048
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -1036,6 +1036,11 @@ PrefabInstance:
       propertyPath: iconQuadTexture
       value: 
       objectReference: {fileID: 2800000, guid: bb1b4a9241fba2042a81428e917afd5d, type: 3}
+    - target: {fileID: 3477645113099008398, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3477645114140230828, guid: 6ecb9eb000586c746b9334bd8cb30f84,
         type: 3}
       propertyPath: m_Mesh
@@ -1068,6 +1073,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3931475628669796798, guid: 6ecb9eb000586c746b9334bd8cb30f84,
         type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.07
+      objectReference: {fileID: 0}
+    - target: {fileID: 3931475628669796798, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
       propertyPath: m_LocalPosition.z
       value: 1
       objectReference: {fileID: 0}
@@ -1096,6 +1106,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4415602377048843401, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5469887143199004430, guid: 6ecb9eb000586c746b9334bd8cb30f84,
         type: 3}
       propertyPath: m_Mesh
@@ -1115,6 +1130,27 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Mesh
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5880243962106014936, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 5.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 5880243962106014936, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 5.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 5880243962106014936, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300002, guid: 20f25674b9512834f88938d45ed495d7,
+        type: 3}
+    - target: {fileID: 5880243962106014936, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5918447156176656423, guid: 6ecb9eb000586c746b9334bd8cb30f84,
         type: 3}
@@ -1201,6 +1237,22 @@ PrefabInstance:
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: CycleMaterials
       objectReference: {fileID: 0}
+    - target: {fileID: 6517174637977779995, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: iconStyle
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6517174637977779995, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: iconSprite
+      value: 
+      objectReference: {fileID: 21300002, guid: 20f25674b9512834f88938d45ed495d7,
+        type: 3}
+    - target: {fileID: 6517174637977779995, guid: 6ecb9eb000586c746b9334bd8cb30f84,
+        type: 3}
+      propertyPath: iconQuadTexture
+      value: 
+      objectReference: {fileID: 2800000, guid: bb1b4a9241fba2042a81428e917afd5d, type: 3}
     - target: {fileID: 6988090535308380588, guid: 6ecb9eb000586c746b9334bd8cb30f84,
         type: 3}
       propertyPath: VoiceCommand

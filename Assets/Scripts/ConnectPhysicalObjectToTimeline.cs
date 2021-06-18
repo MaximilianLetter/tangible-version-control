@@ -7,6 +7,7 @@ public class ConnectPhysicalObjectToTimeline : MonoBehaviour
     public float lowerDist;
     public float upperDist;
     private float distRange;
+    private float farUpperDist;
 
     // External references
     private Transform physObj;
@@ -38,14 +39,22 @@ public class ConnectPhysicalObjectToTimeline : MonoBehaviour
         }
 
         distRange = upperDist - lowerDist;
+        farUpperDist = upperDist + 0.1f;
     }
 
     void Update()
     {
         float dist = Vector3.Distance(physObj.position, virtTwin.position);
 
+        if (dist > farUpperDist)
+        {
+            return;
+        }
+
+        // Make sure the line is fully invisible when distance threshold is reached
         if (dist > upperDist)
         {
+            Reset();
             return;
         }
 
@@ -59,5 +68,13 @@ public class ConnectPhysicalObjectToTimeline : MonoBehaviour
              physObj.position,
              virtTwin.position
         });
+    }
+
+    /// <summary>
+    /// Resets the line positions to zero, zero which results in an invisible line.
+    /// </summary>
+    public void Reset()
+    {
+        lineRend.SetPositions(new Vector3[2] { Vector3.zero, Vector3.zero });
     }
 }
