@@ -20,7 +20,6 @@ struct Differences
     }
 }
 
-
 [RequireComponent(typeof(ObjectParts))]
 public class ComparisonObject : MonoBehaviour
 {
@@ -45,6 +44,7 @@ public class ComparisonObject : MonoBehaviour
     private Differences differences;
     private DifferencesDisplayMode diffMode;
 
+    // Internal values
     private Transform transformInUse;
     private bool pivotCenter;
     private bool ready;
@@ -78,10 +78,6 @@ public class ComparisonObject : MonoBehaviour
         // Get distance and direction relative to camera
         float distance = Vector3.Distance(camTransform.position, trackedPos);
         Vector3 direction = (trackedPos - camTransform.position).normalized;
-            
-        //Vector2 splitDirection = new Vector2(direction.x, direction.z).normalized;
-        //direction.x = splitDirection.x;
-        //direction.z = splitDirection.y;
 
         // Calculate angle based on triangulation
         float angleF = Mathf.Asin(floatingDistance / Vector3.Distance(camTransform.position, trackedPos));
@@ -121,13 +117,20 @@ public class ComparisonObject : MonoBehaviour
         sideBySide = true;
     }
 
+    /// <summary>
+    /// Cycles through the possible difference modes.
+    /// </summary>
     public void CycleDifferencesDisplay()
     {
-        diffMode = (DifferencesDisplayMode)(((int)diffMode + 1) % 3);
+        diffMode = (DifferencesDisplayMode)(((int)diffMode + 1) % 4);
 
         SetDifferenceMode(diffMode);
     }
 
+    /// <summary>
+    /// Set the specified mode for displaying the differences.
+    /// </summary>
+    /// <param name="mode">Which mode shall be displayed.</param>
     private void SetDifferenceMode(DifferencesDisplayMode mode)
     {
         differencesMgmt.StopPulseParts();
@@ -279,7 +282,7 @@ public class ComparisonObject : MonoBehaviour
                 outL = newGO.AddComponent<MeshOutline>();
                 outL.OutlineWidth = 0.001f;
             }
-            outL.OutlineMaterial = ComparisonManager.Instance.yellowHighlight;
+            outL.OutlineMaterial = ComparisonManager.Instance.transitionHighlight;
 
             diffPartsModified[i] = newGO;
             i++;
@@ -380,11 +383,6 @@ public class ComparisonObject : MonoBehaviour
         return diffs;
     }
 
-    public bool IsReady()
-    {
-        return ready;
-    }
-
     /// <summary>
     /// Flips the side the object floats from left to right and visa versa.
     /// </summary>
@@ -462,7 +460,6 @@ public class ComparisonObject : MonoBehaviour
         return bounds;
     }
 
-
     /// <summary>
     /// Set the pivot point to center by directly modifying its transform position.
     /// </summary>
@@ -495,5 +492,9 @@ public class ComparisonObject : MonoBehaviour
 
         if (materialIndex == 0) partMgmt.ResetMaterial();
         else partMgmt.SetMaterial(ComparisonManager.Instance.overlayMats[materialIndex]);
+    }
+    public bool IsReady()
+    {
+        return ready;
     }
 }

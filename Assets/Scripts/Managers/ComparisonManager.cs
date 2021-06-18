@@ -42,7 +42,7 @@ public class ComparisonManager : MonoBehaviour
     public Material neutralHighlight;
     public Material greenHighlight;
     public Material redHighlight;
-    public Material yellowHighlight;
+    public Material transitionHighlight;
 
     public Color32 textHighlight;
     public Color32 textDefault;

@@ -72,7 +72,6 @@ public class StartupManager : MonoBehaviour
         {
             if (placementManager.IsReady() &&
                 (!trackingManager || trackingManager.IsReady()) && // To use in non-tracking scenes
-                actionPanel.IsReady() &&
                 ComparisonManager.Instance.IsReady() &&
                 comparisonObject.IsReady() &&
                 trackedObject.IsReady()

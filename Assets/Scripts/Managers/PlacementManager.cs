@@ -8,16 +8,14 @@ public class PlacementManager : MonoBehaviour
 {
     // GameObjects to align during placement
     [SerializeField]
-    private GameObject versionHistoryContainer;
+    private GameObject timelineContainer;
     [SerializeField]
     private Transform trackedContent;
 
-    // Panels
+    // Placement buttons
     [SerializeField]
-    private GameObject startUpPanel;
-    [SerializeField]
-    private GameObject placementPanel;
     private GameObject placeBtn;
+    [SerializeField]
     private GameObject replaceBtn;
 
     // Material
@@ -35,10 +33,7 @@ public class PlacementManager : MonoBehaviour
     private void Start()
     {
         connectionLine = FindObjectOfType<ConnectPhysicalObjectToTimeline>();
-        versionObjs = versionHistoryContainer.GetComponentsInChildren<VersionObject>();
-
-        placeBtn = placementPanel.transform.GetChild(0).gameObject;
-        replaceBtn = placementPanel.transform.GetChild(1).gameObject;
+        versionObjs = timelineContainer.GetComponentsInChildren<VersionObject>();
 
         // Find the virtual twin in the timeline
         foreach (var obj in versionObjs)
@@ -60,15 +55,19 @@ public class PlacementManager : MonoBehaviour
         // Only align timeline and physical artifact during placement
         if (inPlacement)
         {
-            versionHistoryContainer.transform.SetPositionAndRotation(trackedContent.position, trackedContent.rotation);
+            timelineContainer.transform.SetPositionAndRotation(trackedContent.position, trackedContent.rotation);
         }
     }
 
+    /// <summary>
+    /// Hides the timeline if the physical object tracking is lost. Called by VuforiaTracking.
+    /// </summary>
+    /// <param name="status">True means showing, false means hiding the timeline.</param>
     public void ToggleVisibilityDuringPlacement(bool status)
     {
         if (!inPlacement) return;
 
-        versionHistoryContainer.SetActive(status);
+        timelineContainer.SetActive(status);
     }
 
     /// <summary>
@@ -93,33 +92,32 @@ public class PlacementManager : MonoBehaviour
     /// <summary>
     /// Starts the placement process.
     /// </summary>
-    public void PlacementStarts()
+    public void StartPlacement()
     {
-        // For replacing the timeline while a comparison is running
+        // For repositioning the timeline while a comparison is running
         if (ComparisonManager.Instance.IsInComparison())
         {
             ComparisonManager.Instance.StopComparison();
         }
 
-        // Activate necessary objects and scripts
-        placementPanel.SetActive(true);
+#if UNITY_EDITOR
+        // The visibily is here not triggered by the tracked object
+        if (!ComparisonManager.Instance.usePhysical)
+        {
+            timelineContainer.SetActive(true);
+        }
+#endif
+
+        // Setup placement buttons
         replaceBtn.GetComponent<TransitionToPosition>().ResetToStartPosition();
         replaceBtn.SetActive(false);
         placeBtn.SetActive(true);
 
+        // Reset the connection line to be invisible
         connectionLine.Reset();
+        connectionLine.enabled = false;
 
-        if (ComparisonManager.Instance.usePhysical)
-        {
-            // Hide timeline if the physical artifact is not visible
-            // TODO this is not the optimal way of getting the current tracking state
-            var trackingState = trackedContent.GetComponent<DefaultTrackableEventHandler>().StatusFilter;
-            if (trackingState == DefaultTrackableEventHandler.TrackingStatusFilter.Tracked)
-            {
-                versionHistoryContainer.SetActive(true); // it is enabled if the marker is found
-            }
-        }
-
+        // Display the timeline as in placement
         ToggleMaterials(true);
 
         inPlacement = true;
@@ -128,14 +126,16 @@ public class PlacementManager : MonoBehaviour
     /// <summary>
     /// Finishes the placement process.
     /// </summary>
-    public void PlacementFinished()
+    public void FinishPlacement()
     {
+        // Manage the placement buttons
         placeBtn.SetActive(false);
         replaceBtn.SetActive(true);
         replaceBtn.GetComponent<TransitionToPosition>().StartTransition();
 
         connectionLine.enabled = true;
 
+        // Display the timeline but the virtual twin as solid models
         ToggleMaterials(false);
         virtualTwin.GetComponent<ObjectParts>().SetMaterial(placementMaterial);
 
@@ -146,6 +146,7 @@ public class PlacementManager : MonoBehaviour
     {
         return inPlacement;
     }
+
     public bool IsReady()
     {
         return ready;

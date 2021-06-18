@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Utilities;
 
-[RequireComponent(typeof(ObjectParts))]
 public class ObjectParts : MonoBehaviour
 {
     private MeshRenderer[] childRenderers;
@@ -22,11 +21,6 @@ public class ObjectParts : MonoBehaviour
     {
         CollectRenderersAndMaterials();
         ready = true;
-    }
-
-    public bool IsReady()
-    {
-        return ready;
     }
 
     /// <summary>
@@ -56,6 +50,9 @@ public class ObjectParts : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Resets MeshRenderers, MeshOutlines, and stored materials.
+    /// </summary>
     public void ResetRenderersAndMaterials()
     {
         outlines = new MeshOutline[0];
@@ -118,6 +115,10 @@ public class ObjectParts : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sets the outlines of the managed parts to the given material.
+    /// </summary>
+    /// <param name="mat">The material to display the outlines with.</param>
     public void SetOutlineMaterial(Material mat)
     {
         foreach (var line in outlines)
@@ -227,6 +228,11 @@ public class ObjectParts : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Coroutine of transitioning an outline between red and green.
+    /// </summary>
+    /// <param name="specifiedParts"></param>
+    /// <returns></returns>
     IEnumerator PulseOutlines(GameObject[] specifiedParts)
     {
         Material[] outlineMats;
@@ -276,8 +282,7 @@ public class ObjectParts : MonoBehaviour
             MaterialExtensions.ToOpaqueMode(mat);
         }
 
-        StopCoroutine(PulseParts(null));
-        StopCoroutine(PulseOutlines(null));
+        StopAllCoroutines();
 
         foreach (var obj in pulseCloneObjs)
         {
@@ -286,5 +291,10 @@ public class ObjectParts : MonoBehaviour
         pulseCloneObjs = new GameObject[0];
 
         pulseActive = false;
+    }
+
+    public bool IsReady()
+    {
+        return ready;
     }
 }
