@@ -110,7 +110,7 @@ public class PlacementManager : MonoBehaviour
         placeBtn.SetActive(true);
 
         menuPanel.SetActive(false);
-        connectionLine.enabled = false;
+        connectionLine.Reset();
 
         if (ComparisonManager.Instance.usePhysical)
         {
