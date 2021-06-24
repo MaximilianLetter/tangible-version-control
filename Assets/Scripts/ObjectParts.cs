@@ -210,7 +210,7 @@ public class ObjectParts : MonoBehaviour
                 yield return new WaitForSeconds(pulseHold);
             }
 
-            float alpha = pulseDirection ? (1.0f - (passedTime / pulseCadence)) : (passedTime / pulseCadence);
+            float alpha = pulseDirection ? (1.0f - Mathf.SmoothStep(0, 1, (passedTime / pulseCadence))) : Easing.Quartic.Out(passedTime / pulseCadence);
 
             foreach (var mat in mats)
             {
