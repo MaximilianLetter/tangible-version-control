@@ -134,6 +134,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TextBlock
       objectReference: {fileID: 0}
+    - target: {fileID: 6086076147609444800, guid: c985a23af453b26448d7f80ce3ec7c06,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6086076147609444803, guid: c985a23af453b26448d7f80ce3ec7c06,
         type: 3}
       propertyPath: m_Pivot.x
@@ -258,6 +263,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TextBlock
+      objectReference: {fileID: 0}
+    - target: {fileID: 6086076147609444800, guid: c985a23af453b26448d7f80ce3ec7c06,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6086076147609444803, guid: c985a23af453b26448d7f80ce3ec7c06,
         type: 3}
@@ -384,6 +394,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TextBlock
       objectReference: {fileID: 0}
+    - target: {fileID: 6086076147609444800, guid: c985a23af453b26448d7f80ce3ec7c06,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6086076147609444803, guid: c985a23af453b26448d7f80ce3ec7c06,
         type: 3}
       propertyPath: m_Pivot.x
@@ -508,6 +523,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TextBlock
+      objectReference: {fileID: 0}
+    - target: {fileID: 6086076147609444800, guid: c985a23af453b26448d7f80ce3ec7c06,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6086076147609444803, guid: c985a23af453b26448d7f80ce3ec7c06,
         type: 3}
@@ -1044,6 +1064,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TextBlock
       objectReference: {fileID: 0}
+    - target: {fileID: 6086076147609444800, guid: c985a23af453b26448d7f80ce3ec7c06,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6086076147609444803, guid: c985a23af453b26448d7f80ce3ec7c06,
         type: 3}
       propertyPath: m_Pivot.x
@@ -1168,6 +1193,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TextBlock
+      objectReference: {fileID: 0}
+    - target: {fileID: 6086076147609444800, guid: c985a23af453b26448d7f80ce3ec7c06,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6086076147609444803, guid: c985a23af453b26448d7f80ce3ec7c06,
         type: 3}

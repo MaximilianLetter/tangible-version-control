@@ -118,6 +118,7 @@ public class PlacementManager : MonoBehaviour
         connectionLine.enabled = false;
 
         // Display the timeline as in placement
+        ToggleMaterials(false); // Workaround to fix first start bug with timeline caused by outlines
         ToggleMaterials(true);
 
         inPlacement = true;

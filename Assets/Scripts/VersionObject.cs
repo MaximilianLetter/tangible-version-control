@@ -36,11 +36,9 @@ public class VersionObject : MonoBehaviour
             yield return null;
         }
 
-        if (!virtualTwin)
-        {
-            parts.ToggleOutlines(false);
-        }
-        else
+        parts.ToggleOutlines(false);
+
+        if (virtualTwin)
         {
             ChangeTextColor(ComparisonManager.Instance.textHighlight);
         }
