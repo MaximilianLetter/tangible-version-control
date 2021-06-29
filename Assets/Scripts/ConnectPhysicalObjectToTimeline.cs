@@ -23,7 +23,7 @@ public class ConnectPhysicalObjectToTimeline : MonoBehaviour
         lineRend = GetComponent<LineRenderer>();
         lineMat = lineRend.material;
         lineCol = lineMat.color;
-        lineRend.positionCount = 2;
+        lineRend.positionCount = 4;
 
         physObj = FindObjectOfType<TrackedObject>().transform;
         
@@ -66,6 +66,8 @@ public class ConnectPhysicalObjectToTimeline : MonoBehaviour
         lineRend.SetPositions(new[]
         {
              physObj.position,
+             Vector3.Lerp(physObj.position, virtTwin.position, 0.15f),
+             Vector3.Lerp(physObj.position, virtTwin.position, 0.85f),
              virtTwin.position
         });
     }
@@ -75,6 +77,6 @@ public class ConnectPhysicalObjectToTimeline : MonoBehaviour
     /// </summary>
     public void Reset()
     {
-        lineRend.SetPositions(new Vector3[2] { Vector3.zero, Vector3.zero });
+        lineRend.SetPositions(new Vector3[4] { Vector3.zero, Vector3.zero, Vector3.zero, Vector3.zero });
     }
 }
