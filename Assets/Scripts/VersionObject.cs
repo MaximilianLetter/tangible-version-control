@@ -13,19 +13,19 @@ public class VersionObject : MonoBehaviour
     public string createdBy;
 
     [Space(14)]
-    public Transform textBlock;
+    //public Transform textBlock;
 
     private ObjectParts parts;
-    private TMP_Text textTitle;
-    private TMP_Text textDesc;
+    //private TMP_Text textTitle;
+    //private TMP_Text textDesc;
 
     private bool ready = false;
 
     IEnumerator Start()
     {
-        textTitle = textBlock.GetChild(0).GetComponent<TMP_Text>();
-        textDesc = textBlock.GetChild(1).GetComponent<TMP_Text>();
-        SetTextInformation();
+        //textTitle = textBlock.GetChild(0).GetComponent<TMP_Text>();
+        //textDesc = textBlock.GetChild(1).GetComponent<TMP_Text>();
+        //SetTextInformation();
 
         parts = GetComponent<ObjectParts>();
 
@@ -38,10 +38,10 @@ public class VersionObject : MonoBehaviour
 
         parts.ToggleOutlines(false);
 
-        if (virtualTwin)
-        {
-            ChangeTextColor(ComparisonManager.Instance.textHighlight);
-        }
+        //if (virtualTwin)
+        //{
+        //    ChangeTextColor(ComparisonManager.Instance.textHighlight);
+        //}
 
         ready = true;
     }

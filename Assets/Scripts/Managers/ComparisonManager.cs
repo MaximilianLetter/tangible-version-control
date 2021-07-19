@@ -225,7 +225,7 @@ public class ComparisonManager : MonoBehaviour
         if (versionHistoryObj != null)
         {
             versionHistoryObj.GetComponentInParent<ObjectParts>().ToggleOutlines(false);
-            versionHistoryObj.GetComponentInParent<VersionObject>().ChangeTextColor(textDefault);
+            //versionHistoryObj.GetComponentInParent<VersionObject>().ChangeTextColor(textDefault);
             comparisonLine.enabled = false;
             versionHistoryObj = null;
         }
@@ -246,7 +246,7 @@ public class ComparisonManager : MonoBehaviour
         // Highlight the versionObj as being compared against
         versionHistoryObj.GetComponentInParent<ObjectParts>().ToggleOutlines(true);
         //versionHistoryObj.GetComponentInParent<ObjectParts>().SetMaterial(edgesMat);
-        versionHistoryObj.GetComponentInParent<VersionObject>().ChangeTextColor(textHighlight);
+        //versionHistoryObj.GetComponentInParent<VersionObject>().ChangeTextColor(textHighlight);
 
         float height1 = virtualTwin.GetComponentInChildren<Collider>().bounds.size.y;
         float height2 = versionHistoryObj.GetComponentInChildren<Collider>().bounds.size.y;
