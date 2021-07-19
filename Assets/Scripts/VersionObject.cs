@@ -66,21 +66,21 @@ public class VersionObject : MonoBehaviour
     /// <summary>
     /// Set the text to the specified information.
     /// </summary>
-    private void SetTextInformation()
-    {
-        textTitle.text = title;
-        textDesc.text = description + "\n\n" + createdAt + "\n" + createdBy;
-    }
+    //private void SetTextInformation()
+    //{
+    //    textTitle.text = title;
+    //    textDesc.text = description + "\n\n" + createdAt + "\n" + createdBy;
+    //}
 
     /// <summary>
     /// Change the color of the referenced text to the given color.
     /// </summary>
     /// <param name="col">The color the text should be in, either default or highlight color.</param>
-    public void ChangeTextColor(Color32 col)
-    {
-        textTitle.color = col;
-        textDesc.color = col;
-    }
+    //public void ChangeTextColor(Color32 col)
+    //{
+    //    textTitle.color = col;
+    //    textDesc.color = col;
+    //}
 
     public bool IsReady()
     {
