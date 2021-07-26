@@ -113,6 +113,11 @@ public class ComparisonManager : MonoBehaviour
         ready = true;
     }
 
+    private void Update()
+    {
+        Debug.developerConsoleVisible = false;
+    }
+
     /// <summary>
     /// Starts a comparison between the tracked physical object and the collided object of the version history.
     /// </summary>
