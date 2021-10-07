@@ -20,6 +20,12 @@ public class ObjectParts : MonoBehaviour
     void Start()
     {
         CollectRenderersAndMaterials();
+
+        foreach (var part in childRenderers)
+        {
+            part.gameObject.AddComponent<PreserveMaterial>();
+        }
+
         ready = true;
     }
 
