@@ -296,6 +296,33 @@ public class ComparisonManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Iterate through objects in the timeline to find the virtual twin and set it as reference.
+    /// </summary>
+    public void FindAndSetVirtualTwin()
+    {
+        // Find virtual twin
+        var timelineObjs = FindObjectsOfType<VersionObject>();
+        foreach (var vo in timelineObjs)
+        {
+            if (vo.virtualTwin)
+            {
+                virtualTwin = vo;
+                break;
+            }
+        }
+    }
+
+    public VersionObject GetVirtualTwin()
+    {
+        return virtualTwin;
+    }
+    
+    public GameObject GetVersionHistoryObject()
+    {
+        return versionHistoryObj;
+    }
+
     public bool IsInComparison()
     {
         return inComparison;

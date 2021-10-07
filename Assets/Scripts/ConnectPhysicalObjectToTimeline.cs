@@ -26,17 +26,8 @@ public class ConnectPhysicalObjectToTimeline : MonoBehaviour
         lineRend.positionCount = 4;
 
         physObj = FindObjectOfType<TrackedObject>().transform;
-        
-        // Find virtual twin
-        var timelineObjs = FindObjectsOfType<VersionObject>();
-        foreach (var vo in timelineObjs)
-        {
-            if (vo.virtualTwin)
-            {
-                virtTwin = vo.transform;
-                break;
-            }
-        }
+
+        FindAndSetVirtualTwin();
 
         distRange = upperDist - lowerDist;
         farUpperDist = upperDist + 0.1f;
@@ -78,5 +69,22 @@ public class ConnectPhysicalObjectToTimeline : MonoBehaviour
     public void Reset()
     {
         lineRend.SetPositions(new Vector3[4] { Vector3.zero, Vector3.zero, Vector3.zero, Vector3.zero });
+    }
+
+    /// <summary>
+    /// Iterate through objects in the timeline to find the virtual twin and set it as reference.
+    /// </summary>
+    public void FindAndSetVirtualTwin()
+    {
+        // Find virtual twin
+        var timelineObjs = FindObjectsOfType<VersionObject>();
+        foreach (var vo in timelineObjs)
+        {
+            if (vo.virtualTwin)
+            {
+                virtTwin = vo.transform;
+                break;
+            }
+        }
     }
 }

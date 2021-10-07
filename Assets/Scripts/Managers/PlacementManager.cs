@@ -35,15 +35,7 @@ public class PlacementManager : MonoBehaviour
         connectionLine = FindObjectOfType<ConnectPhysicalObjectToTimeline>();
         versionObjs = timelineContainer.GetComponentsInChildren<VersionObject>();
 
-        // Find the virtual twin in the timeline
-        foreach (var obj in versionObjs)
-        {
-            if (obj.virtualTwin)
-            {
-                virtualTwin = obj;
-                break;
-            }
-        }
+        FindAndSetVirtualTwin();
         
         inPlacement = false;
 
@@ -141,6 +133,32 @@ public class PlacementManager : MonoBehaviour
         virtualTwin.GetComponent<ObjectParts>().SetMaterial(placementMaterial);
 
         inPlacement = false;
+    }
+
+    /// <summary>
+    /// Iterate through objects in the timeline to find the virtual twin and set it as reference.
+    /// </summary>
+    private void FindAndSetVirtualTwin()
+    {
+        foreach (var obj in versionObjs)
+        {
+            if (obj.virtualTwin)
+            {
+                virtualTwin = obj;
+                break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Update the timeline after changes has been done to it, for example another object has become the virtual twin.
+    /// </summary>
+    public void UpdateTimeline()
+    {
+        FindAndSetVirtualTwin();
+
+        ToggleMaterials(false);
+        virtualTwin.GetComponent<ObjectParts>().SetMaterial(placementMaterial); // DOES NOT WORK
     }
 
     public bool GetInPlacement()
