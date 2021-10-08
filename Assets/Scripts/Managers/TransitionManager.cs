@@ -10,7 +10,6 @@ public class TransitionManager : MonoBehaviour
 
     private bool inTransition;
     private ComparisonManager comparisonManager;
-    private ConnectPhysicalObjectToTimeline connectionLine;
     private TimelineManager timelineManager;
 
     private TrackedObject physObj;
@@ -19,7 +18,6 @@ public class TransitionManager : MonoBehaviour
     private void Start()
     {
         comparisonManager = FindObjectOfType<ComparisonManager>();
-        connectionLine = FindObjectOfType<ConnectPhysicalObjectToTimeline>();
         timelineManager = FindObjectOfType<TimelineManager>();
 
         physObj = FindObjectOfType<TrackedObject>();
@@ -107,10 +105,10 @@ public class TransitionManager : MonoBehaviour
 
         // Update elements to reflect the changes
         // NOTE: order matters
-        connectionLine.FindAndSetVirtualTwin();
+        AppManager.Instance.FindAndSetVirtualTwin(true);
         comparisonManager.StopComparison();
-        comparisonManager.FindAndSetVirtualTwin();
-        timelineManager.UpdateTimeline();
+        comparisonManager.FindAndSetVirtualTwin(); // todo remove
+        timelineManager.UpdateTimeline(); //TODO remove
 
         ResetTransitionUI();
         inTransition = false;

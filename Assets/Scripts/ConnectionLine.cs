@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ConnectPhysicalObjectToTimeline : MonoBehaviour
+public class ConnectionLine : MonoBehaviour
 {
     public float lowerDist;
     public float upperDist;
@@ -11,7 +11,7 @@ public class ConnectPhysicalObjectToTimeline : MonoBehaviour
 
     // External references
     private Transform physObj;
-    private Transform virtTwin;
+    private Transform virtualTwin;
 
     // Internal references
     private LineRenderer lineRend;
@@ -27,7 +27,7 @@ public class ConnectPhysicalObjectToTimeline : MonoBehaviour
 
         physObj = FindObjectOfType<TrackedObject>().transform;
 
-        FindAndSetVirtualTwin();
+        SetVirtualTwinTransform(AppManager.Instance.GetVirtualTwin());
 
         distRange = upperDist - lowerDist;
         farUpperDist = upperDist + 0.1f;
@@ -35,7 +35,7 @@ public class ConnectPhysicalObjectToTimeline : MonoBehaviour
 
     void Update()
     {
-        float dist = Vector3.Distance(physObj.position, virtTwin.position);
+        float dist = Vector3.Distance(physObj.position, virtualTwin.position);
 
         if (dist > farUpperDist)
         {
@@ -57,9 +57,9 @@ public class ConnectPhysicalObjectToTimeline : MonoBehaviour
         lineRend.SetPositions(new[]
         {
              physObj.position,
-             Vector3.Lerp(physObj.position, virtTwin.position, 0.15f),
-             Vector3.Lerp(physObj.position, virtTwin.position, 0.85f),
-             virtTwin.position
+             Vector3.Lerp(physObj.position, virtualTwin.position, 0.15f),
+             Vector3.Lerp(physObj.position, virtualTwin.position, 0.85f),
+             virtualTwin.position
         });
     }
 
@@ -74,17 +74,8 @@ public class ConnectPhysicalObjectToTimeline : MonoBehaviour
     /// <summary>
     /// Iterate through objects in the timeline to find the virtual twin and set it as reference.
     /// </summary>
-    public void FindAndSetVirtualTwin()
+    public void SetVirtualTwinTransform(VersionObject vo)
     {
-        // Find virtual twin
-        var timelineObjs = FindObjectsOfType<VersionObject>();
-        foreach (var vo in timelineObjs)
-        {
-            if (vo.virtualTwin)
-            {
-                virtTwin = vo.transform;
-                break;
-            }
-        }
+        virtualTwin = vo.transform;
     }
 }

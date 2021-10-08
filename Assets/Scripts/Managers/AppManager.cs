@@ -132,7 +132,7 @@ public class AppManager : MonoBehaviour
     /// <summary>
     /// Iterate through objects in the timeline to find the virtual twin and set it as reference.
     /// </summary>
-    public VersionObject FindAndSetVirtualTwin()
+    public VersionObject FindAndSetVirtualTwin(bool setEverywhere = false)
     {
         // Find virtual twin
         VersionObject[] timelineObjs = timelineObject.transform.GetComponentsInChildren<VersionObject>();
@@ -141,6 +141,13 @@ public class AppManager : MonoBehaviour
             if (vo.virtualTwin)
             {
                 virtualTwin = vo;
+
+                if (setEverywhere)
+                {
+                    lineManager.SetVirtualTwinReference(vo);
+                    timelineManager.UpdateTimeline();
+                }
+
                 return vo;
             }
         }

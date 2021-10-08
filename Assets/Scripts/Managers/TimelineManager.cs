@@ -6,11 +6,11 @@ using Vuforia;
 
 public class TimelineManager : MonoBehaviour
 {
+    private LineManager lineManager;
+
     // GameObjects to align during placement
-    [SerializeField]
     private GameObject timelineContainer;
-    [SerializeField]
-    private Transform trackedContent;
+    private Transform trackedTransform;
 
     // Placement buttons
     [SerializeField]
@@ -25,17 +25,17 @@ public class TimelineManager : MonoBehaviour
     // Individual versions in the timeline
     private VersionObject[] versionObjs;
     private VersionObject virtualTwin;
-    private ConnectPhysicalObjectToTimeline connectionLine;
 
     private bool ready;
     private bool inPlacement;
 
     private void Start()
     {
-        connectionLine = FindObjectOfType<ConnectPhysicalObjectToTimeline>();
+        lineManager = AppManager.Instance.GetLineManager();
+        timelineContainer = AppManager.Instance.GetTimelineObject();
+        trackedTransform = AppManager.Instance.GetTrackedTransform();
         versionObjs = timelineContainer.GetComponentsInChildren<VersionObject>();
-
-        FindAndSetVirtualTwin();
+        virtualTwin = AppManager.Instance.GetVirtualTwin();
         
         inPlacement = false;
 
@@ -47,7 +47,7 @@ public class TimelineManager : MonoBehaviour
         // Only align timeline and physical artifact during placement
         if (inPlacement)
         {
-            timelineContainer.transform.SetPositionAndRotation(trackedContent.position, trackedContent.rotation);
+            timelineContainer.transform.SetPositionAndRotation(trackedTransform.position, trackedTransform.rotation);
         }
     }
 
@@ -105,9 +105,7 @@ public class TimelineManager : MonoBehaviour
         replaceBtn.SetActive(false);
         placeBtn.SetActive(true);
 
-        // Reset the connection line to be invisible
-        connectionLine.Reset();
-        connectionLine.enabled = false;
+        lineManager.DisableConnectionLine();
 
         // Display the timeline as in placement
         ToggleMaterials(false); // Workaround to fix first start bug with timeline caused by outlines
@@ -126,7 +124,7 @@ public class TimelineManager : MonoBehaviour
         replaceBtn.SetActive(true);
         replaceBtn.GetComponent<TransitionToPosition>().StartTransition();
 
-        connectionLine.enabled = true;
+        lineManager.EnableConnectionLine();
 
         // Display the timeline but the virtual twin as solid models
         ToggleMaterials(false);
@@ -155,6 +153,7 @@ public class TimelineManager : MonoBehaviour
     /// </summary>
     public void UpdateTimeline()
     {
+        //TODO remove
         FindAndSetVirtualTwin();
 
         ToggleMaterials(false);
