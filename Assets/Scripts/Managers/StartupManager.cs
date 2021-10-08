@@ -15,7 +15,7 @@ public class StartupManager : MonoBehaviour
     private ComparisonObject comparisonObject;
     private TrackedObject trackedObject;
 
-    IEnumerator Start()
+    IEnumerator StartUp()
     {
         // Wait one frame for other objects to instantiate
         yield return null;

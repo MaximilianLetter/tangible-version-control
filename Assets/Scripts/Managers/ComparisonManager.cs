@@ -7,18 +7,18 @@ public enum ComparisonMode { SideBySide, Overlay, Differences }
 public class ComparisonManager : MonoBehaviour
 {
     // Singleton setup
-    private static ComparisonManager _instance;
+    private static ComparisonManager _Instance;
 
     public static ComparisonManager Instance
     {
         get
         {
-            if (_instance == null)
+            if (_Instance == null)
             {
-                _instance = new ComparisonManager();
+                _Instance = new ComparisonManager();
                 Debug.Log("Comparison Manager created");
             }
-            return _instance;
+            return _Instance;
         }
     }
 
@@ -69,7 +69,7 @@ public class ComparisonManager : MonoBehaviour
 
     private void Awake()
     {
-        _instance = this;
+        _Instance = this;
 
         // Get relevant gameobject logic
         actionPanel = GameObject.FindObjectOfType<ActionPanel>();
