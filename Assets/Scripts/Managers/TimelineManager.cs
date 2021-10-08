@@ -4,7 +4,7 @@ using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Utilities.Solvers;
 using Vuforia;
 
-public class PlacementManager : MonoBehaviour
+public class TimelineManager : MonoBehaviour
 {
     // GameObjects to align during placement
     [SerializeField]

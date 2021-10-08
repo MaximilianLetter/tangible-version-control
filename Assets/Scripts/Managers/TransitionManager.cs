@@ -11,7 +11,7 @@ public class TransitionManager : MonoBehaviour
     private bool inTransition;
     private ComparisonManager comparisonManager;
     private ConnectPhysicalObjectToTimeline connectionLine;
-    private PlacementManager placementManager;
+    private TimelineManager timelineManager;
 
     private TrackedObject physObj;
     private ObjectParts physObjParts;
@@ -20,7 +20,7 @@ public class TransitionManager : MonoBehaviour
     {
         comparisonManager = FindObjectOfType<ComparisonManager>();
         connectionLine = FindObjectOfType<ConnectPhysicalObjectToTimeline>();
-        placementManager = FindObjectOfType<PlacementManager>();
+        timelineManager = FindObjectOfType<TimelineManager>();
 
         physObj = FindObjectOfType<TrackedObject>();
         Debug.Log(physObj);
@@ -110,7 +110,7 @@ public class TransitionManager : MonoBehaviour
         connectionLine.FindAndSetVirtualTwin();
         comparisonManager.StopComparison();
         comparisonManager.FindAndSetVirtualTwin();
-        placementManager.UpdateTimeline();
+        timelineManager.UpdateTimeline();
 
         ResetTransitionUI();
         inTransition = false;

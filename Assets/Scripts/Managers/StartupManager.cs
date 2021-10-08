@@ -10,7 +10,7 @@ public class StartupManager : MonoBehaviour
     public GameObject[] sceneObjects;
 
     private TrackingManager trackingManager;
-    private PlacementManager placementManager;
+    private TimelineManager timelineManager;
     private ActionPanel actionPanel;
     private ComparisonObject comparisonObject;
     private TrackedObject trackedObject;
@@ -61,7 +61,7 @@ public class StartupManager : MonoBehaviour
         }
 
         // Get necessary references
-        placementManager = FindObjectOfType<PlacementManager>();
+        timelineManager = FindObjectOfType<TimelineManager>();
         trackingManager = FindObjectOfType<TrackingManager>();
         actionPanel = FindObjectOfType<ActionPanel>();
         comparisonObject = FindObjectOfType<ComparisonObject>();
@@ -70,7 +70,7 @@ public class StartupManager : MonoBehaviour
         // Wait for other objects getting ready
         while (true)
         {
-            if (placementManager.IsReady() &&
+            if (timelineManager.IsReady() &&
                 (!trackingManager || trackingManager.IsReady()) && // To use in non-tracking scenes
                 ComparisonManager.Instance.IsReady() &&
                 comparisonObject.IsReady() &&

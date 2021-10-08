@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class CollisionInteraction : MonoBehaviour
 {
-    private PlacementManager placementManager;
+    private TimelineManager timelineManager;
 
     void Start()
     {
-        placementManager = GameObject.Find("PlacementManager").GetComponent<PlacementManager>();
+        timelineManager = GameObject.Find("TimelineManager").GetComponent<TimelineManager>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (placementManager.GetInPlacement())
+        if (timelineManager.GetInPlacement())
         {
             return;
         }
