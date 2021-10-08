@@ -9,12 +9,6 @@ public class StartupManager : MonoBehaviour
 
     public GameObject[] sceneObjects;
 
-    private TrackingManager trackingManager;
-    private TimelineManager timelineManager;
-    private ActionPanel actionPanel;
-    private ComparisonObject comparisonObject;
-    private TrackedObject trackedObject;
-
     IEnumerator StartUp()
     {
         // Wait one frame for other objects to instantiate
@@ -39,50 +33,6 @@ public class StartupManager : MonoBehaviour
 
             yield return null;
         }
-
-        // Wait for all parts to be initialized
-        VersionObject[] vos = FindObjectsOfType<VersionObject>();
-
-        allReady = false;
-        while (true)
-        {
-            allReady = true;
-            foreach (var vo in vos)
-            {
-                if (!vo.IsReady())
-                {
-                    allReady = false;
-                }
-            }
-
-            if (allReady) break;
-
-            yield return null;
-        }
-
-        // Get necessary references
-        timelineManager = FindObjectOfType<TimelineManager>();
-        trackingManager = FindObjectOfType<TrackingManager>();
-        actionPanel = FindObjectOfType<ActionPanel>();
-        comparisonObject = FindObjectOfType<ComparisonObject>();
-        trackedObject = FindObjectOfType<TrackedObject>();
-
-        // Wait for other objects getting ready
-        while (true)
-        {
-            if (timelineManager.IsReady() &&
-                (!trackingManager || trackingManager.IsReady()) && // To use in non-tracking scenes
-                ComparisonManager.Instance.IsReady() &&
-                comparisonObject.IsReady() &&
-                trackedObject.IsReady()
-                )
-            {
-                break;
-            }
-            yield return null;
-        }
-        Debug.Log("Managers loaded, ready for scene setup.");
-
 
         // NOTE: this is not clean, this should rather be a callback of Vuforia setup, should then be placed in the TrackingManager
 #if UNITY_EDITOR
