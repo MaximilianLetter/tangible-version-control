@@ -185,7 +185,7 @@ public class ComparisonObject : MonoBehaviour
             GameObject part = Instantiate(original, transform);
 
             // Make sure the real name of the part is kept for part-wise comparisons
-            part.name = original.gameObject.name;
+            part.name = original.name;
 
             // Store necessary information about parts
             parts[i] = part;

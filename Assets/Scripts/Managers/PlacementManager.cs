@@ -158,7 +158,7 @@ public class PlacementManager : MonoBehaviour
         FindAndSetVirtualTwin();
 
         ToggleMaterials(false);
-        virtualTwin.GetComponent<ObjectParts>().SetMaterial(placementMaterial); // DOES NOT WORK
+        virtualTwin.GetComponent<ObjectParts>().SetMaterial(placementMaterial);
     }
 
     public bool GetInPlacement()

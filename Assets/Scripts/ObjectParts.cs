@@ -170,7 +170,7 @@ public class ObjectParts : MonoBehaviour
             var cloneObj = Instantiate(specifiedParts[i], transform);
             
             cloneObj.GetComponent<MeshOutline>().enabled = false;
-            cloneObj.GetComponent<MeshSmoother>().enabled = false;
+            //cloneObj.GetComponent<MeshSmoother>().enabled = false;
 
             var rend = cloneObj.GetComponent<MeshRenderer>();
             rend.materials = new Material[1] { rend.material };
