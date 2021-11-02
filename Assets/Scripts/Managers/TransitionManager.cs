@@ -17,11 +17,10 @@ public class TransitionManager : MonoBehaviour
 
     private void Start()
     {
-        comparisonManager = FindObjectOfType<ComparisonManager>();
-        timelineManager = FindObjectOfType<TimelineManager>();
+        comparisonManager = AppManager.Instance.GetComparisonManager();
+        timelineManager = AppManager.Instance.GetTimelineManager();
 
-        physObj = FindObjectOfType<TrackedObject>();
-        Debug.Log(physObj);
+        physObj = AppManager.Instance.GetTrackedObjectLogic();
         physObjParts = physObj.GetComponent<ObjectParts>();
 
         ResetTransitionUI();
@@ -89,10 +88,10 @@ public class TransitionManager : MonoBehaviour
 
         // Update new parts and new collider
         // Style physical object representation to accordance
-        if (ComparisonManager.Instance.usePhysical)
+        if (comparisonManager.usePhysical)
         {
             // Set and override base material as phantom
-            physObj.SetMaterial(ComparisonManager.Instance.phantomMat);
+            physObj.SetMaterial(comparisonManager.phantomMat);
             physObjParts.CollectRenderersAndMaterials(parts);
         } else
         {

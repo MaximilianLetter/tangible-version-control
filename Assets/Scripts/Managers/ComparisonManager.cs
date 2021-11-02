@@ -6,22 +6,6 @@ public enum ComparisonMode { SideBySide, Overlay, Differences }
 
 public class ComparisonManager : MonoBehaviour
 {
-    // Singleton setup
-    private static ComparisonManager _Instance;
-
-    public static ComparisonManager Instance
-    {
-        get
-        {
-            if (_Instance == null)
-            {
-                _Instance = new ComparisonManager();
-                Debug.Log("Comparison Manager created");
-            }
-            return _Instance;
-        }
-    }
-
     // Use tracking and physical objects
     public bool usePhysical;
     public float staticFloatingDistance;
@@ -56,7 +40,7 @@ public class ComparisonManager : MonoBehaviour
     private ComparisonObject comparisonObj;
     private Transform comparisonObjContainer;
     private VersionObject virtualTwin;
-    private LineRenderer comparisonLine;
+    private TimelineManager timelineManager;
 
     // State variables
     private bool ready;
@@ -67,14 +51,11 @@ public class ComparisonManager : MonoBehaviour
     [Space(14)]
     public ComparisonMode mode;
 
-    private void Awake()
+    private void Start()
     {
-        _Instance = this;
-
         // Get relevant gameobject logic
         actionPanel = GameObject.FindObjectOfType<ActionPanel>();
         trackedObj = GameObject.FindObjectOfType<TrackedObject>();
-        comparisonLine = GameObject.Find("ComparisonLine").GetComponent<LineRenderer>();
         
         // Find the virtual twin between the version objects
         var vObjs = GameObject.FindObjectsOfType<VersionObject>();
@@ -87,7 +68,8 @@ public class ComparisonManager : MonoBehaviour
             }
         }
 
-        comparisonObj = GameObject.FindObjectOfType<ComparisonObject>();
+        timelineManager = AppManager.Instance.GetTimelineManager();
+        comparisonObj = AppManager.Instance.GetComparisonObjectLogic();
         comparisonObjContainer = comparisonObj.transform.parent;
 
         // Get relevant transform information
@@ -101,7 +83,6 @@ public class ComparisonManager : MonoBehaviour
         //}
 
         // Initialize states
-        comparisonLine.enabled = false;
         inComparison = false;
         mode = ComparisonMode.SideBySide;
 
@@ -148,7 +129,11 @@ public class ComparisonManager : MonoBehaviour
 
         // NOTE: Order matters, first clone the object, then activate the comparison
         comparisonObj.Activate(virtualObj);
-        HighlightInHistory();
+
+        // Highlight in timeline
+        versionHistoryObj.GetComponentInParent<ObjectParts>().ToggleOutlines(true);
+        timelineManager.EnableComparisonLine(virtualTwin.transform, versionHistoryObj.transform);
+
         inComparison = true;
 
         floatingDistance = CalculateFloatingDistance(physicalObj, virtualObj);
@@ -226,7 +211,7 @@ public class ComparisonManager : MonoBehaviour
         {
             versionHistoryObj.GetComponentInParent<ObjectParts>().ToggleOutlines(false);
             //versionHistoryObj.GetComponentInParent<VersionObject>().ChangeTextColor(textDefault);
-            comparisonLine.enabled = false;
+            timelineManager.DisableComparisonLine();
             versionHistoryObj = null;
         }
 
@@ -236,32 +221,6 @@ public class ComparisonManager : MonoBehaviour
         trackedObj.ResetMaterial();
 
         inComparison = false;
-    }
-
-    /// <summary>
-    /// Activate outlines on the version object and draw a line between virtual twin and version object.
-    /// </summary>
-    private void HighlightInHistory()
-    {
-        // Highlight the versionObj as being compared against
-        versionHistoryObj.GetComponentInParent<ObjectParts>().ToggleOutlines(true);
-        //versionHistoryObj.GetComponentInParent<ObjectParts>().SetMaterial(edgesMat);
-        //versionHistoryObj.GetComponentInParent<VersionObject>().ChangeTextColor(textHighlight);
-
-        float height1 = virtualTwin.GetComponentInChildren<Collider>().bounds.size.y;
-        float height2 = versionHistoryObj.GetComponentInChildren<Collider>().bounds.size.y;
-
-        Vector3 posStart = virtualTwin.transform.position + new Vector3(0, height1 / 2, 0);
-        Vector3 posEnd = versionHistoryObj.transform.position + new Vector3(0, height2 / 2, 0);
-
-        comparisonLine.enabled = true;
-        comparisonLine.positionCount = 4;
-        comparisonLine.SetPositions(new[] {
-            posStart,
-            posStart + (virtualTwin.transform.up * height2) + (virtualTwin.transform.up * height1 / 2),
-            posEnd +  (versionHistoryObj.transform.up * height1) + (versionHistoryObj.transform.up * height2 / 2),
-            posEnd
-        });
     }
 
     /// <summary>

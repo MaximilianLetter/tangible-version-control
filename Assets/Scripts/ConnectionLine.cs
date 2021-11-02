@@ -18,6 +18,8 @@ public class ConnectionLine : MonoBehaviour
     private Material lineMat;
     private Color lineCol;
 
+    private bool isActive;
+
     void Start()
     {
         lineRend = GetComponent<LineRenderer>();
@@ -35,6 +37,8 @@ public class ConnectionLine : MonoBehaviour
 
     void Update()
     {
+        if (!isActive) return;
+
         float dist = Vector3.Distance(physObj.position, virtualTwin.position);
 
         if (dist > farUpperDist)
@@ -69,6 +73,11 @@ public class ConnectionLine : MonoBehaviour
     public void Reset()
     {
         lineRend.SetPositions(new Vector3[4] { Vector3.zero, Vector3.zero, Vector3.zero, Vector3.zero });
+    }
+
+    public void SetActive(bool state)
+    {
+        isActive = state;
     }
 
     /// <summary>

@@ -20,7 +20,7 @@ public class CollisionInteraction : MonoBehaviour
 
         if (other.gameObject.CompareTag("VersionObject"))
         {
-            ComparisonManager.Instance.StartComparison(gameObject, other.gameObject);
+            AppManager.Instance.GetComparisonManager().StartComparison(gameObject, other.gameObject);
         }
     }
 }

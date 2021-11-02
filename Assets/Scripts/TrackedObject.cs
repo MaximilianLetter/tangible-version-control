@@ -5,11 +5,13 @@ using Microsoft.MixedReality.Toolkit.Utilities;
 
 public class TrackedObject : MonoBehaviour
 {
+    private ComparisonManager comparisonManager;
     private ObjectParts parts;
     private bool ready;
 
     IEnumerator Start()
     {
+        comparisonManager = AppManager.Instance.GetComparisonManager();
         parts = GetComponent<ObjectParts>();
 
         // Wait for the timeline to be ready setup
@@ -71,10 +73,10 @@ public class TrackedObject : MonoBehaviour
 
         // TODO adjust collider
 
-        if (ComparisonManager.Instance.usePhysical)
+        if (comparisonManager.usePhysical)
         {
             // Set and override base material as phantom
-            SetMaterial(ComparisonManager.Instance.phantomMat);
+            SetMaterial(comparisonManager.phantomMat);
             parts.CollectRenderersAndMaterials(objParts);
         }
         else

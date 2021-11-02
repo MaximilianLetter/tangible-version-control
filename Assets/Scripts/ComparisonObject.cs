@@ -24,6 +24,7 @@ struct Differences
 public class ComparisonObject : MonoBehaviour
 {
     // External references
+    private ComparisonManager comparisonManager;
     private Transform trackedObjTransform;
     private ObjectParts differencesMgmt;
     public Transform panel;
@@ -52,7 +53,8 @@ public class ComparisonObject : MonoBehaviour
     void Start()
     {
         // Get references to necessary gameobjects
-        trackedObjTransform = GameObject.Find("TrackedContainer").transform;
+        comparisonManager = AppManager.Instance.GetComparisonManager();
+        trackedObjTransform = AppManager.Instance.GetTrackedTransform();
         differencesMgmt =  GameObject.Find("DifferencesObject").GetComponent<ObjectParts>();
         partMgmt = GetComponent<ObjectParts>();
 
@@ -69,7 +71,7 @@ public class ComparisonObject : MonoBehaviour
 
     void Update()
     {
-        if (!ComparisonManager.Instance.IsInComparison()) return;
+        if (!comparisonManager.IsInComparison()) return;
 
         Vector3 offset, menuOffset;
         Transform camTransform = Camera.main.transform;
@@ -138,13 +140,13 @@ public class ComparisonObject : MonoBehaviour
 
         if (diffMode == DifferencesDisplayMode.OutlinesOnly)
         {
-            differencesMgmt.SetMaterial(ComparisonManager.Instance.phantomMat);
+            differencesMgmt.SetMaterial(comparisonManager.phantomMat);
         }
         else if (diffMode == DifferencesDisplayMode.HighlightColor)
         {
-            differencesMgmt.SetMaterial(ComparisonManager.Instance.greenMat, differences.added);
-            differencesMgmt.SetMaterial(ComparisonManager.Instance.redMat, differences.removed);
-            differencesMgmt.SetMaterial(ComparisonManager.Instance.yellowMat, differences.modified);
+            differencesMgmt.SetMaterial(comparisonManager.greenMat, differences.added);
+            differencesMgmt.SetMaterial(comparisonManager.redMat, differences.removed);
+            differencesMgmt.SetMaterial(comparisonManager.yellowMat, differences.modified);
         }
         else if (diffMode == DifferencesDisplayMode.OriginalColor)
         {
@@ -154,7 +156,7 @@ public class ComparisonObject : MonoBehaviour
         {
             differencesMgmt.ResetMaterial(true);
             differencesMgmt.StartPulseParts(differences.added, differences.modified);
-            differencesMgmt.SetMaterial(ComparisonManager.Instance.phantomMat, differences.removed);
+            differencesMgmt.SetMaterial(comparisonManager.phantomMat, differences.removed);
         }
     }
 
@@ -214,7 +216,7 @@ public class ComparisonObject : MonoBehaviour
         parts = null;
         partMgmt.ResetRenderersAndMaterials();
 
-        if (ComparisonManager.Instance.mode == ComparisonMode.Differences)
+        if (comparisonManager.mode == ComparisonMode.Differences)
         {
             ClearDifferenceHighlights();
         }
@@ -245,7 +247,7 @@ public class ComparisonObject : MonoBehaviour
                 outL = newGO.AddComponent<MeshOutline>();
                 outL.OutlineWidth = 0.001f;
             }
-            outL.OutlineMaterial = ComparisonManager.Instance.greenHighlight;
+            outL.OutlineMaterial = comparisonManager.greenHighlight;
 
             diffPartsAdded[i] = newGO;
             i++;
@@ -262,7 +264,7 @@ public class ComparisonObject : MonoBehaviour
                 outL = newGO.AddComponent<MeshOutline>();
                 outL.OutlineWidth = 0.001f;
             }
-            outL.OutlineMaterial = ComparisonManager.Instance.redHighlight;
+            outL.OutlineMaterial = comparisonManager.redHighlight;
 
             // HACK: Unique to removed materials, this cause a lot of additional GetComponentCalls
             newGO.GetComponent<PreserveMaterial>().CopyPreservedMat(diff.GetComponent<PreserveMaterial>().GetBaseMat());
@@ -282,7 +284,7 @@ public class ComparisonObject : MonoBehaviour
                 outL = newGO.AddComponent<MeshOutline>();
                 outL.OutlineWidth = 0.001f;
             }
-            outL.OutlineMaterial = ComparisonManager.Instance.transitionHighlight;
+            outL.OutlineMaterial = comparisonManager.transitionHighlight;
 
             diffPartsModified[i] = newGO;
             i++;
@@ -299,10 +301,10 @@ public class ComparisonObject : MonoBehaviour
         SetDifferenceMode(diffMode);
 
         // HACK
-        actualObj.GetComponent<ObjectParts>().SetMaterial(ComparisonManager.Instance.invisibleMat);
+        actualObj.GetComponent<ObjectParts>().SetMaterial(comparisonManager.invisibleMat);
 
         // Set the comparison obj itself completely invisible
-        partMgmt.SetMaterial(ComparisonManager.Instance.invisibleMat);
+        partMgmt.SetMaterial(comparisonManager.invisibleMat);
     }
 
     /// <summary>
@@ -478,7 +480,7 @@ public class ComparisonObject : MonoBehaviour
     /// </summary>
     public void CycleMaterials()
     {
-        materialIndex = (materialIndex + 1) % ComparisonManager.Instance.overlayMats.Length;
+        materialIndex = (materialIndex + 1) % comparisonManager.overlayMats.Length;
 
         SetOverlayMaterial();
     }
@@ -491,7 +493,7 @@ public class ComparisonObject : MonoBehaviour
         if (reset) materialIndex = 0;
 
         if (materialIndex == 0) partMgmt.ResetMaterial();
-        else partMgmt.SetMaterial(ComparisonManager.Instance.overlayMats[materialIndex]);
+        else partMgmt.SetMaterial(comparisonManager.overlayMats[materialIndex]);
     }
     public bool IsReady()
     {

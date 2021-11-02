@@ -6,7 +6,10 @@ using Vuforia;
 
 public class TimelineManager : MonoBehaviour
 {
-    private LineManager lineManager;
+    private ComparisonManager comparisonManager;
+
+    private ConnectionLine connectionLineLogic;
+    private LineRenderer comparisonLine;
 
     // GameObjects to align during placement
     private GameObject timelineContainer;
@@ -31,12 +34,18 @@ public class TimelineManager : MonoBehaviour
 
     private void Start()
     {
-        lineManager = AppManager.Instance.GetLineManager();
+        comparisonManager = AppManager.Instance.GetComparisonManager();
         timelineContainer = AppManager.Instance.GetTimelineObject();
         trackedTransform = AppManager.Instance.GetTrackedTransform();
         versionObjs = timelineContainer.GetComponentsInChildren<VersionObject>();
         virtualTwin = AppManager.Instance.GetVirtualTwin();
-        
+
+        // Line logic
+        connectionLineLogic = FindObjectOfType<ConnectionLine>();
+        comparisonLine = GameObject.Find("ComparisonLine").GetComponent<LineRenderer>();
+        connectionLineLogic.SetActive(false);
+        comparisonLine.enabled = false;
+
         inPlacement = false;
 
         ready = true;
@@ -49,6 +58,38 @@ public class TimelineManager : MonoBehaviour
         {
             timelineContainer.transform.SetPositionAndRotation(trackedTransform.position, trackedTransform.rotation);
         }
+    }
+
+    #region Lines
+
+    public void EnableComparisonLine(Transform obj1, Transform obj2)
+    {
+        float height1 = obj1.GetComponentInChildren<Collider>().bounds.size.y;
+        float height2 = obj2.GetComponentInChildren<Collider>().bounds.size.y;
+
+        Vector3 posStart = obj1.transform.position + new Vector3(0, height1 / 2, 0);
+        Vector3 posEnd = obj2.transform.position + new Vector3(0, height2 / 2, 0);
+
+        comparisonLine.enabled = true;
+        comparisonLine.positionCount = 4;
+        comparisonLine.SetPositions(new[] {
+            posStart,
+            posStart + (obj1.transform.up * height2) + (obj1.transform.up * height1 / 2),
+            posEnd +  (obj2.transform.up * height1) + (obj2.transform.up * height2 / 2),
+            posEnd
+        });
+    }
+
+    public void DisableComparisonLine()
+    {
+        comparisonLine.enabled = false;
+    }
+
+    #endregion
+
+    public void SetVirtualTwinReference(VersionObject vo)
+    {
+        connectionLineLogic.SetVirtualTwinTransform(vo);
     }
 
     /// <summary>
@@ -87,14 +128,14 @@ public class TimelineManager : MonoBehaviour
     public void StartPlacement()
     {
         // For repositioning the timeline while a comparison is running
-        if (ComparisonManager.Instance.IsInComparison())
+        if (comparisonManager.IsInComparison())
         {
-            ComparisonManager.Instance.StopComparison();
+            comparisonManager.StopComparison();
         }
 
 #if UNITY_EDITOR
         // The visibily is here not triggered by the tracked object
-        if (!ComparisonManager.Instance.usePhysical)
+        if (!comparisonManager.usePhysical)
         {
             timelineContainer.SetActive(true);
         }
@@ -105,7 +146,8 @@ public class TimelineManager : MonoBehaviour
         replaceBtn.SetActive(false);
         placeBtn.SetActive(true);
 
-        lineManager.DisableConnectionLine();
+        connectionLineLogic.Reset();
+        connectionLineLogic.SetActive(false);
 
         // Display the timeline as in placement
         ToggleMaterials(false); // Workaround to fix first start bug with timeline caused by outlines
@@ -124,7 +166,7 @@ public class TimelineManager : MonoBehaviour
         replaceBtn.SetActive(true);
         replaceBtn.GetComponent<TransitionToPosition>().StartTransition();
 
-        lineManager.EnableConnectionLine();
+        connectionLineLogic.SetActive(true);
 
         // Display the timeline but the virtual twin as solid models
         ToggleMaterials(false);

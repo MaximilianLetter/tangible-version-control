@@ -6,6 +6,8 @@ using Microsoft.MixedReality.Toolkit.Utilities;
 
 public class ObjectParts : MonoBehaviour
 {
+    private ComparisonManager comparisonManager;
+
     private MeshRenderer[] childRenderers;
     private Material[] childMats;
     private MeshOutline[] outlines;
@@ -19,6 +21,8 @@ public class ObjectParts : MonoBehaviour
 
     void Start()
     {
+        comparisonManager = AppManager.Instance.GetComparisonManager();
+
         CollectRenderersAndMaterials();
 
         foreach (var part in childRenderers)
@@ -160,8 +164,8 @@ public class ObjectParts : MonoBehaviour
         }
 
         pulseActive = true;
-        pulseCadence = ComparisonManager.Instance.pulseCadence;
-        pulseHold = ComparisonManager.Instance.pulseHold;
+        pulseCadence = comparisonManager.pulseCadence;
+        pulseHold = comparisonManager.pulseHold;
 
         // Clone all pulsing parts as phantom behind, so that outlines only become visible
         pulseCloneObjs = new GameObject[specifiedParts.Length];
@@ -177,7 +181,7 @@ public class ObjectParts : MonoBehaviour
 
             pulseCloneObjs[i] = cloneObj;
         }
-        SetMaterial(ComparisonManager.Instance.phantomMat, pulseCloneObjs);
+        SetMaterial(comparisonManager.phantomMat, pulseCloneObjs);
 
         StartCoroutine(PulseParts(specifiedParts));
         StartCoroutine(PulseOutlines(modifiedParts));
@@ -242,8 +246,8 @@ public class ObjectParts : MonoBehaviour
     IEnumerator PulseOutlines(GameObject[] specifiedParts)
     {
         Material[] outlineMats;
-        Color32 col1 = ComparisonManager.Instance.red;
-        Color32 col2 = ComparisonManager.Instance.green;
+        Color32 col1 = comparisonManager.red;
+        Color32 col2 = comparisonManager.green;
 
         outlineMats = new Material[specifiedParts.Length];
         for (int i = 0; i < specifiedParts.Length; i++)

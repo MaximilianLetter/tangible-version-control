@@ -17,7 +17,7 @@ public class ActionPanel : MonoBehaviour
     /// </summary>
     public void SetOptions()
     {
-        ComparisonMode mode = ComparisonManager.Instance.mode;
+        ComparisonMode mode = AppManager.Instance.GetComparisonManager().mode;
 
         // Make sure the other options are disabled
         sideBySideOptions.SetActive(false);

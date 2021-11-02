@@ -35,7 +35,6 @@ public class AppManager : MonoBehaviour
     private ComparisonManager   comparisonManager;
     private TransitionManager   transitionManager;
     private StartupManager      startupManager;
-    private LineManager         lineManager;
 
     private void Awake()
     {
@@ -46,7 +45,6 @@ public class AppManager : MonoBehaviour
         comparisonManager = GameObject.FindObjectOfType<ComparisonManager>();
         transitionManager = GameObject.FindObjectOfType<TransitionManager>();
         startupManager = GameObject.FindObjectOfType<StartupManager>();
-        lineManager = GameObject.FindObjectOfType<LineManager>();
 
         // Find all required objects
         trackedObjectLogic = GameObject.FindObjectOfType<TrackedObject>();
@@ -91,11 +89,6 @@ public class AppManager : MonoBehaviour
     public StartupManager GetStartupManager()
     {
         return startupManager;
-    }
-
-    public LineManager GetLineManager()
-    {
-        return lineManager;
     }
 
     public TrackedObject GetTrackedObjectLogic()
@@ -144,7 +137,7 @@ public class AppManager : MonoBehaviour
 
                 if (setEverywhere)
                 {
-                    lineManager.SetVirtualTwinReference(vo);
+                    timelineManager.SetVirtualTwinReference(vo);
                     timelineManager.UpdateTimeline();
                 }
 
@@ -203,12 +196,6 @@ public class AppManager : MonoBehaviour
         if (GetComparisonManager() == null)
         {
             Debug.LogError("ComparisonManager not found");
-            return false;
-        }
-
-        if (GetLineManager() == null)
-        {
-            Debug.LogError("LineManager not found");
             return false;
         }
 
