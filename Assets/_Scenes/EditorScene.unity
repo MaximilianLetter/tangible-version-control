@@ -1099,6 +1099,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 2100000, guid: 7ead2c1f628a56646bef4507222cb94a, type: 2}
   - {fileID: 2100000, guid: 8a2eb0a7f7ce218499260558df6c19d7, type: 2}
+  outlineWidth: 0.003
   neutralHighlight: {fileID: 2100000, guid: 6de577e17cb773143afa8a10b3c9b91b, type: 2}
   greenHighlight: {fileID: 2100000, guid: 158d60e9bc63b6947986b99c7fc76a9e, type: 2}
   redHighlight: {fileID: 2100000, guid: 01b06d10394b1b84ca13166aa786e651, type: 2}
@@ -1778,6 +1779,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1166894994}
     m_Modifications:
+    - target: {fileID: 2806340648836665041, guid: 8f92f5e00fa5210469e36256ec2d7f3d,
+        type: 3}
+      propertyPath: outlineWidth
+      value: 0.002
+      objectReference: {fileID: 0}
+    - target: {fileID: 2861466911310696914, guid: 8f92f5e00fa5210469e36256ec2d7f3d,
+        type: 3}
+      propertyPath: outlineWidth
+      value: 0.002
+      objectReference: {fileID: 0}
+    - target: {fileID: 3372105273354086525, guid: 8f92f5e00fa5210469e36256ec2d7f3d,
+        type: 3}
+      propertyPath: outlineWidth
+      value: 0.002
+      objectReference: {fileID: 0}
     - target: {fileID: 4626603232124461316, guid: 8f92f5e00fa5210469e36256ec2d7f3d,
         type: 3}
       propertyPath: m_RootOrder
@@ -1842,6 +1858,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7892884090542398550, guid: 8f92f5e00fa5210469e36256ec2d7f3d,
+        type: 3}
+      propertyPath: outlineWidth
+      value: 0.002
+      objectReference: {fileID: 0}
+    - target: {fileID: 8469228922408043843, guid: 8f92f5e00fa5210469e36256ec2d7f3d,
+        type: 3}
+      propertyPath: outlineWidth
+      value: 0.002
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f92f5e00fa5210469e36256ec2d7f3d, type: 3}

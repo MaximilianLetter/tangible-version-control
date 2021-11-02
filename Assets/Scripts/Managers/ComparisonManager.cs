@@ -23,6 +23,7 @@ public class ComparisonManager : MonoBehaviour
 
     //[Space(10)]
     [Header("Outline Materials")]
+    public float outlineWidth;
     public Material neutralHighlight;
     public Material greenHighlight;
     public Material redHighlight;

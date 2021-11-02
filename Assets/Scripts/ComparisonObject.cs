@@ -245,7 +245,7 @@ public class ComparisonObject : MonoBehaviour
             if (outL == null)
             {
                 outL = newGO.AddComponent<MeshOutline>();
-                outL.OutlineWidth = 0.001f;
+                outL.OutlineWidth = comparisonManager.outlineWidth;
             }
             outL.OutlineMaterial = comparisonManager.greenHighlight;
 
@@ -262,7 +262,7 @@ public class ComparisonObject : MonoBehaviour
             if (outL == null)
             {
                 outL = newGO.AddComponent<MeshOutline>();
-                outL.OutlineWidth = 0.001f;
+                outL.OutlineWidth = comparisonManager.outlineWidth;
             }
             outL.OutlineMaterial = comparisonManager.redHighlight;
 
@@ -282,7 +282,7 @@ public class ComparisonObject : MonoBehaviour
             if (outL == null)
             {
                 outL = newGO.AddComponent<MeshOutline>();
-                outL.OutlineWidth = 0.001f;
+                outL.OutlineWidth = comparisonManager.outlineWidth;
             }
             outL.OutlineMaterial = comparisonManager.transitionHighlight;
 
