@@ -1345,6 +1345,9 @@ MonoBehaviour:
   oneHandRotationModeNear: 1
   oneHandRotationModeFar: 1
   releaseBehavior: 3
+  transformSmoothingLogicType:
+    reference: Microsoft.MixedReality.Toolkit.Utilities.DefaultTransformSmoothingLogic,
+      Microsoft.MixedReality.Toolkit.SDK
   smoothingFar: 1
   smoothingNear: 1
   moveLerpTime: 0.001
@@ -3433,7 +3436,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1757421782
 Transform:
   m_ObjectHideFlags: 0
@@ -3671,6 +3674,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TransitionBtn
+      objectReference: {fileID: 0}
+    - target: {fileID: 1050945951127360776, guid: c4ef8a879fb66d6468c67606ba1e6b25,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1793295193303142647, guid: c4ef8a879fb66d6468c67606ba1e6b25,
         type: 3}
