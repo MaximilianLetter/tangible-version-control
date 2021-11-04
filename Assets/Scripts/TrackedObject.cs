@@ -32,20 +32,7 @@ public class TrackedObject : MonoBehaviour
 
     private void CloneVirtualTwin()
     {
-        GameObject virtualTwin = null;
-
-        // Find virtual twin
-        var timelineObjs = FindObjectsOfType<VersionObject>();
-        foreach (var vo in timelineObjs)
-        {
-            if (vo.virtualTwin)
-            {
-                virtualTwin = vo.gameObject;
-                break;
-            }
-        }
-
-        Transform virtTwinObjsTransf = virtualTwin.transform.GetChild(0);
+        Transform virtTwinObjsTransf = AppManager.Instance.GetVirtualTwin().transform.GetChild(0);
         var objParts = new GameObject[virtTwinObjsTransf.childCount];
         for (int i = 0; i < virtTwinObjsTransf.childCount; i++)
         {
@@ -60,8 +47,16 @@ public class TrackedObject : MonoBehaviour
             var outL = part.GetComponent<MeshOutline>();
             if (outL != null)
             {
-                Material[] mats = new Material[1] { part.GetComponent<PreserveMaterial>().GetBaseMat() };
-                part.GetComponent<MeshRenderer>().materials = mats;
+                if (comparisonManager.usePhysical)
+                {
+                    Material[] mats = new Material[1] { comparisonManager.phantomMat };
+                    part.GetComponent<MeshRenderer>().materials = mats;
+                }
+                else
+                {
+                    Material[] mats = new Material[1] { part.GetComponent<PreserveMaterial>().GetBaseMat() };
+                    part.GetComponent<MeshRenderer>().materials = mats;
+                }
             }
 
             // Make sure the real name of the part is kept for part-wise comparisons
@@ -71,7 +66,8 @@ public class TrackedObject : MonoBehaviour
             objParts[i] = part;
         }
 
-        // TODO adjust collider
+        // adjust collider to new object
+        ColliderToFit.FitToChildren(gameObject);
 
         if (comparisonManager.usePhysical)
         {

@@ -5,10 +5,12 @@ using UnityEngine;
 public class CollisionInteraction : MonoBehaviour
 {
     private TimelineManager timelineManager;
+    private ComparisonManager comparisonManager;
 
     void Start()
     {
-        timelineManager = GameObject.Find("TimelineManager").GetComponent<TimelineManager>();
+        timelineManager = AppManager.Instance.GetTimelineManager();
+        comparisonManager = AppManager.Instance.GetComparisonManager();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -20,7 +22,7 @@ public class CollisionInteraction : MonoBehaviour
 
         if (other.gameObject.CompareTag("VersionObject"))
         {
-            AppManager.Instance.GetComparisonManager().StartComparison(gameObject, other.gameObject);
+            comparisonManager.StartComparison(gameObject, other.gameObject);
         }
     }
 }
