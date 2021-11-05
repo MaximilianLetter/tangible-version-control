@@ -51,7 +51,7 @@ public class AppManager : MonoBehaviour
         trackedTransform = trackedObjectLogic.transform.parent;
 
         comparisonObjectLogic = GameObject.FindObjectOfType<ComparisonObject>();
-        differencesObjectLogic = trackedTransform.Find("DifferencesObject").GetComponent<ObjectParts>();
+        differencesObjectLogic = trackedObjectLogic.transform.parent.Find("DifferencesObject").GetComponent<ObjectParts>();
 
         comparisonObjectLogic = GameObject.FindObjectOfType<ComparisonObject>();
         timelineObject = GameObject.Find("Timeline");

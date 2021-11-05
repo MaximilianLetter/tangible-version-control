@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QCARConfig>
     <Tracking>
-        <ImageTarget name="LEGO_128x003mm.Top" size="0.128000 0.128000"/>
-        <ImageTarget name="LEGO_128x003mm.Back" size="0.128000 0.029968"/>
-        <ImageTarget name="LEGO_128x003mm.Left" size="0.128000 0.029968"/>
-        <ImageTarget name="LEGO_128x003mm.Bottom" size="0.128000 0.128000"/>
-        <ImageTarget name="LEGO_128x003mm.Right" size="0.128000 0.029968"/>
-        <ImageTarget name="LEGO_128x003mm.Front" size="0.128000 0.029968"/>
-        <MultiTarget name="LEGO_128x003mm">
-            <Part name="LEGO_128x003mm.Left" translation="-0.06400000303983688 0 0" rotation="AD: 0 1 0 -90"/>
-            <Part name="LEGO_128x003mm.Right" translation="0.06400000303983688 0 0" rotation="AD: 0 1 0 90"/>
-            <Part name="LEGO_128x003mm.Front" translation="0 0 0.06400000303983688" rotation="AD: 1 0 0 0"/>
-            <Part name="LEGO_128x003mm.Back" translation="0 0 -0.06400000303983688" rotation="AD: 0 1 0 180"/>
-            <Part name="LEGO_128x003mm.Top" translation="0 0.014999999664723873 0" rotation="AD: 1 0 0 -90"/>
-            <Part name="LEGO_128x003mm.Bottom" translation="0 -0.014999999664723873 0" rotation="AD: 1 0 0 90"/>
+        <ImageTarget name="test.Right" size="0.030000 0.128136"/>
+        <ImageTarget name="test.Top" size="0.128000 0.029968"/>
+        <ImageTarget name="test.Left" size="0.030000 0.128136"/>
+        <ImageTarget name="test.Front" size="0.128000 0.128000"/>
+        <ImageTarget name="test.Back" size="0.128000 0.128000"/>
+        <ImageTarget name="test.Bottom" size="0.128000 0.029968"/>
+        <MultiTarget name="CubeModel_128x30">
+            <Part name="test.Left" translation="-0.06400000303983688 0 0" rotation="AD: 0 1 0 -90"/>
+            <Part name="test.Right" translation="0.06400000303983688 0 0" rotation="AD: 0 1 0 90"/>
+            <Part name="test.Front" translation="0 0 0.014999999664723873" rotation="AD: 1 0 0 0"/>
+            <Part name="test.Back" translation="0 0 -0.014999999664723873" rotation="AD: 0 1 0 180"/>
+            <Part name="test.Top" translation="0 0.06400000303983688 0" rotation="AD: 1 0 0 -90"/>
+            <Part name="test.Bottom" translation="0 -0.06400000303983688 0" rotation="AD: 1 0 0 90"/>
         </MultiTarget>
     </Tracking>
 </QCARConfig>
