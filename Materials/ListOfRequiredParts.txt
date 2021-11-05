@@ -1,0 +1,13 @@
+In the given example following LEGO parts were used to build the physical object:
+
+Red    4 x 2
+White  4 x 2
+Blue   4 x 2
+White  3 x 2
+Yellow 4 x 2
+Teal   2 x 1
+Red    4 x 1
+
+The build order can be taken from the 3D model (Assets/models/gen2/mod2)
+
+Mount the object on a 4 x 4 LEGO plate that is placed in the middle of the marker.
