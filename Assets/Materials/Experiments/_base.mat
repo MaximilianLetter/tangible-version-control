@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: _base
   m_Shader: {fileID: 4800000, guid: 5bdea20278144b11916d77503ba1467a, type: 3}
-  m_ShaderKeywords: _DISABLE_ALBEDO_MAP _SPECULAR_HIGHLIGHTS _STENCIL
+  m_ShaderKeywords: _DISABLE_ALBEDO_MAP _NEAR_PLANE_FADE _SPECULAR_HIGHLIGHTS _STENCIL
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -106,8 +106,8 @@ Material:
     - _EnvironmentColorIntensity: 0.5
     - _EnvironmentColorThreshold: 1.5
     - _EnvironmentColoring: 0
-    - _FadeBeginDistance: 0.85
-    - _FadeCompleteDistance: 0.5
+    - _FadeBeginDistance: 0.1
+    - _FadeCompleteDistance: 0.05
     - _FadeMinValue: 0
     - _FluentLightIntensity: 1
     - _GlossMapScale: 1
@@ -126,7 +126,7 @@ Material:
     - _MipmapBias: -2
     - _Mode: 5
     - _NearLightFade: 0
-    - _NearPlaneFade: 0
+    - _NearPlaneFade: 1
     - _NormalMapScale: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.02
@@ -149,7 +149,7 @@ Material:
     - _SrcBlend: 0
     - _Stencil: 1
     - _StencilComparison: 3
-    - _StencilOperation: 1
+    - _StencilOperation: 0
     - _StencilReference: 100
     - _TriplanarMappingBlendSharpness: 4
     - _UVSec: 0
@@ -158,8 +158,8 @@ Material:
     - _VertexExtrusionSmoothNormals: 0
     - _VertexExtrusionValue: 0
     - _WireThickness: 100
-    - _ZOffsetFactor: -0.01
-    - _ZOffsetUnits: 0
+    - _ZOffsetFactor: -0.5
+    - _ZOffsetUnits: -1
     - _ZTest: 4
     - _ZWrite: 1
     m_Colors:
