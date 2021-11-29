@@ -10,7 +10,7 @@ Material:
   m_Name: Common
   m_Shader: {fileID: 4800000, guid: 5bdea20278144b11916d77503ba1467a, type: 3}
   m_ShaderKeywords: USE_ALBEDO_TEXTURE _AUTO_PULSE__ON _DIRECTIONAL_LIGHT _DISABLE_ALBEDO_MAP
-    _NEAR_PLANE_FADE _PULSE_ENABLED__ON _SPECULAR_HIGHLIGHTS
+    _PULSE_ENABLED__ON _SPECULAR_HIGHLIGHTS
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -115,7 +115,7 @@ Material:
     - _EnvironmentColorIntensity: 0.5
     - _EnvironmentColorThreshold: 1.5
     - _EnvironmentColoring: 0
-    - _FadeBeginDistance: 0.1
+    - _FadeBeginDistance: 0.2
     - _FadeCompleteDistance: 0.05
     - _FadeMinValue: 0
     - _Fade_Far_Distance_: 0.2
@@ -148,7 +148,7 @@ Material:
     - _MipmapBias: -2
     - _Mode: 0
     - _NearLightFade: 0
-    - _NearPlaneFade: 1
+    - _NearPlaneFade: 0
     - _Near_Center_Fraction_: 0
     - _Near_Radius_Fraction_: 0.5
     - _NormalMapScale: 1

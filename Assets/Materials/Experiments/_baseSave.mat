@@ -7,10 +7,9 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: _x
+  m_Name: _baseSave
   m_Shader: {fileID: 4800000, guid: 5bdea20278144b11916d77503ba1467a, type: 3}
-  m_ShaderKeywords: _DIRECTIONAL_LIGHT _DISABLE_ALBEDO_MAP _NEAR_PLANE_FADE _SPECULAR_HIGHLIGHTS
-    _STENCIL
+  m_ShaderKeywords: _DIRECTIONAL_LIGHT _DISABLE_ALBEDO_MAP _SPECULAR_HIGHLIGHTS _STENCIL
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -107,7 +106,7 @@ Material:
     - _EnvironmentColorIntensity: 0.5
     - _EnvironmentColorThreshold: 1.5
     - _EnvironmentColoring: 0
-    - _FadeBeginDistance: 0.1
+    - _FadeBeginDistance: 0.2
     - _FadeCompleteDistance: 0.05
     - _FadeMinValue: 0
     - _FluentLightIntensity: 1
@@ -127,7 +126,7 @@ Material:
     - _MipmapBias: -2
     - _Mode: 5
     - _NearLightFade: 0
-    - _NearPlaneFade: 1
+    - _NearPlaneFade: 0
     - _NormalMapScale: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.02
@@ -147,24 +146,26 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SphericalHarmonics: 0
-    - _SrcBlend: 1
+    - _SrcBlend: 0
     - _Stencil: 1
-    - _StencilComparison: 8
-    - _StencilOperation: 1
-    - _StencilReference: 101
+    - _StencilComparison: 3
+    - _StencilOperation: 0
+    - _StencilReference: 100
     - _TriplanarMappingBlendSharpness: 4
     - _UVSec: 0
     - _VertexColors: 0
     - _VertexExtrusion: 0
     - _VertexExtrusionSmoothNormals: 0
     - _VertexExtrusionValue: 0
-    - _ZOffsetFactor: 0
-    - _ZOffsetUnits: 0
+    - _WireThickness: 100
+    - _ZOffsetFactor: -0.5
+    - _ZOffsetUnits: 1
     - _ZTest: 4
     - _ZWrite: 1
     m_Colors:
+    - _BaseColor: {r: 0, g: 0, b: 0, a: 0}
     - _ClippingBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
-    - _Color: {r: 0.98039216, g: 0.6713592, b: 0.61960787, a: 1}
+    - _Color: {r: 0, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
     - _EnvironmentColorX: {r: 1, g: 0, b: 0, a: 1}
@@ -177,3 +178,4 @@ Material:
     - _ProximityLightOuterColorOverride: {r: 0, g: 0, b: 1, a: 1}
     - _RimColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _RoundCornersRadius: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
+    - _WireColor: {r: 0, g: 1, b: 0.005393505, a: 1}
