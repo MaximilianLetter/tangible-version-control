@@ -6,6 +6,11 @@ using Vuforia;
 
 public class TimelineManager : MonoBehaviour
 {
+    // Settings for the timeline and branches
+    public float betweenVersionsDistance;
+    public float betweenBranchesDistance;
+    public float branchLineWidth;
+
     private ComparisonManager comparisonManager;
 
     private ConnectionLine connectionLineLogic;
@@ -13,6 +18,7 @@ public class TimelineManager : MonoBehaviour
 
     // GameObjects to align during placement
     private GameObject timelineContainer;
+    private Branch[] branches;
     private Transform trackedTransform;
 
     // Placement buttons
@@ -36,6 +42,7 @@ public class TimelineManager : MonoBehaviour
     {
         comparisonManager = AppManager.Instance.GetComparisonManager();
         timelineContainer = AppManager.Instance.GetTimelineObject();
+        branches = timelineContainer.GetComponentsInChildren<Branch>();
         trackedTransform = AppManager.Instance.GetTrackedTransform();
         versionObjs = timelineContainer.GetComponentsInChildren<VersionObject>();
         virtualTwin = AppManager.Instance.GetVirtualTwin();
@@ -45,6 +52,15 @@ public class TimelineManager : MonoBehaviour
         comparisonLine = GameObject.Find("ComparisonLine").GetComponent<LineRenderer>();
         connectionLineLogic.SetActive(false);
         comparisonLine.enabled = false;
+
+        // Timeline building out of branches
+        // NOTE: this is not yet a realistic branch building but it is evenly spaced
+        var numberOfBranches = branches.Length;
+        for (int i = 0; i < numberOfBranches; i++)
+        {
+            var pos = new Vector3(0, 0, i * betweenBranchesDistance);
+            branches[i].transform.localPosition = pos;
+        }
 
         inPlacement = false;
 
