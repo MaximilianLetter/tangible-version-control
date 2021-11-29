@@ -87,40 +87,7 @@ public class TimelineManager : MonoBehaviour
 
     #endregion
 
-    public void SetVirtualTwinReference(VersionObject vo)
-    {
-        connectionLineLogic.SetVirtualTwinTransform(vo);
-    }
-
-    /// <summary>
-    /// Hides the timeline if the physical object tracking is lost. Called by VuforiaTracking.
-    /// </summary>
-    /// <param name="status">True means showing, false means hiding the timeline.</param>
-    public void ToggleVisibilityDuringPlacement(bool status)
-    {
-        if (!inPlacement) return;
-
-        timelineContainer.SetActive(status);
-    }
-
-    /// <summary>
-    /// Toggle between transparent material during positioning and the default materials after the placement finished.
-    /// </summary>
-    /// <param name="status">True equals the placement material, false equals the normal display material.</param>
-    private void ToggleMaterials(bool status)
-    {
-        foreach (var obj in versionObjs)
-        {
-            if (status)
-            {
-                obj.SetMaterial(placementMaterial);
-            }
-            else
-            {
-                obj.ResetMaterial();
-            }
-        }
-    }
+    #region Placement
 
     /// <summary>
     /// Starts the placement process.
@@ -176,30 +143,55 @@ public class TimelineManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Iterate through objects in the timeline to find the virtual twin and set it as reference.
+    /// Hides the timeline if the physical object tracking is lost. Called by VuforiaTracking.
     /// </summary>
-    private void FindAndSetVirtualTwin()
+    /// <param name="status">True means showing, false means hiding the timeline.</param>
+    public void ToggleVisibilityDuringPlacement(bool status)
+    {
+        if (!inPlacement) return;
+
+        timelineContainer.SetActive(status);
+    }
+
+    /// <summary>
+    /// Toggle between transparent material during positioning and the default materials after the placement finished.
+    /// </summary>
+    /// <param name="status">True equals the placement material, false equals the normal display material.</param>
+    private void ToggleMaterials(bool status)
     {
         foreach (var obj in versionObjs)
         {
-            if (obj.virtualTwin)
+            if (status)
             {
-                virtualTwin = obj;
-                break;
+                obj.SetMaterial(placementMaterial);
+            }
+            else
+            {
+                obj.ResetMaterial();
             }
         }
     }
+
+    #endregion
 
     /// <summary>
     /// Update the timeline after changes has been done to it, for example another object has become the virtual twin.
     /// </summary>
     public void UpdateTimeline()
     {
-        //TODO remove
-        FindAndSetVirtualTwin();
+        virtualTwin = AppManager.Instance.GetVirtualTwin();
 
         ToggleMaterials(false);
         virtualTwin.GetComponent<ObjectParts>().SetMaterial(placementMaterial);
+    }
+
+    /// <summary>
+    /// Sets the reference of virtual twin to the connection line.
+    /// </summary>
+    /// <param name="vo">The version object representing the virtual twin.</param>
+    public void SetVirtualTwinReference(VersionObject vo)
+    {
+        connectionLineLogic.SetVirtualTwinTransform(vo);
     }
 
     public bool GetInPlacement()
