@@ -7,11 +7,13 @@ using UnityEngine;
 public class Branch : MonoBehaviour
 {
     private TimelineManager timelineManager;
+    private ComparisonManager comparisonManager;
     private VersionObject[] vObjects;
     private LineRenderer branchLine;
     private BoxCollider coll;
 
     // Meta data of branch
+    public int index;
     public string branchName;
     public string branchDate;
     private int numberOfVersions;
@@ -19,6 +21,7 @@ public class Branch : MonoBehaviour
     void Start()
     {
         timelineManager = AppManager.Instance.GetTimelineManager();
+        comparisonManager = AppManager.Instance.GetComparisonManager();
         vObjects = GetComponentsInChildren<VersionObject>();
         branchLine = GetComponent<LineRenderer>();
         coll = GetComponent<BoxCollider>();
@@ -49,20 +52,48 @@ public class Branch : MonoBehaviour
         branchLine.endWidth = timelineManager.branchLineWidth;
 
         // Set the collider for the branch
-        float doubleStep = step * 2;
-        float collWidth = numberOfVersions * step + doubleStep;
+        float wideStep = step * 1.5f;
+        float collWidth = numberOfVersions * step + wideStep;
         coll.center = Vector3.zero;
-        coll.size = new Vector3(collWidth, doubleStep, doubleStep);
+        coll.size = new Vector3(collWidth, wideStep, wideStep);
         coll.isTrigger = true;
     }
 
-    public void ActivateHighlight()
+    public void SetHighlightActive(bool status)
     {
-        branchLine.enabled = true;
+        branchLine.enabled = status;
+        ToggleMaterials(status);
     }
 
-    public void DeactivateHighlight()
+    /// <summary>
+    /// Set the collider of a branch to the given boolean.
+    /// </summary>
+    /// <param name="status">true equals active collider</param>
+    public void SetColliderActive(bool status)
     {
-        branchLine.enabled = false;
+        coll.enabled = status;
+    }
+
+    /// <summary>
+    /// Toggle between transparent material during positioning and the default materials after the placement finished.
+    /// </summary>
+    /// <param name="status">True equals the normal display material, false equals the edges material.</param>
+    private void ToggleMaterials(bool status)
+    {
+        foreach (var obj in vObjects)
+        {
+            if (obj.virtualTwin) continue; // Never change the appearance of the virtual twin
+
+            if (obj == comparisonManager.GetComparedAgainstVersionObject()) continue; // Dont change the appearance of the compared against version
+
+            if (!status)
+            {
+                obj.SetMaterial(timelineManager.GetEdgesMaterial());
+            }
+            else
+            {
+                obj.ResetMaterial();
+            }
+        }
     }
 }

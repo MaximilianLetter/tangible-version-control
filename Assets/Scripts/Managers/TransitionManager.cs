@@ -52,7 +52,7 @@ public class TransitionManager : MonoBehaviour
         var currentVirtualTwin = comparisonManager.GetVirtualTwin();
         if (currentVirtualTwin == null) return;
 
-        var newVirtualTwin = comparisonManager.GetVersionHistoryObject();
+        var newVirtualTwin = comparisonManager.GetComparedAgainstVersionObject();
         if (newVirtualTwin == null) return;
 
         // Destroy current, no longer needed parts

@@ -24,5 +24,22 @@ public class CollisionInteraction : MonoBehaviour
         {
             comparisonManager.StartComparison(gameObject, other.gameObject);
         }
+
+        if (other.gameObject.CompareTag("Branch"))
+        {
+            var branch = other.gameObject.GetComponent<Branch>();
+            timelineManager.SetActiveBranch(branch.index, true);
+            branch.SetHighlightActive(true);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Branch"))
+        {
+            var branch = other.gameObject.GetComponent<Branch>();
+            branch.SetHighlightActive(false);
+            timelineManager.SetActiveBranch(99);
+        }
     }
 }

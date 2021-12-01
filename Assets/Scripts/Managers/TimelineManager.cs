@@ -18,7 +18,6 @@ public class TimelineManager : MonoBehaviour
 
     // GameObjects to align during placement
     private GameObject timelineContainer;
-    private Branch[] branches;
     private Transform trackedTransform;
 
     // Placement buttons
@@ -29,11 +28,14 @@ public class TimelineManager : MonoBehaviour
 
     // Material
     [SerializeField]
-    private Material placementMaterial;
+    private Material edgesMaterial;
 
     // Individual versions in the timeline
+    private Branch[] branches;
     private VersionObject[] versionObjs;
     private VersionObject virtualTwin;
+
+    private int activeBranchIndex;
 
     private bool ready;
     private bool inPlacement;
@@ -41,7 +43,7 @@ public class TimelineManager : MonoBehaviour
     private void Start()
     {
         comparisonManager = AppManager.Instance.GetComparisonManager();
-        timelineContainer = AppManager.Instance.GetTimelineObject();
+        timelineContainer = AppManager.Instance.GetTimelineContainer();
         branches = timelineContainer.GetComponentsInChildren<Branch>();
         trackedTransform = AppManager.Instance.GetTrackedTransform();
         versionObjs = timelineContainer.GetComponentsInChildren<VersionObject>();
@@ -133,8 +135,12 @@ public class TimelineManager : MonoBehaviour
         connectionLineLogic.SetActive(false);
 
         // Display the timeline as in placement
-        ToggleMaterials(false); // Workaround to fix first start bug with timeline caused by outlines
-        ToggleMaterials(true);
+        foreach(var branch in branches)
+        {
+            branch.SetColliderActive(false);
+            branch.SetHighlightActive(false);
+        }
+        ToggleMaterials(true); // Ensure that the virtual twin is also reset
 
         inPlacement = true;
     }
@@ -152,8 +158,17 @@ public class TimelineManager : MonoBehaviour
         connectionLineLogic.SetActive(true);
 
         // Display the timeline but the virtual twin as solid models
-        ToggleMaterials(false);
-        virtualTwin.GetComponent<ObjectParts>().SetMaterial(placementMaterial);
+        foreach (var branch in branches)
+        {
+            branch.SetColliderActive(true);
+            branch.SetHighlightActive(false);
+        }
+
+        activeBranchIndex = 0;
+        branches[activeBranchIndex].SetHighlightActive(true);
+        // TODO ^ does not rly work, it flickers on and off, remains off in the end
+
+        virtualTwin.GetComponent<ObjectParts>().SetMaterial(edgesMaterial);
 
         inPlacement = false;
     }
@@ -179,7 +194,7 @@ public class TimelineManager : MonoBehaviour
         {
             if (status)
             {
-                obj.SetMaterial(placementMaterial);
+                obj.SetMaterial(edgesMaterial);
             }
             else
             {
@@ -190,6 +205,19 @@ public class TimelineManager : MonoBehaviour
 
     #endregion
 
+    public void SetActiveBranch(int index, bool deactivateCurrentBranch = false)
+    {
+        if (deactivateCurrentBranch)
+        {
+            if (activeBranchIndex != 99)
+            {
+                branches[activeBranchIndex].SetHighlightActive(false);
+            }
+        }
+
+        activeBranchIndex = index;
+    }
+
     /// <summary>
     /// Update the timeline after changes has been done to it, for example another object has become the virtual twin.
     /// </summary>
@@ -198,7 +226,7 @@ public class TimelineManager : MonoBehaviour
         virtualTwin = AppManager.Instance.GetVirtualTwin();
 
         ToggleMaterials(false);
-        virtualTwin.GetComponent<ObjectParts>().SetMaterial(placementMaterial);
+        virtualTwin.GetComponent<ObjectParts>().SetMaterial(edgesMaterial);
     }
 
     /// <summary>
@@ -208,6 +236,11 @@ public class TimelineManager : MonoBehaviour
     public void SetVirtualTwinReference(VersionObject vo)
     {
         connectionLineLogic.SetVirtualTwinTransform(vo);
+    }
+
+    public Material GetEdgesMaterial()
+    {
+        return edgesMaterial;
     }
 
     public bool GetInPlacement()

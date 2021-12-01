@@ -45,7 +45,7 @@ public class ComparisonManager : MonoBehaviour
 
     // State variables
     private bool ready;
-    private GameObject versionHistoryObj;
+    private VersionObject comparedAgainstVersionObject;
     private float floatingDistance;
     private bool inComparison;
 
@@ -113,7 +113,7 @@ public class ComparisonManager : MonoBehaviour
         // Check for existing comparison, suppress reinitializing the same comparison
         if (inComparison)
         {
-            if (virtualObj == versionHistoryObj)
+            if (virtualObj == comparedAgainstVersionObject.gameObject)
             {
                 Debug.Log("This comparison is already active; ABORT COMPARISON.");
                 return;
@@ -126,14 +126,14 @@ public class ComparisonManager : MonoBehaviour
         Debug.Log("A new comparison is initiated. START COMPARISON");
 
         // Save reference to object for avoiding reinitializing the same comparison
-        versionHistoryObj = virtualObj;
+        comparedAgainstVersionObject = versionObj;
 
         // NOTE: Order matters, first clone the object, then activate the comparison
         comparisonObj.Activate(virtualObj);
 
         // Highlight in timeline
-        versionHistoryObj.GetComponentInParent<ObjectParts>().ToggleOutlines(true);
-        timelineManager.EnableComparisonLine(virtualTwin.transform, versionHistoryObj.transform);
+        comparedAgainstVersionObject.GetComponentInParent<ObjectParts>().ToggleOutlines(true);
+        timelineManager.EnableComparisonLine(virtualTwin.transform, comparedAgainstVersionObject.transform);
 
         inComparison = true;
 
@@ -208,12 +208,12 @@ public class ComparisonManager : MonoBehaviour
     public void StopComparison()
     {
         // Disable highlight on version object
-        if (versionHistoryObj != null)
+        if (comparedAgainstVersionObject != null)
         {
-            versionHistoryObj.GetComponentInParent<ObjectParts>().ToggleOutlines(false);
+            comparedAgainstVersionObject.GetComponentInParent<ObjectParts>().ToggleOutlines(false);
             //versionHistoryObj.GetComponentInParent<VersionObject>().ChangeTextColor(textDefault);
             timelineManager.DisableComparisonLine();
-            versionHistoryObj = null;
+            comparedAgainstVersionObject = null;
         }
 
         actionPanel.gameObject.SetActive(false);
@@ -278,9 +278,9 @@ public class ComparisonManager : MonoBehaviour
         return virtualTwin;
     }
     
-    public GameObject GetVersionHistoryObject()
+    public VersionObject GetComparedAgainstVersionObject()
     {
-        return versionHistoryObj;
+        return comparedAgainstVersionObject;
     }
 
     public bool IsInComparison()

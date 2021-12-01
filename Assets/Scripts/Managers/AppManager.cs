@@ -27,7 +27,7 @@ public class AppManager : MonoBehaviour
     private ComparisonObject    comparisonObjectLogic;
     private ObjectParts         differencesObjectLogic;
 
-    private GameObject          timelineObject;
+    private GameObject          timelineContainer;
     private VersionObject       virtualTwin;
 
     // References to all managers
@@ -54,7 +54,7 @@ public class AppManager : MonoBehaviour
         differencesObjectLogic = trackedObjectLogic.transform.parent.Find("DifferencesObject").GetComponent<ObjectParts>();
 
         comparisonObjectLogic = GameObject.FindObjectOfType<ComparisonObject>();
-        timelineObject = GameObject.Find("Timeline");
+        timelineContainer = GameObject.Find("Timeline");
         FindAndSetVirtualTwin();
     }
 
@@ -111,9 +111,9 @@ public class AppManager : MonoBehaviour
         return virtualTwin;
     }
 
-    public GameObject GetTimelineObject()
+    public GameObject GetTimelineContainer()
     {
-        return timelineObject;
+        return timelineContainer;
     }
 
     public ObjectParts GetDifferencesObjectLogic()
@@ -128,7 +128,7 @@ public class AppManager : MonoBehaviour
     public VersionObject FindAndSetVirtualTwin(bool setEverywhere = false)
     {
         // Find virtual twin
-        VersionObject[] timelineObjs = timelineObject.transform.GetComponentsInChildren<VersionObject>();
+        VersionObject[] timelineObjs = timelineContainer.transform.GetComponentsInChildren<VersionObject>();
         foreach (var vo in timelineObjs)
         {
             if (vo.virtualTwin)
@@ -175,9 +175,9 @@ public class AppManager : MonoBehaviour
             return false;
         }
 
-        if (GetTimelineObject() == null)
+        if (GetTimelineContainer() == null)
         {
-            Debug.LogError("TimelineObject not found");
+            Debug.LogError("TimelineContainer not found");
             return false;
         }
 
