@@ -158,7 +158,7 @@ Material:
     - _VertexExtrusionSmoothNormals: 0
     - _VertexExtrusionValue: 0
     - _WireThickness: 100
-    - _ZOffsetFactor: -0.5
+    - _ZOffsetFactor: -1
     - _ZOffsetUnits: 1
     - _ZTest: 4
     - _ZWrite: 1

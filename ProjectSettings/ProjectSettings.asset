@@ -617,16 +617,17 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: TVCphysicalHL1
-  metroPackageVersion: 1.0.0.0
+  metroPackageName: TVCshadertestingHL2
+  metroPackageVersion: 1.2.0.0
   metroCertificatePath: Assets\WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: ML
   metroCertificateIssuer: ML
   metroCertificateNotAfter: 006dd3901c4cd801
-  metroApplicationDescription: Tangible Version Control on HoloLens1
+  metroApplicationDescription: Testing Shader Comparison for Tangible Version Control
+    on HoloLens2
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: TVC_shader_testing_HL2
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0
