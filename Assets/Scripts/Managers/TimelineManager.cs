@@ -18,6 +18,7 @@ public class TimelineManager : MonoBehaviour
 
     // GameObjects to align during placement
     private GameObject timelineContainer;
+    private Transform movableBranchContainer;
     private Transform trackedTransform;
 
     // Placement buttons
@@ -44,6 +45,7 @@ public class TimelineManager : MonoBehaviour
     {
         comparisonManager = AppManager.Instance.GetComparisonManager();
         timelineContainer = AppManager.Instance.GetTimelineContainer();
+        movableBranchContainer = timelineContainer.transform.Find("BranchContainer");
         branches = timelineContainer.GetComponentsInChildren<Branch>();
         trackedTransform = AppManager.Instance.GetTrackedTransform();
         versionObjs = timelineContainer.GetComponentsInChildren<VersionObject>();
@@ -63,6 +65,11 @@ public class TimelineManager : MonoBehaviour
             var pos = new Vector3(0, 0, i * betweenBranchesDistance);
             branches[i].transform.localPosition = pos;
         }
+
+        // Move the timeline so that the virtual twin is at the 0,0,0 position and matches with the physical artifact
+        Debug.Log(virtualTwin.transform.localPosition);
+        movableBranchContainer.localPosition = -virtualTwin.transform.localPosition;
+        Debug.Log(movableBranchContainer.localPosition);
 
         inPlacement = false;
 

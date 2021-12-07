@@ -349,7 +349,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   betweenVersionsDistance: 0.1
-  betweenBranchesDistance: 0.2
+  betweenBranchesDistance: 0.15
   branchLineWidth: 0.005
   placeBtn: {fileID: 712556506}
   replaceBtn: {fileID: 712556505}
