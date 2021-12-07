@@ -30,6 +30,7 @@ public class Branch : MonoBehaviour
 
         // Position objects in a line, with (0,0,0) as center point; get most left and most right positions for the line renderer
         float step = timelineManager.betweenVersionsDistance;
+        float wideStep = timelineManager.betweenBranchesDistance;
 
         for (int i = 0; i < vObjects.Length; i++)
         {
@@ -52,10 +53,9 @@ public class Branch : MonoBehaviour
         branchLine.endWidth = timelineManager.branchLineWidth;
 
         // Set the collider for the branch
-        float wideStep = step * 1.5f;
         float collWidth = numberOfVersions * step + wideStep;
         coll.center = Vector3.zero;
-        coll.size = new Vector3(collWidth, wideStep, wideStep);
+        coll.size = new Vector3(collWidth, wideStep * 1.5f, wideStep); // make sure collider ist high enough on Y axis
         coll.isTrigger = true;
     }
 

@@ -28,6 +28,7 @@ public class AppManager : MonoBehaviour
     private ObjectParts         differencesObjectLogic;
 
     private GameObject          timelineContainer;
+    private Transform           branchContainer;
     private VersionObject       virtualTwin;
 
     // References to all managers
@@ -48,13 +49,14 @@ public class AppManager : MonoBehaviour
 
         // Find all required objects
         trackedObjectLogic = GameObject.FindObjectOfType<TrackedObject>();
-        trackedTransform = trackedObjectLogic.transform.parent;
+        trackedTransform = trackedObjectLogic.transform.parent.parent; // could be alternatively found as MultiTargetBehaviour or similar
 
         comparisonObjectLogic = GameObject.FindObjectOfType<ComparisonObject>();
         differencesObjectLogic = trackedObjectLogic.transform.parent.Find("DifferencesObject").GetComponent<ObjectParts>();
 
         comparisonObjectLogic = GameObject.FindObjectOfType<ComparisonObject>();
         timelineContainer = GameObject.Find("Timeline");
+        branchContainer = timelineContainer.transform.Find("BranchContainer");
         FindAndSetVirtualTwin();
     }
 
@@ -70,7 +72,7 @@ public class AppManager : MonoBehaviour
         }
     }
 
-    #region Getter Functions
+#region Getter Functions
     public TimelineManager GetTimelineManager()
     {
         return timelineManager;
@@ -116,11 +118,16 @@ public class AppManager : MonoBehaviour
         return timelineContainer;
     }
 
+    public Transform GetBranchContainer()
+    {
+        return branchContainer;
+    }
+
     public ObjectParts GetDifferencesObjectLogic()
     {
         return differencesObjectLogic;
     }
-    #endregion
+#endregion
 
     /// <summary>
     /// Iterate through objects in the timeline to find the virtual twin and set it as reference.
@@ -178,6 +185,12 @@ public class AppManager : MonoBehaviour
         if (GetTimelineContainer() == null)
         {
             Debug.LogError("TimelineContainer not found");
+            return false;
+        }
+
+        if (GetBranchContainer() == null)
+        {
+            Debug.LogError("BranchContainer not found");
             return false;
         }
 
