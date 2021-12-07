@@ -23,9 +23,9 @@ public class TimelineManager : MonoBehaviour
 
     // Placement buttons
     [SerializeField]
+    private GameObject uiPanel;
     private GameObject placeBtn;
-    [SerializeField]
-    private GameObject replaceBtn;
+    private GameObject otherBtns;
 
     // Material
     [SerializeField]
@@ -51,10 +51,16 @@ public class TimelineManager : MonoBehaviour
         versionObjs = timelineContainer.GetComponentsInChildren<VersionObject>();
         virtualTwin = AppManager.Instance.GetVirtualTwin();
 
+        // UI
+        placeBtn = uiPanel.transform.GetChild(0).gameObject;
+        otherBtns = uiPanel.transform.GetChild(1).gameObject;
+
         // Line logic
         connectionLineLogic = FindObjectOfType<ConnectionLine>();
         comparisonLine = GameObject.Find("ComparisonLine").GetComponent<LineRenderer>();
         connectionLineLogic.SetActive(false);
+        comparisonLine.alignment = LineAlignment.TransformZ;
+        comparisonLine.useWorldSpace = false;
         comparisonLine.enabled = false;
 
         // Timeline building out of branches
@@ -65,11 +71,6 @@ public class TimelineManager : MonoBehaviour
             var pos = new Vector3(0, 0, i * betweenBranchesDistance);
             branches[i].transform.localPosition = pos;
         }
-
-        // Move the timeline so that the virtual twin is at the 0,0,0 position and matches with the physical artifact
-        Debug.Log(virtualTwin.transform.localPosition);
-        movableBranchContainer.localPosition = -virtualTwin.transform.localPosition;
-        Debug.Log(movableBranchContainer.localPosition);
 
         inPlacement = false;
 
@@ -92,8 +93,8 @@ public class TimelineManager : MonoBehaviour
         float height1 = obj1.GetComponentInChildren<Collider>().bounds.size.y;
         float height2 = obj2.GetComponentInChildren<Collider>().bounds.size.y;
 
-        Vector3 posStart = obj1.transform.position + new Vector3(0, height1 / 2, 0);
-        Vector3 posEnd = obj2.transform.position + new Vector3(0, height2 / 2, 0);
+        Vector3 posStart = obj1.transform.localPosition + new Vector3(0, height1 / 2, 0);
+        Vector3 posEnd = obj2.transform.localPosition + new Vector3(0, height2 / 2, 0);
 
         comparisonLine.enabled = true;
         comparisonLine.positionCount = 4;
@@ -134,9 +135,12 @@ public class TimelineManager : MonoBehaviour
 #endif
 
         // Setup placement buttons
-        replaceBtn.GetComponent<TransitionToPosition>().ResetToStartPosition();
-        replaceBtn.SetActive(false);
+        uiPanel.GetComponent<TransitionToPosition>().ResetToStartPosition();
+        otherBtns.SetActive(false);
         placeBtn.SetActive(true);
+
+        // Move the timeline so that the virtual twin is at the 0,0,0 position and matches with the physical artifact
+        movableBranchContainer.localPosition = -virtualTwin.transform.localPosition;
 
         connectionLineLogic.Reset();
         connectionLineLogic.SetActive(false);
@@ -159,8 +163,8 @@ public class TimelineManager : MonoBehaviour
     {
         // Manage the placement buttons
         placeBtn.SetActive(false);
-        replaceBtn.SetActive(true);
-        replaceBtn.GetComponent<TransitionToPosition>().StartTransition();
+        otherBtns.SetActive(true);
+        uiPanel.GetComponent<TransitionToPosition>().StartTransition();
 
         connectionLineLogic.SetActive(true);
 
@@ -208,6 +212,15 @@ public class TimelineManager : MonoBehaviour
                 obj.ResetMaterial();
             }
         }
+    }
+
+    #endregion
+
+    #region Movement
+
+    public void MoveCenter(bool left)
+    {
+        movableBranchContainer.localPosition += new Vector3(betweenVersionsDistance * (left ? -1f : 1f), 0, 0);
     }
 
     #endregion
