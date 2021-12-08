@@ -11,6 +11,8 @@ public class TimelineManager : MonoBehaviour
     public float betweenBranchesDistance;
     public float branchLineWidth;
 
+    public GameObject infoPanel;
+
     private ComparisonManager comparisonManager;
 
     private ConnectionLine connectionLineLogic;
@@ -88,20 +90,26 @@ public class TimelineManager : MonoBehaviour
 
     #region Lines
 
+    /// <summary>
+    /// Sets the start and endpoints for the comparison line.
+    /// </summary>
+    /// <param name="obj1">Startpoint of line.</param>
+    /// <param name="obj2">Endpoint of line.</param>
     public void EnableComparisonLine(Transform obj1, Transform obj2)
     {
         float height1 = obj1.GetComponentInChildren<Collider>().bounds.size.y;
         float height2 = obj2.GetComponentInChildren<Collider>().bounds.size.y;
 
-        Vector3 posStart = obj1.transform.localPosition + new Vector3(0, height1 / 2, 0);
-        Vector3 posEnd = obj2.transform.localPosition + new Vector3(0, height2 / 2, 0);
+        // Add the parent's local position as the branches have offsets to each other aswell.
+        Vector3 posStart = obj1.localPosition + obj1.parent.localPosition + new Vector3(0, height1 / 2, 0);
+        Vector3 posEnd = obj2.localPosition + obj2.parent.localPosition + new Vector3(0, height2 / 2, 0);
 
         comparisonLine.enabled = true;
         comparisonLine.positionCount = 4;
         comparisonLine.SetPositions(new[] {
             posStart,
-            posStart + (obj1.transform.up * height2) + (obj1.transform.up * height1 / 2),
-            posEnd +  (obj2.transform.up * height1) + (obj2.transform.up * height2 / 2),
+            posStart + (obj1.up * height2) + (obj1.up * height1 / 2),
+            posEnd +  (obj2.up * height1) + (obj2.up * height2 / 2),
             posEnd
         });
     }
@@ -235,7 +243,34 @@ public class TimelineManager : MonoBehaviour
             }
         }
 
+        if (index == 99 && activeBranchIndex != 99)
+        {
+            infoPanel.SetActive(false);
+        }
+
         activeBranchIndex = index;
+
+        if (activeBranchIndex != 99)
+        {
+            // Find closest version
+            VersionObject[] vos = branches[activeBranchIndex].GetVersionObjects();
+            Vector3 closestPos = Vector3.zero;
+            float closestDistance = 99.0f;
+
+            for (int i = 0; i < vos.Length; i++)
+            {
+                var dist = Vector3.Distance(trackedTransform.position, vos[i].transform.position);
+                if (dist < closestDistance)
+                {
+                    closestPos = vos[i].transform.position;
+                    closestDistance = dist;
+                }
+            }
+
+            // Position the info panel
+            infoPanel.SetActive(true);
+            infoPanel.transform.position = closestPos + new Vector3(betweenVersionsDistance / 2, 0.1f, -betweenVersionsDistance / 2);
+        }
     }
 
     /// <summary>

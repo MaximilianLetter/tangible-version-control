@@ -2700,7 +2700,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07689e5c223bd3f46bc31a62b2bfccf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 0
+  index: 2
   branchName: debugging
   branchDate: 03.03.2003
 --- !u!65 &9067722226672379268
@@ -2874,7 +2874,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07689e5c223bd3f46bc31a62b2bfccf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 0
+  index: 1
   branchName: dev
   branchDate: 01.02.2002
 --- !u!65 &9067722226886918042

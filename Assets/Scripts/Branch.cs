@@ -61,7 +61,7 @@ public class Branch : MonoBehaviour
 
     public void SetHighlightActive(bool status)
     {
-        branchLine.enabled = status;
+        //branchLine.enabled = status;
         ToggleMaterials(status);
     }
 
@@ -95,5 +95,10 @@ public class Branch : MonoBehaviour
                 obj.ResetMaterial();
             }
         }
+    }
+
+    public VersionObject[] GetVersionObjects()
+    {
+        return vObjects;
     }
 }
