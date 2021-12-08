@@ -230,7 +230,7 @@ public class ComparisonObject : MonoBehaviour
     public void HighlightDifferences()
     {
         // Get references to the now relevant differences obj
-        GameObject actualObj = trackedObjTransform.GetChild(0).gameObject;
+        GameObject actualObj = AppManager.Instance.GetTrackedObjectLogic().gameObject;
         differences = DetectDifferences(actualObj, parts);
 
         // NOTE: The boolean comparison is kind of a workaround to identify if overall objects need to be added or are missing

@@ -29,7 +29,8 @@ public class CollisionInteraction : MonoBehaviour
         {
             var branch = other.gameObject.GetComponent<Branch>();
             timelineManager.SetActiveBranch(branch.index, true);
-            branch.SetHighlightActive(true);
+            //branch.SetHighlightActive(true);
+            timelineManager.ToggleMaterials(false);
         }
     }
 
@@ -38,8 +39,11 @@ public class CollisionInteraction : MonoBehaviour
         if (other.gameObject.CompareTag("Branch"))
         {
             var branch = other.gameObject.GetComponent<Branch>();
-            branch.SetHighlightActive(false);
-            timelineManager.SetActiveBranch(99);
+            if (timelineManager.CheckIfLeavingRange(branch.index))
+            {
+                timelineManager.ToggleMaterials(true);
+                timelineManager.SetActiveBranch(99);
+            }
         }
     }
 }

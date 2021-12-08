@@ -9,6 +9,7 @@ public class TimelineManager : MonoBehaviour
     // Settings for the timeline and branches
     public float betweenVersionsDistance;
     public float betweenBranchesDistance;
+    public float branchColliderWidth;
     public float branchLineWidth;
 
     public GameObject infoPanel;
@@ -21,7 +22,8 @@ public class TimelineManager : MonoBehaviour
     // GameObjects to align during placement
     private GameObject timelineContainer;
     private Transform movableBranchContainer;
-    private Transform trackedTransform;
+    private Transform trackedObjectTransform;
+    private Transform trackedTargetTransform;
 
     // Placement buttons
     [SerializeField]
@@ -49,7 +51,8 @@ public class TimelineManager : MonoBehaviour
         timelineContainer = AppManager.Instance.GetTimelineContainer();
         movableBranchContainer = timelineContainer.transform.Find("BranchContainer");
         branches = timelineContainer.GetComponentsInChildren<Branch>();
-        trackedTransform = AppManager.Instance.GetTrackedTransform();
+        trackedObjectTransform = AppManager.Instance.GetTrackedObjectLogic().transform;
+        trackedTargetTransform = AppManager.Instance.GetTrackedTransform();
         versionObjs = timelineContainer.GetComponentsInChildren<VersionObject>();
         virtualTwin = AppManager.Instance.GetVirtualTwin();
 
@@ -84,7 +87,7 @@ public class TimelineManager : MonoBehaviour
         // Only align timeline and physical artifact during placement
         if (inPlacement)
         {
-            timelineContainer.transform.SetPositionAndRotation(trackedTransform.position, trackedTransform.rotation);
+            timelineContainer.transform.SetPositionAndRotation(trackedObjectTransform.position, trackedTargetTransform.rotation);
         }
     }
 
@@ -180,14 +183,21 @@ public class TimelineManager : MonoBehaviour
         foreach (var branch in branches)
         {
             branch.SetColliderActive(true);
-            branch.SetHighlightActive(false);
+            branch.SetHighlightActive(true);
+        }
+
+        // For the moment fix. Required on HL1.
+        //ToggleMaterials(false);
+        foreach (var vo in versionObjs)
+        {
+            vo.GetComponent<ObjectParts>().ToggleOutlines(false);
         }
 
         activeBranchIndex = 0;
         branches[activeBranchIndex].SetHighlightActive(true);
         // TODO ^ does not rly work, it flickers on and off, remains off in the end
 
-        virtualTwin.GetComponent<ObjectParts>().SetMaterial(edgesMaterial);
+        //virtualTwin.GetComponent<ObjectParts>().SetMaterial(edgesMaterial);
 
         inPlacement = false;
     }
@@ -207,7 +217,7 @@ public class TimelineManager : MonoBehaviour
     /// Toggle between transparent material during positioning and the default materials after the placement finished.
     /// </summary>
     /// <param name="status">True equals the placement material, false equals the normal display material.</param>
-    private void ToggleMaterials(bool status)
+    public void ToggleMaterials(bool status)
     {
         foreach (var obj in versionObjs)
         {
@@ -217,6 +227,8 @@ public class TimelineManager : MonoBehaviour
             }
             else
             {
+                if (obj.virtualTwin) continue;
+
                 obj.ResetMaterial();
             }
         }
@@ -259,7 +271,7 @@ public class TimelineManager : MonoBehaviour
 
             for (int i = 0; i < vos.Length; i++)
             {
-                var dist = Vector3.Distance(trackedTransform.position, vos[i].transform.position);
+                var dist = Vector3.Distance(trackedTargetTransform.position, vos[i].transform.position);
                 if (dist < closestDistance)
                 {
                     closestPos = vos[i].transform.position;
@@ -271,6 +283,16 @@ public class TimelineManager : MonoBehaviour
             infoPanel.SetActive(true);
             infoPanel.transform.position = closestPos + new Vector3(betweenVersionsDistance / 2, 0.1f, -betweenVersionsDistance / 2);
         }
+    }
+
+    public bool CheckIfLeavingRange(int leavingIndex)
+    {
+        if (activeBranchIndex == 99 || activeBranchIndex == leavingIndex)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     /// <summary>
