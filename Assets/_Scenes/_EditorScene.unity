@@ -1664,6 +1664,31 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1981220502}
     m_Modifications:
+    - target: {fileID: 845937197147942594, guid: 36b5c56c959cbb747add78373a49c223,
+        type: 3}
+      propertyPath: maxTilt
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 845937197147942594, guid: 36b5c56c959cbb747add78373a49c223,
+        type: 3}
+      propertyPath: speedVertical
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 845937197147942594, guid: 36b5c56c959cbb747add78373a49c223,
+        type: 3}
+      propertyPath: speedHorizontal
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 845937197147942594, guid: 36b5c56c959cbb747add78373a49c223,
+        type: 3}
+      propertyPath: tiltThresholdVertical
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 845937197147942594, guid: 36b5c56c959cbb747add78373a49c223,
+        type: 3}
+      propertyPath: tiltThresholdHorizontal
+      value: 7.5
+      objectReference: {fileID: 0}
     - target: {fileID: 4932467478611602720, guid: 36b5c56c959cbb747add78373a49c223,
         type: 3}
       propertyPath: m_Name

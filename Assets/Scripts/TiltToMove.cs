@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class TiltToMove : MonoBehaviour
 {
-    public float tiltThreshold;
+    public float tiltThresholdHorizontal;
+    public float tiltThresholdVertical;
     public float maxTilt;
-    public float speed;
+    public float speedHorizontal;
+    public float speedVertical;
 
     private Transform branchContainer;
     private Transform trackedTransform;
@@ -22,63 +24,75 @@ public class TiltToMove : MonoBehaviour
         // Actually doesnt really matter
         if (!other.CompareTag("Branch")) return;
 
-
         // Calculate tilt in relation to the branch
         Vector3 rotObj = trackedTransform.localRotation.eulerAngles;
+
         Vector3 dirObjZ = trackedTransform.localRotation * Vector3.forward;
         Vector3 dirObjX = trackedTransform.localRotation * Vector3.right;
 
         //Vector3 dirBranch = branchContainer.localRotation * Vector3.forward;
         Vector3 dirBranch = branchContainer.forward;
 
-
+        // Calculate alignment between the two directions
         float alignmentX = Mathf.Abs(Vector3.Dot(dirBranch, dirObjX));
         float alignmentZ = Mathf.Abs(Vector3.Dot(dirBranch, dirObjZ));
 
-        //Debug.Log("alignment X : " + alignmentX);
-        //Debug.Log("alignment Z : " + alignmentZ);
-
-        float tilt;
-        float alignment;
+        float tiltHorizontal;
+        float tiltVertical;
+        float alignmentHorizontal;
+        float alignmentVertical;
 
         if (Mathf.Abs(alignmentX) > Mathf.Abs(alignmentZ))
         {
-            alignmentX -= alignmentZ;
-            // TODO alignmentX and Z could be subtracted from each other to promote alignment
-            tilt = rotObj.x;
-            alignment = alignmentX;
-            //Debug.Log("TILT-X: " + tilt);
-            //Debug.Log("rot: " + rotObj.x);
+            tiltHorizontal = rotObj.x;
+            alignmentHorizontal = alignmentX;
+
+            tiltVertical = rotObj.z;
+            alignmentVertical = 1 - alignmentZ;
         }
         else
         {
-            alignmentZ -= alignmentX;
-            tilt = rotObj.z;
-            alignment = alignmentZ;
-            //Debug.Log("TILT-Z: " + tilt);
-            //Debug.Log("rot: " + rotObj.z);
+            tiltHorizontal = rotObj.z;
+            alignmentHorizontal = alignmentZ;
+
+            tiltVertical = rotObj.x;
+            alignmentVertical = 1 - alignmentX;
         }
 
-        // if tilt < 180 but high
-        bool dirFlip = true;
+        bool dirFlipHorizontal = true;
 
-        if (tilt > 180f) // 360 -> 300 -> 40 ist zu hoch, reduktion durch alignment erzeugt das problem
+        if (tiltHorizontal > 180f)
         {
-            tilt = 360f - tilt;
-            dirFlip = false;
+            tiltHorizontal = 360f - tiltHorizontal;
+            dirFlipHorizontal = false;
         }
 
-        tilt *= alignment;
-
-        //Debug.Log("TILT After: " + tilt);
+        tiltHorizontal *= alignmentHorizontal;
 
         // Check if tilt is beyond threshold
-        if (Mathf.Abs(tilt) < tiltThreshold) return;
+        if (tiltHorizontal > tiltThresholdHorizontal)
+        {
+            float dist = Mathf.SmoothStep(0, maxTilt, (tiltHorizontal / maxTilt) * speedHorizontal * Time.deltaTime);
+            branchContainer.localPosition += new Vector3(dist * (dirFlipHorizontal ? -1 : 1), 0, 0);
 
-        float dist = Mathf.SmoothStep(0, speed * Time.deltaTime, (tilt / maxTilt));
+            return; // Horizontal scrolling has priority
+        }
 
-        branchContainer.localPosition += new Vector3(dist * (dirFlip ? -1 : 1), 0, 0);
+        bool dirFlipVertical = false;
+
+        if (tiltVertical > 180f)
+        {
+            tiltVertical = 360f - tiltVertical;
+            dirFlipVertical = true;
+        }
+
+        tiltVertical *= alignmentVertical;
+
+        if (tiltVertical > tiltThresholdVertical)
+        {
+            Debug.Log("theshold reached");
+            float dist = Mathf.SmoothStep(0, maxTilt, (tiltVertical / maxTilt) * speedVertical * Time.deltaTime);
+            branchContainer.localPosition += new Vector3(0, 0, dist * (dirFlipVertical ? -1 : 1));
+        }
     }
-
-
 }
