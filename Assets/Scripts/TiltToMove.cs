@@ -59,12 +59,22 @@ public class TiltToMove : MonoBehaviour
             alignmentVertical = 1 - alignmentX;
         }
 
-        bool dirFlipHorizontal = true;
+        bool dirFlipHorizontal = false;
+        bool dirFlipVertical = false;
 
+        // Check if camera to phys. obj line up or are reversed
+        var dotProd = Vector3.Dot(Camera.main.transform.forward, dirObjZ);
+        if (dotProd > 0)
+        {
+            dirFlipHorizontal = !dirFlipHorizontal;
+            dirFlipVertical = !dirFlipVertical;
+        }
+
+        // Check if tilt is to the left or to the right
         if (tiltHorizontal > 180f)
         {
             tiltHorizontal = 360f - tiltHorizontal;
-            dirFlipHorizontal = false;
+            dirFlipHorizontal = !dirFlipHorizontal;
         }
 
         tiltHorizontal *= alignmentHorizontal;
@@ -75,24 +85,23 @@ public class TiltToMove : MonoBehaviour
             float dist = Mathf.SmoothStep(0, maxTilt, (tiltHorizontal / maxTilt) * speedHorizontal * Time.deltaTime);
             branchContainer.localPosition += new Vector3(dist * (dirFlipHorizontal ? -1 : 1), 0, 0);
 
-            return; // Horizontal scrolling has priority
+            // Horizontal scrolling has priority
+            return;
         }
 
-        bool dirFlipVertical = false;
-
+        // Check if tilt is towards back or front
         if (tiltVertical > 180f)
         {
             tiltVertical = 360f - tiltVertical;
-            dirFlipVertical = true;
+            dirFlipVertical = !dirFlipVertical;
         }
 
         tiltVertical *= alignmentVertical;
 
         if (tiltVertical > tiltThresholdVertical)
         {
-            Debug.Log("theshold reached");
             float dist = Mathf.SmoothStep(0, maxTilt, (tiltVertical / maxTilt) * speedVertical * Time.deltaTime);
-            branchContainer.localPosition += new Vector3(0, 0, dist * (dirFlipVertical ? -1 : 1));
+            branchContainer.localPosition += new Vector3(0, 0, dist * (dirFlipVertical ? 1 : -1));
         }
     }
 }
