@@ -55,7 +55,7 @@ public class Branch : MonoBehaviour
         // Set the collider for the branch
         float collWidth = numberOfVersions * step + wideStep;
         coll.center = Vector3.zero;
-        coll.size = new Vector3(collWidth, wideStep * 2f, wideStep); // make sure collider ist high enough on Y axis
+        coll.size = new Vector3(collWidth, wideStep * 1.5f, wideStep); // make sure collider ist high enough on Y axis
         coll.isTrigger = true;
     }
 

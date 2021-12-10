@@ -22,21 +22,63 @@ public class TiltToMove : MonoBehaviour
         // Actually doesnt really matter
         if (!other.CompareTag("Branch")) return;
 
-        // Get rotation of cube -- TODO later of tracked obj
-        float rotZ = trackedTransform.eulerAngles.z;
-       
-        bool dirFlip = false;
-        if (rotZ > 180)
+
+        // Calculate tilt in relation to the branch
+        Vector3 rotObj = trackedTransform.localRotation.eulerAngles;
+        Vector3 dirObjZ = trackedTransform.localRotation * Vector3.forward;
+        Vector3 dirObjX = trackedTransform.localRotation * Vector3.right;
+
+        //Vector3 dirBranch = branchContainer.localRotation * Vector3.forward;
+        Vector3 dirBranch = branchContainer.forward;
+
+
+        float alignmentX = Mathf.Abs(Vector3.Dot(dirBranch, dirObjX));
+        float alignmentZ = Mathf.Abs(Vector3.Dot(dirBranch, dirObjZ));
+
+        //Debug.Log("alignment X : " + alignmentX);
+        //Debug.Log("alignment Z : " + alignmentZ);
+
+        float tilt;
+        float alignment;
+
+        if (Mathf.Abs(alignmentX) > Mathf.Abs(alignmentZ))
         {
-            rotZ = 360 - rotZ;
-            dirFlip = true;
+            alignmentX -= alignmentZ;
+            // TODO alignmentX and Z could be subtracted from each other to promote alignment
+            tilt = rotObj.x;
+            alignment = alignmentX;
+            //Debug.Log("TILT-X: " + tilt);
+            //Debug.Log("rot: " + rotObj.x);
+        }
+        else
+        {
+            alignmentZ -= alignmentX;
+            tilt = rotObj.z;
+            alignment = alignmentZ;
+            //Debug.Log("TILT-Z: " + tilt);
+            //Debug.Log("rot: " + rotObj.z);
         }
 
-        // Check if tilt of z direction is beyond threshold
-        if (Mathf.Abs(rotZ) < tiltThreshold) return;
+        // if tilt < 180 but high
+        bool dirFlip = true;
 
-        float dist = Mathf.SmoothStep(0, speed * Time.deltaTime, (rotZ / maxTilt));
+        if (tilt > 180f) // 360 -> 300 -> 40 ist zu hoch, reduktion durch alignment erzeugt das problem
+        {
+            tilt = 360f - tilt;
+            dirFlip = false;
+        }
 
-        branchContainer.transform.position += new Vector3(dist * (dirFlip ? -1 : 1), 0, 0);
+        tilt *= alignment;
+
+        //Debug.Log("TILT After: " + tilt);
+
+        // Check if tilt is beyond threshold
+        if (Mathf.Abs(tilt) < tiltThreshold) return;
+
+        float dist = Mathf.SmoothStep(0, speed * Time.deltaTime, (tilt / maxTilt));
+
+        branchContainer.localPosition += new Vector3(dist * (dirFlip ? -1 : 1), 0, 0);
     }
+
+
 }
