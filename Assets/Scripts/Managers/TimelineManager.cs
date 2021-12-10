@@ -13,6 +13,7 @@ public class TimelineManager : MonoBehaviour
     public float branchLineWidth;
 
     public GameObject infoPanel;
+    public bool mirrorAllAxis;
 
     private ComparisonManager comparisonManager;
 
@@ -88,6 +89,26 @@ public class TimelineManager : MonoBehaviour
         if (inPlacement)
         {
             timelineContainer.transform.SetPositionAndRotation(trackedObjectTransform.position, trackedTargetTransform.rotation);
+        } else
+        {
+            Quaternion objRot = trackedTargetTransform.localRotation;
+
+            if (mirrorAllAxis)
+            {
+                foreach (var vo in versionObjs)
+                {
+                    vo.transform.rotation = objRot;
+                }
+            }
+            else
+            {
+                Quaternion rot = Quaternion.Euler(0, objRot.eulerAngles.y, 0);
+                foreach (var vo in versionObjs)
+                {
+                    vo.transform.rotation = rot;
+                }
+            }
+
         }
     }
 
@@ -152,6 +173,12 @@ public class TimelineManager : MonoBehaviour
 
         // Move the timeline so that the virtual twin is at the 0,0,0 position and matches with the physical artifact
         movableBranchContainer.localPosition = -virtualTwin.transform.localPosition;
+
+        // Reset rotation of objects
+        foreach (var vo in versionObjs)
+        {
+            vo.transform.localRotation = Quaternion.identity;
+        }
 
         connectionLineLogic.Reset();
         connectionLineLogic.SetActive(false);
