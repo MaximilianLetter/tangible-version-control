@@ -198,7 +198,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 7bb5df7c1912f4f4590f39e7564acc5b,
         type: 3}
       propertyPath: m_TagString
-      value: VersionObject
+      value: VersionObjectInside
       objectReference: {fileID: 0}
     - target: {fileID: 3358326174343635583, guid: 7bb5df7c1912f4f4590f39e7564acc5b,
         type: 3}

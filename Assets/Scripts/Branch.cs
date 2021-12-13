@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]
-[RequireComponent(typeof(BoxCollider))]
 public class Branch : MonoBehaviour
 {
     private TimelineManager timelineManager;
     private ComparisonManager comparisonManager;
     private VersionObject[] vObjects;
+    private BoxCollider[] vObjColliders;
     private LineRenderer branchLine;
-    private BoxCollider coll;
+    //private BoxCollider coll;
 
     // Meta data of branch
     public int index;
@@ -24,9 +24,11 @@ public class Branch : MonoBehaviour
         comparisonManager = AppManager.Instance.GetComparisonManager();
         vObjects = GetComponentsInChildren<VersionObject>();
         branchLine = GetComponent<LineRenderer>();
-        coll = GetComponent<BoxCollider>();
+        //coll = GetComponent<BoxCollider>();
 
         numberOfVersions = vObjects.Length;
+
+        vObjColliders = new BoxCollider[numberOfVersions];
 
         // Position objects in a line, with (0,0,0) as center point; get most left and most right positions for the line renderer
         float step = timelineManager.betweenVersionsDistance;
@@ -34,8 +36,17 @@ public class Branch : MonoBehaviour
 
         for (int i = 0; i < vObjects.Length; i++)
         {
+            vObjects[i].id = branchName + "_" + i;
+
             var pos = new Vector3(-(step * (numberOfVersions - 1) / 2) + (i * step), 0, 0);
             vObjects[i].transform.localPosition = pos;
+
+            // Setup collider based on stepsize
+            var coll = vObjects[i].GetComponent<BoxCollider>();
+            coll.size = new Vector3(step, wideStep * 1.5f, wideStep);
+            coll.isTrigger = true;
+
+            vObjColliders[i] = coll;
         }
 
         // Use these posititons to draw a line on the ground
@@ -53,10 +64,10 @@ public class Branch : MonoBehaviour
         branchLine.endWidth = timelineManager.branchLineWidth;
 
         // Set the collider for the branch
-        float collWidth = numberOfVersions * step + wideStep;
-        coll.center = Vector3.zero;
-        coll.size = new Vector3(collWidth, wideStep * 1.5f, wideStep); // make sure collider ist high enough on Y axis
-        coll.isTrigger = true;
+        //float collWidth = numberOfVersions * step + wideStep;
+        //coll.center = Vector3.zero;
+        //coll.size = new Vector3(collWidth, wideStep * 1.5f, wideStep); // make sure collider ist high enough on Y axis
+        //coll.isTrigger = true;
     }
 
     public void SetHighlightActive(bool status)
@@ -71,7 +82,11 @@ public class Branch : MonoBehaviour
     /// <param name="status">true equals active collider</param>
     public void SetColliderActive(bool status)
     {
-        coll.enabled = status;
+        foreach (var coll in vObjColliders)
+        {
+            coll.enabled = status;
+        }
+        //coll.enabled = status;
     }
 
     /// <summary>

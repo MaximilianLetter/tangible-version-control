@@ -22,7 +22,7 @@ public class TiltToMove : MonoBehaviour
     void OnTriggerStay(Collider other)
     {
         // Actually doesnt really matter
-        if (!other.CompareTag("Branch")) return;
+        if (!other.CompareTag("VersionObjectArea")) return;
 
         // Calculate tilt in relation to the branch
         Vector3 rotObj = trackedTransform.localRotation.eulerAngles;

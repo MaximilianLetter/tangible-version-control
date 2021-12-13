@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Microsoft.MixedReality.Toolkit.Utilities.Solvers;
-using Vuforia;
+﻿using UnityEngine;
+using Microsoft.MixedReality.Toolkit.UI;
 
 public class TimelineManager : MonoBehaviour
 {
@@ -12,8 +9,11 @@ public class TimelineManager : MonoBehaviour
     public float branchColliderWidth;
     public float branchLineWidth;
 
-    public GameObject infoPanel;
+    public GameObject infoPanelTilt;
+    public GameObject infoPanelVersionObject;
     public bool mirrorAllAxis;
+
+    public int maxDescLength = 40;
 
     private ComparisonManager comparisonManager;
 
@@ -41,8 +41,9 @@ public class TimelineManager : MonoBehaviour
     private VersionObject[] versionObjs;
     private VersionObject virtualTwin;
 
-    private int activeBranchIndex;
-
+    private TransitionToPosition infoPanelVersionObjectTransition;
+    private bool closeInteraction;
+    private string closeVersionObject;
     private bool ready;
     private bool inPlacement;
 
@@ -56,6 +57,8 @@ public class TimelineManager : MonoBehaviour
         trackedTargetTransform = AppManager.Instance.GetTrackedTransform();
         versionObjs = timelineContainer.GetComponentsInChildren<VersionObject>();
         virtualTwin = AppManager.Instance.GetVirtualTwin();
+
+        infoPanelVersionObjectTransition = infoPanelVersionObject.GetComponent<TransitionToPosition>();
 
         // UI
         placeBtn = uiPanel.transform.GetChild(0).gameObject;
@@ -121,8 +124,8 @@ public class TimelineManager : MonoBehaviour
     /// <param name="obj2">Endpoint of line.</param>
     public void EnableComparisonLine(Transform obj1, Transform obj2)
     {
-        float height1 = obj1.GetComponentInChildren<Collider>().bounds.size.y;
-        float height2 = obj2.GetComponentInChildren<Collider>().bounds.size.y;
+        float height1 = obj1.GetChild(0).GetComponent<Collider>().bounds.size.y;
+        float height2 = obj2.GetChild(0).GetComponent<Collider>().bounds.size.y;
 
         // Add the parent's local position as the branches have offsets to each other aswell.
         Vector3 posStart = obj1.localPosition + obj1.parent.localPosition + new Vector3(0, height1 / 2, 0);
@@ -167,7 +170,7 @@ public class TimelineManager : MonoBehaviour
 #endif
 
         // Setup placement buttons
-        uiPanel.GetComponent<TransitionToPosition>().ResetToStartPosition();
+        uiPanel.transform.localPosition = Vector3.zero;
         otherBtns.SetActive(false);
         placeBtn.SetActive(true);
 
@@ -189,7 +192,9 @@ public class TimelineManager : MonoBehaviour
             branch.SetColliderActive(false);
             branch.SetHighlightActive(false);
         }
-        ToggleMaterials(true); // Ensure that the virtual twin is also reset
+        ToggleMaterials(false); // Ensure that the virtual twin is also reset
+
+        SetVersionInfoPanel(null);
 
         inPlacement = true;
     }
@@ -202,7 +207,7 @@ public class TimelineManager : MonoBehaviour
         // Manage the placement buttons
         placeBtn.SetActive(false);
         otherBtns.SetActive(true);
-        uiPanel.GetComponent<TransitionToPosition>().StartTransition();
+        uiPanel.GetComponent<TransitionToPosition>().StartTransition(new Vector3(0, 0.1f, 0), true);
 
         connectionLineLogic.SetActive(true);
 
@@ -220,11 +225,9 @@ public class TimelineManager : MonoBehaviour
             vo.GetComponent<ObjectParts>().ToggleOutlines(false);
         }
 
-        activeBranchIndex = 0;
-        branches[activeBranchIndex].SetHighlightActive(true);
-        // TODO ^ does not rly work, it flickers on and off, remains off in the end
-
         //virtualTwin.GetComponent<ObjectParts>().SetMaterial(edgesMaterial);
+
+        SetVersionInfoPanel(virtualTwin);
 
         inPlacement = false;
     }
@@ -248,7 +251,7 @@ public class TimelineManager : MonoBehaviour
     {
         foreach (var obj in versionObjs)
         {
-            if (status)
+            if (!status)
             {
                 obj.SetMaterial(edgesMaterial);
             }
@@ -272,54 +275,49 @@ public class TimelineManager : MonoBehaviour
 
     #endregion
 
-    public void SetActiveBranch(int index, bool deactivateCurrentBranch = false)
+    public void SetCloseInteraction(bool status, VersionObject vo)
     {
-        if (deactivateCurrentBranch)
+        if (status)
         {
-            if (activeBranchIndex != 99)
+            SetVersionInfoPanel(vo);
+            closeVersionObject = vo.id;
+
+            if (!closeInteraction)
             {
-                branches[activeBranchIndex].SetHighlightActive(false);
+                ToggleMaterials(true);
+                closeInteraction = status;
             }
         }
-
-        if (index == 99 && activeBranchIndex != 99)
+        else
         {
-            infoPanel.SetActive(false);
-        }
-
-        activeBranchIndex = index;
-
-        if (activeBranchIndex != 99)
-        {
-            // Find closest version
-            VersionObject[] vos = branches[activeBranchIndex].GetVersionObjects();
-            Vector3 closestPos = Vector3.zero;
-            float closestDistance = 99.0f;
-
-            for (int i = 0; i < vos.Length; i++)
+            if (vo.id == closeVersionObject && closeInteraction)
             {
-                var dist = Vector3.Distance(trackedTargetTransform.position, vos[i].transform.position);
-                if (dist < closestDistance)
-                {
-                    closestPos = vos[i].transform.position;
-                    closestDistance = dist;
-                }
+                ToggleMaterials(false);
+                SetVersionInfoPanel(null);
+                closeInteraction = status;
             }
-
-            // Position the info panel
-            infoPanel.SetActive(true);
-            infoPanel.transform.position = closestPos + new Vector3(betweenVersionsDistance / 2, 0.1f, -betweenVersionsDistance / 2);
+            closeVersionObject = string.Empty;
         }
+        Debug.Log(status + " " + closeInteraction);
     }
 
-    public bool CheckIfLeavingRange(int leavingIndex)
+    private void SetVersionInfoPanel(VersionObject vo)
     {
-        if (activeBranchIndex == 99 || activeBranchIndex == leavingIndex)
+        if (vo == null)
         {
-            return true;
+            infoPanelVersionObject.SetActive(false);
+            return;
         }
 
-        return false;
+        var toolTip = infoPanelVersionObject.GetComponent<ToolTip>();
+        string desc = vo.description;
+        desc = desc.Length > maxDescLength ? desc.Substring(0, maxDescLength) : desc;
+        toolTip.ToolTipText = vo.id + "\n" + desc + "\n" + vo.createdBy + " " + vo.createdAt;
+
+        //infoPanelVersionObject.transform.position = vo.transform.position;
+        infoPanelVersionObject.SetActive(true);
+
+        infoPanelVersionObjectTransition.StartTransition(vo.transform.position);
     }
 
     /// <summary>
@@ -329,7 +327,7 @@ public class TimelineManager : MonoBehaviour
     {
         virtualTwin = AppManager.Instance.GetVirtualTwin();
 
-        ToggleMaterials(false);
+        ToggleMaterials(true);
         virtualTwin.GetComponent<ObjectParts>().SetMaterial(edgesMaterial);
     }
 

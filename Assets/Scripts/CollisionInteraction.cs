@@ -20,30 +20,25 @@ public class CollisionInteraction : MonoBehaviour
             return;
         }
 
-        if (other.gameObject.CompareTag("VersionObject"))
+        if (other.gameObject.CompareTag("VersionObjectInside"))
         {
             comparisonManager.StartComparison(gameObject, other.gameObject);
+            return;
         }
 
-        if (other.gameObject.CompareTag("Branch"))
+        if (other.gameObject.CompareTag("VersionObjectArea"))
         {
-            var branch = other.gameObject.GetComponent<Branch>();
-            timelineManager.SetActiveBranch(branch.index, true);
-            //branch.SetHighlightActive(true);
-            timelineManager.ToggleMaterials(false);
+            var vo = other.gameObject.GetComponent<VersionObject>();
+            timelineManager.SetCloseInteraction(true, vo);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("Branch"))
+        if (other.gameObject.CompareTag("VersionObjectArea"))
         {
-            var branch = other.gameObject.GetComponent<Branch>();
-            if (timelineManager.CheckIfLeavingRange(branch.index))
-            {
-                timelineManager.ToggleMaterials(true);
-                timelineManager.SetActiveBranch(99);
-            }
+            var vo = other.gameObject.GetComponent<VersionObject>();
+            timelineManager.SetCloseInteraction(false, vo);
         }
     }
 }
