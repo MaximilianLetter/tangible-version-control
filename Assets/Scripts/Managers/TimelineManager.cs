@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Microsoft.MixedReality.Toolkit.UI;
 
 public class TimelineManager : MonoBehaviour
 {
@@ -66,8 +65,9 @@ public class TimelineManager : MonoBehaviour
 
         // Line logic
         connectionLineLogic = FindObjectOfType<ConnectionLine>();
-        comparisonLine = GameObject.Find("ComparisonLine").GetComponent<LineRenderer>();
         connectionLineLogic.SetActive(false);
+
+        comparisonLine = GameObject.Find("ComparisonLine").GetComponent<LineRenderer>();
         comparisonLine.alignment = LineAlignment.TransformZ;
         comparisonLine.useWorldSpace = false;
         comparisonLine.enabled = false;
@@ -298,7 +298,6 @@ public class TimelineManager : MonoBehaviour
             }
             closeVersionObject = string.Empty;
         }
-        Debug.Log(status + " " + closeInteraction);
     }
 
     private void SetVersionInfoPanel(VersionObject vo)
@@ -309,10 +308,10 @@ public class TimelineManager : MonoBehaviour
             return;
         }
 
-        var toolTip = infoPanelVersionObject.GetComponent<ToolTip>();
+        var plate = infoPanelVersionObject.GetComponent<VersionPlate>();
         string desc = vo.description;
-        desc = desc.Length > maxDescLength ? desc.Substring(0, maxDescLength) : desc;
-        toolTip.ToolTipText = vo.id + "\n" + desc + "\n" + vo.createdBy + " " + vo.createdAt;
+        desc = desc.Length > maxDescLength ? (desc.Substring(0, maxDescLength) + "...") : desc;
+        plate.SetText(vo.id + "\n" + desc + "\n" + vo.createdBy + " " + vo.createdAt);
 
         //infoPanelVersionObject.transform.position = vo.transform.position;
         infoPanelVersionObject.SetActive(true);
