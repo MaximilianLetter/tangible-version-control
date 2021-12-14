@@ -10,7 +10,7 @@ public class Branch : MonoBehaviour
     private VersionObject[] vObjects;
     private BoxCollider[] vObjColliders;
     private LineRenderer branchLine;
-    //private BoxCollider coll;
+    private BoxCollider branchColl;
 
     // Meta data of branch
     public int index;
@@ -24,7 +24,7 @@ public class Branch : MonoBehaviour
         comparisonManager = AppManager.Instance.GetComparisonManager();
         vObjects = GetComponentsInChildren<VersionObject>();
         branchLine = GetComponent<LineRenderer>();
-        //coll = GetComponent<BoxCollider>();
+        branchColl = GetComponent<BoxCollider>();
 
         numberOfVersions = vObjects.Length;
 
@@ -64,10 +64,10 @@ public class Branch : MonoBehaviour
         branchLine.endWidth = timelineManager.branchLineWidth;
 
         // Set the collider for the branch
-        //float collWidth = numberOfVersions * step + wideStep;
-        //coll.center = Vector3.zero;
-        //coll.size = new Vector3(collWidth, wideStep * 1.5f, wideStep); // make sure collider ist high enough on Y axis
-        //coll.isTrigger = true;
+        float collWidth = numberOfVersions * step;
+        branchColl.center = Vector3.zero;
+        branchColl.size = new Vector3(collWidth, wideStep * 1.5f, wideStep); // make sure collider ist high enough on Y axis
+        branchColl.isTrigger = true;
     }
 
     public void SetHighlightActive(bool status)
@@ -86,7 +86,7 @@ public class Branch : MonoBehaviour
         {
             coll.enabled = status;
         }
-        //coll.enabled = status;
+        branchColl.enabled = status;
     }
 
     /// <summary>

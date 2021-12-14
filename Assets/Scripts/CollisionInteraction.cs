@@ -35,10 +35,9 @@ public class CollisionInteraction : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("VersionObjectArea"))
+        if (other.gameObject.CompareTag("Branch"))
         {
-            var vo = other.gameObject.GetComponent<VersionObject>();
-            timelineManager.SetCloseInteraction(false, vo);
+            timelineManager.SetCloseInteraction(false);
         }
     }
 }

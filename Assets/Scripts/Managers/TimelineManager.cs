@@ -275,12 +275,11 @@ public class TimelineManager : MonoBehaviour
 
     #endregion
 
-    public void SetCloseInteraction(bool status, VersionObject vo)
+    public void SetCloseInteraction(bool status, VersionObject vo = null)
     {
         if (status)
         {
             SetVersionInfoPanel(vo);
-            closeVersionObject = vo.id;
 
             if (!closeInteraction)
             {
@@ -290,14 +289,14 @@ public class TimelineManager : MonoBehaviour
         }
         else
         {
-            if (vo.id == closeVersionObject && closeInteraction)
+            if (closeInteraction)
             {
                 ToggleMaterials(false);
                 SetVersionInfoPanel(null);
-                closeInteraction = status;
             }
-            closeVersionObject = string.Empty;
         }
+
+        closeInteraction = status;
     }
 
     private void SetVersionInfoPanel(VersionObject vo)
