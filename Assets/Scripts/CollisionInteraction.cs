@@ -35,7 +35,7 @@ public class CollisionInteraction : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("Branch"))
+        if (other.gameObject.CompareTag("BranchContainer"))
         {
             timelineManager.SetCloseInteraction(false);
         }

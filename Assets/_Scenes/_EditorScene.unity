@@ -668,7 +668,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   betweenVersionsDistance: 0.1
-  betweenBranchesDistance: 0.15
+  betweenBranchesDistance: 0.2
   branchColliderWidth: 0.2
   branchLineWidth: 0.0035
   infoPanelTilt: {fileID: 4592383442533442365}
@@ -1727,7 +1727,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.1
   far clip plane: 1000
   field of view: 60
   orthographic: 0
@@ -3211,41 +3211,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4626603232124461316, guid: 8f92f5e00fa5210469e36256ec2d7f3d,
         type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4626603232124461316, guid: 8f92f5e00fa5210469e36256ec2d7f3d,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4626603232124461316, guid: 8f92f5e00fa5210469e36256ec2d7f3d,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4626603232124461316, guid: 8f92f5e00fa5210469e36256ec2d7f3d,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4626603232124461316, guid: 8f92f5e00fa5210469e36256ec2d7f3d,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4626603232124461316, guid: 8f92f5e00fa5210469e36256ec2d7f3d,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4626603232124461316, guid: 8f92f5e00fa5210469e36256ec2d7f3d,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4626603232124461316, guid: 8f92f5e00fa5210469e36256ec2d7f3d,
-        type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
@@ -3263,6 +3228,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Timeline
+      objectReference: {fileID: 0}
+    - target: {fileID: 4671016524440413025, guid: 8f92f5e00fa5210469e36256ec2d7f3d,
+        type: 3}
+      propertyPath: fadeDuration
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4986351691035454260, guid: 8f92f5e00fa5210469e36256ec2d7f3d,
         type: 3}

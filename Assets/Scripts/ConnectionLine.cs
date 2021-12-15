@@ -4,14 +4,12 @@ using UnityEngine;
 
 public class ConnectionLine : MonoBehaviour
 {
-    public float lowerDist;
-    public float upperDist;
-    private float distRange;
-    private float farUpperDist;
+    public float fadeDuration;
 
     // External references
     private Transform physObj;
     private Transform virtualTwin;
+    private TimelineManager timelineManager;
 
     // Internal references
     private LineRenderer lineRend;
@@ -25,54 +23,55 @@ public class ConnectionLine : MonoBehaviour
         lineRend = GetComponent<LineRenderer>();
         lineMat = lineRend.material;
         lineCol = lineMat.color;
-        lineRend.positionCount = 4;
+        lineRend.positionCount = 2;
 
-        physObj = FindObjectOfType<TrackedObject>().transform;
+        physObj = AppManager.Instance.GetTrackedTransform();
+        timelineManager = AppManager.Instance.GetTimelineManager();
 
         SetVirtualTwinTransform(AppManager.Instance.GetVirtualTwin());
-
-        distRange = upperDist - lowerDist;
-        farUpperDist = upperDist + 0.1f;
     }
 
-    void Update()
+    public void ConnectVirtualAndPhysical()
     {
-        if (!isActive) return;
-
-        float dist = Vector3.Distance(physObj.position, virtualTwin.position);
-
-        if (dist > farUpperDist)
-        {
-            return;
-        }
-
-        // Make sure the line is fully invisible when distance threshold is reached
-        if (dist > upperDist)
-        {
-            Reset();
-            return;
-        }
-
-        float alpha = Mathf.Min(1.0f - ((dist - lowerDist) / distRange), 1.0f);
-
-        lineCol.a = alpha;
-        lineMat.color = lineCol;
-
         lineRend.SetPositions(new[]
         {
              physObj.position,
-             Vector3.Lerp(physObj.position, virtualTwin.position, 0.15f),
-             Vector3.Lerp(physObj.position, virtualTwin.position, 0.85f),
              virtualTwin.position
         });
     }
+
+    public IEnumerator FadeLine(bool fadeIn)
+    {
+        float passedTime = 0f;
+        float alpha;
+
+        while (passedTime < fadeDuration)
+        {
+            passedTime += Time.deltaTime;
+
+            alpha = Mathf.Lerp(0f, 1f, passedTime / fadeDuration);
+
+            if (!fadeIn) alpha = 1f - alpha;
+
+            lineCol.a = alpha;
+            lineMat.color = lineCol;
+
+            yield return null;
+        }
+
+        alpha = fadeIn ? 1f : 0f;
+
+        lineCol.a = alpha;
+        lineMat.color = lineCol;
+    }
+
 
     /// <summary>
     /// Resets the line positions to zero, zero which results in an invisible line.
     /// </summary>
     public void Reset()
     {
-        lineRend.SetPositions(new Vector3[4] { Vector3.zero, Vector3.zero, Vector3.zero, Vector3.zero });
+        lineRend.SetPositions(new Vector3[2] { Vector3.zero, Vector3.zero });
     }
 
     public void SetActive(bool state)

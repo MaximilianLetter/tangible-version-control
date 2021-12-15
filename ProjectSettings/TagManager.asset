@@ -8,6 +8,7 @@ TagManager:
   - VersionObjectArea
   - VersionObjectInside
   - Branch
+  - BranchContainer
   layers:
   - Default
   - TransparentFX

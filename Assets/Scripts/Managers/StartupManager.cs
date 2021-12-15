@@ -9,7 +9,7 @@ public class StartupManager : MonoBehaviour
 
     public GameObject[] sceneObjects;
 
-    IEnumerator StartUp()
+    public IEnumerator StartUp()
     {
         // Wait one frame for other objects to instantiate
         yield return null;
@@ -33,6 +33,26 @@ public class StartupManager : MonoBehaviour
 
             yield return null;
         }
+        Debug.Log("All object parts initialized.");
+
+        // Wait for all branches to be setup
+        Branch[] branches = FindObjectsOfType<Branch>();
+
+        allReady = true;
+        while (true)
+        {
+            foreach (var b in branches)
+            {
+                if (!b.IsReady())
+                {
+                    allReady = false;
+                }
+            }
+
+            if (allReady) break;
+            yield return null;
+        }
+        Debug.Log("All branches setup.");
 
         // NOTE: this is not clean, this should rather be a callback of Vuforia setup, should then be placed in the TrackingManager
 #if UNITY_EDITOR
@@ -59,6 +79,7 @@ public class StartupManager : MonoBehaviour
             obj.SetActive(false);
         }
 
+        AppManager.Instance.GetTimelineManager().BuildTimeline();
         startupPanel.SetActive(true);
 
         Debug.Log("Startup finished.");

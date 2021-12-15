@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class TimelineManager : MonoBehaviour
 {
@@ -12,12 +13,13 @@ public class TimelineManager : MonoBehaviour
     public GameObject infoPanelVersionObject;
     public bool mirrorAllAxis;
 
-    public int maxDescLength = 40;
+    public int maxDescLength = 20;
 
     private ComparisonManager comparisonManager;
 
     private ConnectionLine connectionLineLogic;
     private LineRenderer comparisonLine;
+    private BoxCollider coll;
 
     // GameObjects to align during placement
     private GameObject timelineContainer;
@@ -42,11 +44,10 @@ public class TimelineManager : MonoBehaviour
 
     private TransitionToPosition infoPanelVersionObjectTransition;
     private bool closeInteraction;
-    private string closeVersionObject;
     private bool ready;
     private bool inPlacement;
 
-    private void Start()
+    void Start()
     {
         comparisonManager = AppManager.Instance.GetComparisonManager();
         timelineContainer = AppManager.Instance.GetTimelineContainer();
@@ -58,6 +59,7 @@ public class TimelineManager : MonoBehaviour
         virtualTwin = AppManager.Instance.GetVirtualTwin();
 
         infoPanelVersionObjectTransition = infoPanelVersionObject.GetComponent<TransitionToPosition>();
+        coll = movableBranchContainer.GetComponent<BoxCollider>();
 
         // UI
         placeBtn = uiPanel.transform.GetChild(0).gameObject;
@@ -72,18 +74,37 @@ public class TimelineManager : MonoBehaviour
         comparisonLine.useWorldSpace = false;
         comparisonLine.enabled = false;
 
+        inPlacement = false;
+
+        ready = true;
+    }
+
+    public void BuildTimeline()
+    {
         // Timeline building out of branches
         // NOTE: this is not yet a realistic branch building but it is evenly spaced
+        int mostVersionsInBranch = 0;
+        Vector3 center = Vector3.zero;
         var numberOfBranches = branches.Length;
         for (int i = 0; i < numberOfBranches; i++)
         {
             var pos = new Vector3(0, 0, i * betweenBranchesDistance);
             branches[i].transform.localPosition = pos;
+
+            // Get longest branch
+            int length = branches[i].GetVersionObjects().Length;
+            if (length > mostVersionsInBranch)
+            {
+                mostVersionsInBranch = length;
+            }
+            center += branches[i].transform.localPosition;
         }
 
-        inPlacement = false;
-
-        ready = true;
+        center /= branches.Length;
+        float collWidth = mostVersionsInBranch * betweenVersionsDistance;
+        coll.center = center;
+        coll.size = new Vector3(collWidth, branchColliderWidth * 1.5f, branchColliderWidth * branches.Length); // make sure collider ist high enough on Y axis
+        coll.isTrigger = true;
     }
 
     private void Update()
@@ -94,24 +115,29 @@ public class TimelineManager : MonoBehaviour
             timelineContainer.transform.SetPositionAndRotation(trackedObjectTransform.position, trackedTargetTransform.rotation);
         } else
         {
-            Quaternion objRot = trackedTargetTransform.localRotation;
-
-            if (mirrorAllAxis)
+            if (closeInteraction)
             {
-                foreach (var vo in versionObjs)
-                {
-                    vo.transform.rotation = objRot;
-                }
-            }
-            else
-            {
-                Quaternion rot = Quaternion.Euler(0, objRot.eulerAngles.y, 0);
-                foreach (var vo in versionObjs)
-                {
-                    vo.transform.rotation = rot;
-                }
-            }
+                // Rotate versions according to tracked object rotation
+                Quaternion objRot = trackedTargetTransform.localRotation;
 
+                if (mirrorAllAxis)
+                {
+                    foreach (var vo in versionObjs)
+                    {
+                        vo.transform.rotation = objRot;
+                    }
+                }
+                else
+                {
+                    Quaternion rot = Quaternion.Euler(0, objRot.eulerAngles.y, 0);
+                    foreach (var vo in versionObjs)
+                    {
+                        vo.transform.rotation = rot;
+                    }
+                }
+
+                connectionLineLogic.ConnectVirtualAndPhysical();
+            }
         }
     }
 
@@ -192,6 +218,7 @@ public class TimelineManager : MonoBehaviour
             branch.SetColliderActive(false);
             branch.SetHighlightActive(false);
         }
+        SetColliderActive(false);
         ToggleMaterials(false); // Ensure that the virtual twin is also reset
 
         SetVersionInfoPanel(null);
@@ -217,9 +244,10 @@ public class TimelineManager : MonoBehaviour
             branch.SetColliderActive(true);
             branch.SetHighlightActive(true);
         }
+        SetColliderActive(true);
 
         // For the moment fix. Required on HL1.
-        //ToggleMaterials(false);
+        ToggleMaterials(true);
         foreach (var vo in versionObjs)
         {
             vo.GetComponent<ObjectParts>().ToggleOutlines(false);
@@ -230,6 +258,11 @@ public class TimelineManager : MonoBehaviour
         SetVersionInfoPanel(virtualTwin);
 
         inPlacement = false;
+    }
+
+    private void SetColliderActive(bool status)
+    {
+        coll.enabled = status;
     }
 
     /// <summary>
@@ -246,7 +279,7 @@ public class TimelineManager : MonoBehaviour
     /// <summary>
     /// Toggle between transparent material during positioning and the default materials after the placement finished.
     /// </summary>
-    /// <param name="status">True equals the placement material, false equals the normal display material.</param>
+    /// <param name="status">True equals the normal display material, false equals the normal placement edges material.</param>
     public void ToggleMaterials(bool status)
     {
         foreach (var obj in versionObjs)
@@ -285,6 +318,7 @@ public class TimelineManager : MonoBehaviour
             {
                 ToggleMaterials(true);
                 closeInteraction = status;
+                connectionLineLogic.StartCoroutine("FadeLine", true);
             }
         }
         else
@@ -293,6 +327,7 @@ public class TimelineManager : MonoBehaviour
             {
                 ToggleMaterials(false);
                 SetVersionInfoPanel(null);
+                connectionLineLogic.StartCoroutine("FadeLine", false);
             }
         }
 

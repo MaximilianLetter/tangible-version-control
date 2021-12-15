@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6618143911547680825}
   - component: {fileID: 6618143911547680826}
   - component: {fileID: 6618143911547680828}
-  - component: {fileID: 1839015014182468010}
   m_Layer: 0
   m_Name: branch
   m_TagString: Branch
@@ -68,7 +67,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a08dec89fb90b874593165f6c646af53, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -156,19 +155,6 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!65 &1839015014182468010
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6618143911547680824}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.01, y: 0.01, z: 0.01}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &3043638254005674883
 PrefabInstance:
   m_ObjectHideFlags: 0
