@@ -40,8 +40,8 @@ public class Branch : MonoBehaviour
         {
             vObjects[i].id = branchName + "_" + i;
 
-            var pos = new Vector3(-(step * (numberOfVersions - 1) / 2) + (i * step), 0, 0);
-            vObjects[i].transform.localPosition = pos;
+            //var pos = new Vector3(-(step * (numberOfVersions - 1) / 2) + (i * step), 0, 0);
+            //vObjects[i].transform.localPosition = pos;
 
             // Setup collider based on stepsize
             var coll = vObjects[i].GetComponent<BoxCollider>();
@@ -51,19 +51,13 @@ public class Branch : MonoBehaviour
             vObjColliders[i] = coll;
         }
 
-        // Use these posititons to draw a line on the ground
-        branchLine.useWorldSpace = false;
-        branchLine.SetPositions(new Vector3[2] {
-            vObjects[0].transform.localPosition,
-            vObjects[numberOfVersions-1].transform.localPosition
-        });
-
         // Set random color for the line
         Color randomColor = Random.ColorHSV();
         branchLine.startColor = randomColor;
         branchLine.endColor = randomColor;
         branchLine.startWidth = timelineManager.branchLineWidth;
         branchLine.endWidth = timelineManager.branchLineWidth;
+        branchLine.useWorldSpace = false;
 
         // Set the collider for the branch
         //float collWidth = numberOfVersions * step;
@@ -72,6 +66,15 @@ public class Branch : MonoBehaviour
         //branchColl.isTrigger = true;
 
         ready = true;
+    }
+
+    public void SetBranchLinePositionsAndOrder(Vector3[] positions, int order)
+    {
+        branchLine.positionCount = positions.Length;
+
+        branchLine.SetPositions(positions);
+
+        branchLine.sortingOrder = order;
     }
 
     public void SetHighlightActive(bool status)

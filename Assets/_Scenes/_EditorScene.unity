@@ -668,8 +668,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   betweenVersionsDistance: 0.1
-  betweenBranchesDistance: 0.2
-  branchColliderWidth: 0.2
+  betweenBranchesDistance: 0.15
+  branchColliderWidth: 0.15
   branchLineWidth: 0.0035
   infoPanelTilt: {fileID: 4592383442533442365}
   infoPanelVersionObject: {fileID: 580122685}

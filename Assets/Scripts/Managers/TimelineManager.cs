@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class TimelineManager : MonoBehaviour
@@ -82,26 +82,81 @@ public class TimelineManager : MonoBehaviour
     public void BuildTimeline()
     {
         // Timeline building out of branches
-        // NOTE: this is not yet a realistic branch building but it is evenly spaced
-        int mostVersionsInBranch = 0;
+        List<VersionObject> allVersions = new List<VersionObject>();
+        foreach (var b in branches)
+        {
+            foreach (var vo in b.GetVersionObjects())
+            {
+                allVersions.Add(vo);
+            }
+        }
+
+        // Sort by their createdAt field
+        allVersions.Sort(SortByDate);
+        int totalAmountOfVOs = allVersions.Count;
+
+        // Prepare arrays of positions for branch lines
+        Transform mainBranch = allVersions[0].transform.parent;
+        List<List<Vector3>> linePositions = new List<List<Vector3>>();
+        foreach (var b in branches)
+        {
+            linePositions.Add(new List<Vector3>());
+        }
+
+        int currentBranchIndex = 0;
+        // Order versions in branches
+        for (int i = 0; i < totalAmountOfVOs; i++)
+        {
+            Transform currentVO = allVersions[i].transform;
+            int branchIndex = currentVO.parent.GetSiblingIndex();
+
+            float xPos = -(betweenVersionsDistance * (totalAmountOfVOs - 1) / 2) + (i * betweenVersionsDistance);
+            float zPos = branchIndex * betweenBranchesDistance;
+            var pos = new Vector3(xPos, 0, zPos);
+
+            currentVO.localPosition = pos;
+
+            if ((branchIndex != currentBranchIndex)) // A change from one branch to another occurs
+            {
+                Vector3 transitionPos = new Vector3(
+                    xPos - betweenVersionsDistance,
+                    0,
+                    zPos + (currentBranchIndex - branchIndex) * betweenBranchesDistance);
+
+                if (branchIndex == 0) // Going back into main branch
+                {
+                    linePositions[currentBranchIndex].Add(pos);
+                    Debug.Log("back to main line");
+                }
+                else
+                {
+                    linePositions[branchIndex].Add(transitionPos);
+                }
+            }
+
+            linePositions[branchIndex].Add(pos);
+
+            currentBranchIndex = branchIndex;
+        }
+
+        // Draw lines for each branch
+        for (int i = 0; i < branches.Length; i++)
+        {
+            int inverseOrder = branches.Length - i;
+            branches[i].SetBranchLinePositionsAndOrder(linePositions[i].ToArray(), inverseOrder);
+        }
+
         Vector3 center = Vector3.zero;
         var numberOfBranches = branches.Length;
         for (int i = 0; i < numberOfBranches; i++)
         {
-            var pos = new Vector3(0, 0, i * betweenBranchesDistance);
-            branches[i].transform.localPosition = pos;
-
-            // Get longest branch
-            int length = branches[i].GetVersionObjects().Length;
-            if (length > mostVersionsInBranch)
-            {
-                mostVersionsInBranch = length;
-            }
+            //var pos = new Vector3(0, 0, i * betweenBranchesDistance);
+            //branches[i].transform.localPosition = pos;
             center += branches[i].transform.localPosition;
         }
 
         center /= branches.Length;
-        float collWidth = mostVersionsInBranch * betweenVersionsDistance;
+        float collWidth = totalAmountOfVOs * betweenVersionsDistance;
         coll.center = center;
         coll.size = new Vector3(collWidth, branchColliderWidth * 1.5f, branchColliderWidth * branches.Length); // make sure collider ist high enough on Y axis
         coll.isTrigger = true;
@@ -386,5 +441,10 @@ public class TimelineManager : MonoBehaviour
     public bool IsReady()
     {
         return ready;
+    }
+
+    static int SortByDate(VersionObject vo1, VersionObject vo2)
+    {
+        return vo1.createdAt.CompareTo(vo2.createdAt);
     }
 }

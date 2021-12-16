@@ -7,10 +7,11 @@ using TMPro;
 public class VersionObject : MonoBehaviour
 {
     public bool virtualTwin;
-    public string id;
     public string description;
     public string createdAt;
     public string createdBy;
+    [HideInInspector]
+    public string id;
 
     [Space(14)]
     //public Transform textBlock;
