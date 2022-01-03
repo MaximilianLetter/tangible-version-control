@@ -103,29 +103,40 @@ public class TimelineManager : MonoBehaviour
             linePositions.Add(new List<Vector3>());
         }
 
-        int currentBranchIndex = 0;
+        int prevBranchIndex = 0;
+        int prevOffset = 0;
+        int offset = 0;
         // Order versions in branches
         for (int i = 0; i < totalAmountOfVOs; i++)
         {
             Transform currentVO = allVersions[i].transform;
             int branchIndex = currentVO.parent.GetSiblingIndex();
 
+            if (branchIndex > prevBranchIndex)
+            {
+                offset += 1;
+            }
+            else if (branchIndex < prevBranchIndex)
+            {
+                offset -= 1;
+            }
+
             float xPos = -(betweenVersionsDistance * (totalAmountOfVOs - 1) / 2) + (i * betweenVersionsDistance);
-            float zPos = branchIndex * betweenBranchesDistance;
+            float zPos = offset * betweenBranchesDistance;
             var pos = new Vector3(xPos, 0, zPos);
 
             currentVO.localPosition = pos;
 
-            if ((branchIndex != currentBranchIndex)) // A change from one branch to another occurs
+            if ((branchIndex != prevBranchIndex)) // A change from one branch to another occurs
             {
                 Vector3 transitionPos = new Vector3(
                     xPos - betweenVersionsDistance,
                     0,
-                    zPos + (currentBranchIndex - branchIndex) * betweenBranchesDistance);
+                    zPos + (prevOffset - offset) * betweenBranchesDistance);
 
-                if (branchIndex == 0) // Going back into main branch
+                if (branchIndex < prevBranchIndex) // Going back into prev branch
                 {
-                    linePositions[currentBranchIndex].Add(pos);
+                    linePositions[prevBranchIndex].Add(pos);
                     Debug.Log("back to main line");
                 }
                 else
@@ -136,7 +147,8 @@ public class TimelineManager : MonoBehaviour
 
             linePositions[branchIndex].Add(pos);
 
-            currentBranchIndex = branchIndex;
+            prevBranchIndex = branchIndex;
+            prevOffset = offset;
         }
 
         // Draw lines for each branch
@@ -146,18 +158,10 @@ public class TimelineManager : MonoBehaviour
             branches[i].SetBranchLinePositionsAndOrder(linePositions[i].ToArray(), inverseOrder);
         }
 
-        Vector3 center = Vector3.zero;
-        var numberOfBranches = branches.Length;
-        for (int i = 0; i < numberOfBranches; i++)
-        {
-            //var pos = new Vector3(0, 0, i * betweenBranchesDistance);
-            //branches[i].transform.localPosition = pos;
-            center += branches[i].transform.localPosition;
-        }
-
-        center /= branches.Length;
+        // Calculate values for timeline collider
         float collWidth = totalAmountOfVOs * betweenVersionsDistance;
-        coll.center = center;
+        Vector3 collCenter = new Vector3(0, 0, (branches.Length - 1)* betweenBranchesDistance / 2);
+        coll.center = collCenter;
         coll.size = new Vector3(collWidth, branchColliderWidth * 1.5f, branchColliderWidth * branches.Length); // make sure collider ist high enough on Y axis
         coll.isTrigger = true;
     }
