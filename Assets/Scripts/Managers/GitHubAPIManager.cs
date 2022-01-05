@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using SimpleJSON;
+using Microsoft.MixedReality.Toolkit.Utilities.Gltf.Serialization.Editor;
+using Microsoft.MixedReality.Toolkit.Utilities.Gltf.Serialization;
+using System.Threading.Tasks;
 
 public class GitHubAPIManager : MonoBehaviour
 {
@@ -72,7 +75,9 @@ public class GitHubAPIManager : MonoBehaviour
             Debug.Log(listCommitsInfo[i]["commit"]["message"]);
             Debug.Log(listCommitsInfo[i]["sha"]);
             string commitID = listCommitsInfo[i]["sha"];
-            // what about node id, is that a link to branches?
+            // TODO what about node id, is that a link to branches?
+
+            // Get single commit information
 
             string singleCommitURL = baseURL + baseRepo + "commits/" + commitID;
             UnityWebRequest singleCommitRequest = UnityWebRequest.Get(singleCommitURL);
@@ -86,9 +91,49 @@ public class GitHubAPIManager : MonoBehaviour
             }
 
             JSONNode singleCommitInfo = JSON.Parse(singleCommitRequest.downloadHandler.text);
-            Debug.Log(singleCommitInfo["files"][0]["filename"]);
+            var fileName = (string)singleCommitInfo["files"][0]["filename"];
 
-            // TODO next: try to load model from file URL of commit
+            if (System.IO.Path.GetExtension(fileName) != ".glb")
+            {
+                // If 
+                Debug.Log("Not a glTF file, continue.");
+                continue;
+            }
+
+            string modelURL = singleCommitInfo["files"][0]["raw_url"];
+
+            // Fallback for testing
+            //modelURL = "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb";
+            Debug.Log(modelURL);
+
+            UnityWebRequest modelDataRequest = UnityWebRequest.Get(modelURL);
+
+            yield return modelDataRequest.SendWebRequest();
+
+            if (modelDataRequest.isNetworkError || modelDataRequest.isHttpError)
+            {
+                Debug.LogError(modelDataRequest.error);
+                yield break;
+            }
+
+            var modelInfoRaw = modelDataRequest.downloadHandler.data;
+
+            LoadObject(modelInfoRaw);
+        }
+    }
+
+    async void LoadObject(byte[] data)
+    {
+        Debug.Log("Building glTF ...");
+        var t = Task<GameObject>.Run(() => ConstructGltf.ConstructAsync(GltfUtility.GetGltfObjectFromGlb(data)));
+        await t;
+        Debug.Log("Building glTF done.");
+
+        GameObject result = t.Result;
+        if (result != null)
+        {
+            // The glTF result is the complete scene, including light and camera. Only keep the real mesh, destroy other or dont even create other.
+            Debug.Log(result);
         }
     }
 }
