@@ -14,6 +14,15 @@ public class StartupManager : MonoBehaviour
         // Wait one frame for other objects to instantiate
         yield return null;
 
+        // First of wait for the ApiManager to finish
+        var apiManager = AppManager.Instance.GetApiManager();
+        while (true)
+        {
+            if (apiManager.IsReady()) break;
+            
+            yield return null;
+        }
+
         // Wait for all parts to be initialized
         ObjectParts[] parts = FindObjectsOfType<ObjectParts>();
 

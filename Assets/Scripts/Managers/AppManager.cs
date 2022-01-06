@@ -36,6 +36,7 @@ public class AppManager : MonoBehaviour
     private ComparisonManager   comparisonManager;
     private TransitionManager   transitionManager;
     private StartupManager      startupManager;
+    private GitHubAPIManager    apiManager;
 
     private void Awake()
     {
@@ -46,6 +47,7 @@ public class AppManager : MonoBehaviour
         comparisonManager = GameObject.FindObjectOfType<ComparisonManager>();
         transitionManager = GameObject.FindObjectOfType<TransitionManager>();
         startupManager = GameObject.FindObjectOfType<StartupManager>();
+        apiManager = GameObject.FindObjectOfType<GitHubAPIManager>();
 
         // Find all required objects
         trackedObjectLogic = GameObject.FindObjectOfType<TrackedObject>();
@@ -127,6 +129,11 @@ public class AppManager : MonoBehaviour
     {
         return differencesObjectLogic;
     }
+
+    public GitHubAPIManager GetApiManager()
+    {
+        return apiManager;
+    }
 #endregion
 
     /// <summary>
@@ -194,11 +201,11 @@ public class AppManager : MonoBehaviour
             return false;
         }
 
-        if (GetVirtualTwin() == null)
-        {
-            Debug.LogError("VirtualTwin not found");
-            return false;
-        }
+        //if (GetVirtualTwin() == null)
+        //{
+        //    Debug.LogError("VirtualTwin not found");
+        //    return false;
+        //}
 
         if (GetTimelineManager() == null)
         {
@@ -221,6 +228,12 @@ public class AppManager : MonoBehaviour
         if (GetTransitionManager() == null)
         {
             Debug.LogError("TransitionManager not found");
+            return false;
+        }
+
+        if (GetApiManager() == null)
+        {
+            Debug.LogError("ApiManager not found");
             return false;
         }
 

@@ -902,6 +902,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43a36918e7d6d234e9b60e71902ddeec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  branchPrefab: {fileID: 6618143911547680824, guid: 277282745235a0e40acef2cd03b1b28c,
+    type: 3}
+  versionPrefab: {fileID: 3635457438749416144, guid: 8c9bcaf18287b3742ae34fc347a4dd8d,
+    type: 3}
 --- !u!1 &357068987
 GameObject:
   m_ObjectHideFlags: 0
@@ -3291,6 +3295,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1166894994}
     m_Modifications:
+    - target: {fileID: 1182630272739927433, guid: 8f92f5e00fa5210469e36256ec2d7f3d,
+        type: 3}
+      propertyPath: m_Name
+      value: branch1
+      objectReference: {fileID: 0}
     - target: {fileID: 4626603232124461316, guid: 8f92f5e00fa5210469e36256ec2d7f3d,
         type: 3}
       propertyPath: m_RootOrder
