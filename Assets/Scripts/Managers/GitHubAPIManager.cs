@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using SimpleJSON;
-using Microsoft.MixedReality.Toolkit.Utilities.Gltf.Serialization.Editor;
 using Microsoft.MixedReality.Toolkit.Utilities.Gltf.Serialization;
 using System.Threading.Tasks;
+using Microsoft.MixedReality.Toolkit.UI;
 
 public class GitHubAPIManager : MonoBehaviour
 {
@@ -17,16 +17,20 @@ public class GitHubAPIManager : MonoBehaviour
     private readonly string baseURL = "https://api.github.com/repos/";
     private readonly string baseRepo = "MaximilianLetter/model-comparison-by-github/";
     private readonly string virtualTwinId = "32072b374b46026e19f824e6704bba50eb306a6e";
+    private readonly string accessToken = "token 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"; // created by dump account
 
+    private ProgressIndicatorObjectDisplay progressIndicator;
     private TimelineManager timelineManager;
     private Transform branchesContainer;
 
+    private float loadingProgress = 0f;
     private bool ready = false;
 
     void Start()
     {
         timelineManager = AppManager.Instance.GetTimelineManager();
         branchesContainer = AppManager.Instance.GetTimelineContainer().transform.GetChild(0);
+        progressIndicator = FindObjectOfType<ProgressIndicatorObjectDisplay>();
 
         StartCoroutine(CollectDataFromAPI());
     }
@@ -35,13 +39,39 @@ public class GitHubAPIManager : MonoBehaviour
     {
         Debug.Log("Start to collect data from GitHub API ...");
 
+        OpenProgressIndicator();
+
         yield return StartCoroutine(GetListOfBranches());
 
         yield return StartCoroutine(GetListOfCommits());
 
+        if (loadingProgress != 1f)
+        {
+            progressIndicator.Message = "Loading failed";
+        }
+
         Debug.Log("Data collection done.");
 
         ready = true;
+    }
+
+    private async void OpenProgressIndicator()
+    {
+        progressIndicator.gameObject.SetActive(true);
+
+        await progressIndicator.OpenAsync();
+
+        while (loadingProgress < 1)
+        {
+            progressIndicator.Progress = loadingProgress;
+            await Task.Yield();
+        }
+
+        progressIndicator.Message = "Loading done";
+
+        await progressIndicator.CloseAsync();
+
+        progressIndicator.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -53,12 +83,16 @@ public class GitHubAPIManager : MonoBehaviour
         // API call and provided information
         // https://docs.github.com/en/rest/reference/branches#list-branches
 
+        // Reflect state in progress indicator
+        progressIndicator.Message = "Loading branches";
+
         Debug.Log("Collect information about branches ...");
 
         string branchesURL = baseURL + baseRepo + "branches";
         // Example URL: https://api.github.com/repos/MaximilianLetter/model-comparison-by-github/branches
 
         UnityWebRequest repoBranchesRequest = UnityWebRequest.Get(branchesURL);
+        repoBranchesRequest.SetRequestHeader("Authorization", accessToken);
 
         yield return repoBranchesRequest.SendWebRequest();
 
@@ -97,12 +131,16 @@ public class GitHubAPIManager : MonoBehaviour
         //https://docs.github.com/en/rest/reference/commits#list-commits
         //https://docs.github.com/en/rest/reference/commits#get-a-commit
 
+        // Reflect state in progress indicator
+        progressIndicator.Message = "Loading list of commits";
+
         Debug.Log("Collect information about commits ...");
 
         string commitsURL = baseURL + baseRepo + "commits";
         // Example URL: https://api.github.com/repos/MaximilianLetter/model-comparison-by-github/commits
 
         UnityWebRequest repoCommitsRequest = UnityWebRequest.Get(commitsURL);
+        repoCommitsRequest.SetRequestHeader("Authorization", accessToken);
 
         yield return repoCommitsRequest.SendWebRequest();
 
@@ -120,6 +158,11 @@ public class GitHubAPIManager : MonoBehaviour
         Debug.Log("Total amount of commits: " + listCommitsInfo.Count);
         for (int i = 0; i < listCommitsInfo.Count; i++)
         {
+            // Reflect state in progress indicator
+            loadingProgress = ((float)i / listCommitsInfo.Count);
+            Debug.Log(loadingProgress); // always is 0
+            progressIndicator.Message = "Loading commits " + Mathf.RoundToInt(loadingProgress * 100) + "%";
+
             Debug.Log(listCommitsInfo[i]["commit"]["message"]);
             string commitID = listCommitsInfo[i]["sha"];
             // TODO what about node id, is that a link to branches?
@@ -128,6 +171,7 @@ public class GitHubAPIManager : MonoBehaviour
 
             string singleCommitURL = baseURL + baseRepo + "commits/" + commitID;
             UnityWebRequest singleCommitRequest = UnityWebRequest.Get(singleCommitURL);
+            singleCommitRequest.SetRequestHeader("Authorization", accessToken);
 
             yield return singleCommitRequest.SendWebRequest();
 
@@ -153,6 +197,7 @@ public class GitHubAPIManager : MonoBehaviour
             //modelURL = "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb";
 
             UnityWebRequest modelDataRequest = UnityWebRequest.Get(modelURL);
+            modelDataRequest.SetRequestHeader("Authorization", accessToken);
 
             yield return modelDataRequest.SendWebRequest();
 
@@ -167,6 +212,7 @@ public class GitHubAPIManager : MonoBehaviour
             Debug.Log("File found and downloaded.");
             LoadObject(modelInfoRaw, singleCommitInfo);
         }
+        loadingProgress = 1f;
 
         Debug.Log("Processing commits done.");
     }
