@@ -30,6 +30,8 @@ public class AppManager : MonoBehaviour
     private GameObject          timelineContainer;
     private Transform           branchContainer;
     private VersionObject       virtualTwin;
+    private ConnectionLine      connectionLine;
+    private LineRenderer        comparisonLine;
 
     // References to all managers
     private TimelineManager     timelineManager;
@@ -56,9 +58,10 @@ public class AppManager : MonoBehaviour
         comparisonObjectLogic = GameObject.FindObjectOfType<ComparisonObject>();
         differencesObjectLogic = trackedObjectLogic.transform.parent.Find("DifferencesObject").GetComponent<ObjectParts>();
 
-        comparisonObjectLogic = GameObject.FindObjectOfType<ComparisonObject>();
         timelineContainer = GameObject.Find("Timeline");
         branchContainer = timelineContainer.transform.Find("BranchContainer");
+        connectionLine = FindObjectOfType<ConnectionLine>();
+        comparisonLine = GameObject.Find("ComparisonLine").GetComponent<LineRenderer>();
     }
 
     private void Start()
@@ -132,6 +135,16 @@ public class AppManager : MonoBehaviour
     public GitHubAPIManager GetApiManager()
     {
         return apiManager;
+    }
+
+    public ConnectionLine GetConnectionLine()
+    {
+        return connectionLine;
+    }
+    
+    public LineRenderer GetComparisonLine()
+    {
+        return comparisonLine;
     }
 #endregion
 
@@ -233,6 +246,18 @@ public class AppManager : MonoBehaviour
         if (GetApiManager() == null)
         {
             Debug.LogError("ApiManager not found");
+            return false;
+        }
+
+        if (GetConnectionLine() == null)
+        {
+            Debug.LogError("Connection line not found");
+            return false;
+        }
+
+        if (GetComparisonLine() == null)
+        {
+            Debug.LogError("Comparison line not found");
             return false;
         }
 

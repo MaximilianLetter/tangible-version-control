@@ -18,7 +18,7 @@ public class ConnectionLine : MonoBehaviour
 
     private bool isActive;
 
-    void Start()
+    public void Initialize()
     {
         lineRend = GetComponent<LineRenderer>();
         lineMat = lineRend.material;

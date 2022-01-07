@@ -51,6 +51,8 @@ public class GitHubAPIManager : MonoBehaviour
 
         Debug.Log("Data collection done.");
 
+        yield return new WaitForSeconds(0.5f); // not user clean, wait until the last object is build
+
         ready = true;
     }
 
@@ -209,7 +211,7 @@ public class GitHubAPIManager : MonoBehaviour
             var modelInfoRaw = modelDataRequest.downloadHandler.data;
 
             Debug.Log("File found and downloaded.");
-            LoadObject(modelInfoRaw, singleCommitInfo);
+            BuildObject(modelInfoRaw, singleCommitInfo);
         }
         loadingProgress = 1f;
 
@@ -221,7 +223,7 @@ public class GitHubAPIManager : MonoBehaviour
     /// </summary>
     /// <param name="data">glTF raw data.</param>
     /// <param name="info">Info about commit that is provided by API call.</param>
-    async void LoadObject(byte[] data, JSONNode info)
+    async void BuildObject(byte[] data, JSONNode info)
     {
         Debug.Log("Building GameObject from glTF ...");
         var t = Task<GameObject>.Run(() => ConstructGltf.ConstructAsync(GltfUtility.GetGltfObjectFromGlb(data)));

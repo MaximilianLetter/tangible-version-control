@@ -48,7 +48,6 @@ public class StartupManager : MonoBehaviour
         }
 #endif
         AppManager.Instance.GetTimelineManager().Initialize();
-        Debug.Log("error here?");
         AppManager.Instance.FindAndSetVirtualTwin(true);
         AppManager.Instance.GetTrackedObjectLogic().Initialize();
 

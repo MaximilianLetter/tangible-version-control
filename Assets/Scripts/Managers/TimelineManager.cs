@@ -68,10 +68,10 @@ public class TimelineManager : MonoBehaviour
         otherBtns = uiPanel.transform.GetChild(1).gameObject;
 
         // Line logic
-        connectionLineLogic = FindObjectOfType<ConnectionLine>();
-        connectionLineLogic.SetActive(false);
+        connectionLineLogic = AppManager.Instance.GetConnectionLine();
+        connectionLineLogic.Initialize();
 
-        comparisonLine = GameObject.Find("ComparisonLine").GetComponent<LineRenderer>();
+        comparisonLine = AppManager.Instance.GetComparisonLine();
         comparisonLine.alignment = LineAlignment.TransformZ;
         comparisonLine.useWorldSpace = false;
         comparisonLine.enabled = false;

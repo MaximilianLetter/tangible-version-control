@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-[RequireComponent(typeof(ObjectParts))]
 public class VersionObject : MonoBehaviour
 {
     public bool virtualTwin;
