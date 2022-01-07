@@ -19,7 +19,7 @@ public class Branch : MonoBehaviour
 
     private bool ready;
 
-    void Start()
+    public void Initialize()
     {
         timelineManager = AppManager.Instance.GetTimelineManager();
         comparisonManager = AppManager.Instance.GetComparisonManager();

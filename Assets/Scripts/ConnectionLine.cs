@@ -27,8 +27,6 @@ public class ConnectionLine : MonoBehaviour
 
         physObj = AppManager.Instance.GetTrackedTransform();
         timelineManager = AppManager.Instance.GetTimelineManager();
-
-        SetVirtualTwinTransform(AppManager.Instance.GetVirtualTwin());
     }
 
     public void ConnectVirtualAndPhysical()

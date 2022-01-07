@@ -15,12 +15,12 @@ public class GitHubAPIManager : MonoBehaviour
     private GameObject versionPrefab;
 
     private readonly string baseURL = "https://api.github.com/repos/";
-    private readonly string baseRepo = "MaximilianLetter/model-comparison-by-github/";
-    private readonly string virtualTwinId = "32072b374b46026e19f824e6704bba50eb306a6e";
+    //private readonly string baseRepo = "MaximilianLetter/model-comparison-by-github/";
+    private readonly string baseRepo = "MaximilianLetter/glTF-models-dev/";
+    private readonly string virtualTwinId = "809006d27a067559e8312fbd2bd14c480b091d04";
     private readonly string accessToken = "token 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"; // created by dump account
 
     private ProgressIndicatorObjectDisplay progressIndicator;
-    private TimelineManager timelineManager;
     private Transform branchesContainer;
 
     private float loadingProgress = 0f;
@@ -28,7 +28,6 @@ public class GitHubAPIManager : MonoBehaviour
 
     void Start()
     {
-        timelineManager = AppManager.Instance.GetTimelineManager();
         branchesContainer = AppManager.Instance.GetTimelineContainer().transform.GetChild(0);
         progressIndicator = FindObjectOfType<ProgressIndicatorObjectDisplay>();
 
@@ -243,7 +242,6 @@ public class GitHubAPIManager : MonoBehaviour
             {
                 Debug.Log("Virtual twin loaded and updated.");
                 versionLogic.virtualTwin = true;
-                AppManager.Instance.FindAndSetVirtualTwin(true);
             }
 
             newVersion.transform.SetParent(branchesContainer.GetChild(0)); // TODO find correct branch
@@ -256,7 +254,7 @@ public class GitHubAPIManager : MonoBehaviour
             var coll = model.AddComponent<BoxCollider>();
             ColliderToFit.FitToChildren(model); // todo
 
-            model.tag = "VersionObjectArea";
+            model.tag = "VersionObjectInside";
 
             // Destroy the glTF scene, the required model was already moved out
             Destroy(result);

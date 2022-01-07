@@ -9,25 +9,17 @@ public class TrackedObject : MonoBehaviour
     private ObjectParts parts;
     private bool ready;
 
-    IEnumerator Start()
+    void Start()
     {
         comparisonManager = AppManager.Instance.GetComparisonManager();
         parts = GetComponent<ObjectParts>();
 
-        // Wait for the timeline to be ready setup
-        yield return null;
-
-        CloneVirtualTwin();
-
-        // Wait until all component references are gathered
-        while (true)
-        {
-            if (parts.IsReady()) break;
-
-            yield return null;
-        }
-
         ready = true;
+    }
+
+    public void Initialize()
+    {
+        CloneVirtualTwin();
     }
 
     private void CloneVirtualTwin()

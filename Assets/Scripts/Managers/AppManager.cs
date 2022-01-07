@@ -59,7 +59,6 @@ public class AppManager : MonoBehaviour
         comparisonObjectLogic = GameObject.FindObjectOfType<ComparisonObject>();
         timelineContainer = GameObject.Find("Timeline");
         branchContainer = timelineContainer.transform.Find("BranchContainer");
-        FindAndSetVirtualTwin();
     }
 
     private void Start()

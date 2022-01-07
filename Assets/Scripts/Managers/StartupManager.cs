@@ -5,14 +5,19 @@ using Vuforia;
 
 public class StartupManager : MonoBehaviour
 {
-    public GameObject startupPanel;
-
     public GameObject[] sceneObjects;
+    public GameObject markerHint;
 
     public IEnumerator StartUp()
     {
         // Wait one frame for other objects to instantiate
         yield return null;
+
+        // Setup the scene
+        foreach (var obj in sceneObjects)
+        {
+            obj.SetActive(false);
+        }
 
         // First of wait for the ApiManager to finish
         var apiManager = AppManager.Instance.GetApiManager();
@@ -22,46 +27,7 @@ public class StartupManager : MonoBehaviour
             
             yield return null;
         }
-
-        // Wait for all parts to be initialized
-        ObjectParts[] parts = FindObjectsOfType<ObjectParts>();
-
-        bool allReady = false;
-        while (true)
-        {
-            allReady = true;
-            foreach (var part in parts)
-            {
-                if (!part.IsReady())
-                {
-                    allReady = false;
-                }
-            }
-
-            if (allReady) break;
-
-            yield return null;
-        }
-        Debug.Log("All object parts initialized.");
-
-        // Wait for all branches to be setup
-        Branch[] branches = FindObjectsOfType<Branch>();
-
-        allReady = true;
-        while (true)
-        {
-            foreach (var b in branches)
-            {
-                if (!b.IsReady())
-                {
-                    allReady = false;
-                }
-            }
-
-            if (allReady) break;
-            yield return null;
-        }
-        Debug.Log("All branches setup.");
+        Debug.Log("API MANAGER READY _ START OTHER STUFF");
 
         // NOTE: this is not clean, this should rather be a callback of Vuforia setup, should then be placed in the TrackingManager
 #if UNITY_EDITOR
@@ -81,15 +47,16 @@ public class StartupManager : MonoBehaviour
             pdt.Stop();
         }
 #endif
+        AppManager.Instance.GetTimelineManager().Initialize();
+        Debug.Log("error here?");
+        AppManager.Instance.FindAndSetVirtualTwin(true);
+        AppManager.Instance.GetTrackedObjectLogic().Initialize();
 
-        // Setup the scene
-        foreach (var obj in sceneObjects)
-        {
-            obj.SetActive(false);
-        }
-
-        AppManager.Instance.GetTimelineManager().BuildTimeline();
-        startupPanel.SetActive(true);
+#if UNITY_EDITOR
+        AppManager.Instance.GetTimelineManager().StartPlacement();
+#else
+        markerHint.setActive(true);
+#endif
 
         Debug.Log("Startup finished.");
     }

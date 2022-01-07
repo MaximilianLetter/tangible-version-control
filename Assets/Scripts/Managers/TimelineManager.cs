@@ -47,7 +47,7 @@ public class TimelineManager : MonoBehaviour
     private bool ready;
     private bool inPlacement;
 
-    void Start()
+    public void Initialize()
     {
         comparisonManager = AppManager.Instance.GetComparisonManager();
         timelineContainer = AppManager.Instance.GetTimelineContainer();
@@ -60,6 +60,8 @@ public class TimelineManager : MonoBehaviour
 
         infoPanelVersionObjectTransition = infoPanelVersionObject.GetComponent<TransitionToPosition>();
         coll = movableBranchContainer.GetComponent<BoxCollider>();
+
+        BuildTimeline();
 
         // UI
         placeBtn = uiPanel.transform.GetChild(0).gameObject;
@@ -79,12 +81,13 @@ public class TimelineManager : MonoBehaviour
         ready = true;
     }
 
-    public void BuildTimeline()
+    void BuildTimeline()
     {
         // Timeline building out of branches
         List<VersionObject> allVersions = new List<VersionObject>();
         foreach (var b in branches)
         {
+            b.Initialize();
             foreach (var vo in b.GetVersionObjects())
             {
                 allVersions.Add(vo);
