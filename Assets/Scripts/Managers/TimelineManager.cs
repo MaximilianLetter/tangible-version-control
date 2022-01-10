@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class TimelineManager : MonoBehaviour
 {
@@ -13,7 +14,7 @@ public class TimelineManager : MonoBehaviour
     public GameObject infoPanelVersionObject;
     public bool mirrorAllAxis;
 
-    public int maxDescLength = 20;
+    public int maxDescLength = 25;
 
     private ComparisonManager comparisonManager;
 
@@ -390,6 +391,10 @@ public class TimelineManager : MonoBehaviour
         closeInteraction = status;
     }
 
+    /// <summary>
+    /// Set the information on the version information plate to the data of the given version object.
+    /// </summary>
+    /// <param name="vo">The version object to display infomration from.</param>
     private void SetVersionInfoPanel(VersionObject vo)
     {
         if (vo == null)
@@ -401,7 +406,8 @@ public class TimelineManager : MonoBehaviour
         var plate = infoPanelVersionObject.GetComponent<VersionPlate>();
         string desc = vo.description;
         desc = desc.Length > maxDescLength ? (desc.Substring(0, maxDescLength) + "...") : desc;
-        plate.SetText(vo.id + "\n" + desc + "\n" + vo.createdBy + " " + vo.createdAt);
+        string date = DateTime.Parse(vo.createdAt).ToString("dd.MM.yyyy HH:mm");
+        plate.SetText(desc + "\n" + vo.createdBy + "\n" + date); // vo.id + "\n" + ; ID display is stripped
 
         //infoPanelVersionObject.transform.position = vo.transform.position;
         infoPanelVersionObject.SetActive(true);

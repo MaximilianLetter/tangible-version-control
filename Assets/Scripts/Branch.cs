@@ -37,7 +37,7 @@ public class Branch : MonoBehaviour
 
         for (int i = 0; i < vObjects.Length; i++)
         {
-            vObjects[i].id = branchName + "_" + i;
+            //vObjects[i].id = branchName + "_" + i;
 
             //var pos = new Vector3(-(step * (numberOfVersions - 1) / 2) + (i * step), 0, 0);
             //vObjects[i].transform.localPosition = pos;

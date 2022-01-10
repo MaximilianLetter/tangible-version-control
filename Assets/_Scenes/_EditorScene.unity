@@ -674,7 +674,7 @@ MonoBehaviour:
   infoPanelTilt: {fileID: 0}
   infoPanelVersionObject: {fileID: 580122685}
   mirrorAllAxis: 0
-  maxDescLength: 20
+  maxDescLength: 25
   uiPanel: {fileID: 6259862199118033069}
   edgesMaterial: {fileID: 2100000, guid: 7ead2c1f628a56646bef4507222cb94a, type: 2}
 --- !u!4 &242140790
