@@ -310,12 +310,6 @@ public class TimelineManager : MonoBehaviour
 
         // For the moment fix. Required on HL1.
         ToggleMaterials(true);
-        foreach (var vo in versionObjs)
-        {
-            vo.GetComponent<ObjectParts>().ToggleOutlines(false);
-        }
-
-        //virtualTwin.GetComponent<ObjectParts>().SetMaterial(edgesMaterial);
 
         SetVersionInfoPanel(virtualTwin);
 
@@ -423,7 +417,7 @@ public class TimelineManager : MonoBehaviour
         virtualTwin = AppManager.Instance.GetVirtualTwin();
 
         ToggleMaterials(true);
-        virtualTwin.GetComponent<ObjectParts>().SetMaterial(edgesMaterial);
+        virtualTwin.SetMaterial(edgesMaterial);
     }
 
     /// <summary>

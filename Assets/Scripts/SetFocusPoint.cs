@@ -13,6 +13,7 @@ public class SetFocusPoint : MonoBehaviour
 
     void Update()
     {
+#if !UNITY_EDITOR
         // Normally the normal is best set to be the opposite of the main camera's
         // forward vector.
         // If the content is actually all on a plane (like text), set the normal to
@@ -21,5 +22,6 @@ public class SetFocusPoint : MonoBehaviour
         var normal = -Camera.main.transform.forward;
         var position = focusedObject.position;
         UnityEngine.XR.WSA.HolographicSettings.SetFocusPointForFrame(position, normal);
+#endif
     }
 }

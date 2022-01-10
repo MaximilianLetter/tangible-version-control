@@ -12,36 +12,20 @@ public class VersionObject : MonoBehaviour
     [HideInInspector]
     public string id;
 
-    [Space(14)]
-    //public Transform textBlock;
+    [SerializeField]
+    private Transform modelContainer;
 
-    private ObjectParts parts;
-    //private TMP_Text textTitle;
-    //private TMP_Text textDesc;
+    private ComparisonManager comparisonManager;
 
-    private bool ready = false;
+    private MeshRenderer meshRenderer;
+    private Material baseMat;
 
-    IEnumerator Start()
+    public void Initialize()
     {
-        //textTitle = textBlock.GetChild(0).GetComponent<TMP_Text>();
-        //textDesc = textBlock.GetChild(1).GetComponent<TMP_Text>();
-        //SetTextInformation();
+        comparisonManager = AppManager.Instance.GetComparisonManager();
 
-        parts = GetComponent<ObjectParts>();
-
-        while (true)
-        {
-            if (parts.IsReady()) break;
-
-            yield return null;
-        }
-
-        //if (virtualTwin)
-        //{
-        //    ChangeTextColor(ComparisonManager.Instance.textHighlight);
-        //}
-
-        ready = true;
+        meshRenderer = GetComponentInChildren<MeshRenderer>();
+        baseMat = meshRenderer.material;
     }
 
     /// <summary>
@@ -50,7 +34,7 @@ public class VersionObject : MonoBehaviour
     /// <param name="mat">Material to display.</param>
     public void SetMaterial(Material mat)
     {
-        parts.SetMaterial(mat);
+        meshRenderer.material = mat;
     }
 
     /// <summary>
@@ -58,11 +42,16 @@ public class VersionObject : MonoBehaviour
     /// </summary>
     public void ResetMaterial()
     {
-        parts.ResetMaterial();
+        meshRenderer.material = baseMat;
     }
 
-    public bool IsReady()
+    public Material GetBaseMaterial()
     {
-        return ready;
+        return baseMat;
+    }
+
+    public Transform GetModelContainer()
+    {
+        return modelContainer;
     }
 }

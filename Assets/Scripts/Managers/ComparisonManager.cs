@@ -132,7 +132,7 @@ public class ComparisonManager : MonoBehaviour
         comparisonObj.Activate(virtualObj);
 
         // Highlight in timeline
-        comparedAgainstVersionObject.GetComponentInParent<ObjectParts>().ToggleOutlines(true);
+        //comparedAgainstVersionObject.GetComponentInParent<ObjectParts>().ToggleOutlines(true);
         timelineManager.EnableComparisonLine(virtualTwin.transform, comparedAgainstVersionObject.transform);
 
         inComparison = true;
@@ -210,7 +210,7 @@ public class ComparisonManager : MonoBehaviour
         // Disable highlight on version object
         if (comparedAgainstVersionObject != null)
         {
-            comparedAgainstVersionObject.GetComponentInParent<ObjectParts>().ToggleOutlines(false);
+            //comparedAgainstVersionObject.GetComponentInParent<ObjectParts>().ToggleOutlines(false);
             //versionHistoryObj.GetComponentInParent<VersionObject>().ChangeTextColor(textDefault);
             timelineManager.DisableComparisonLine();
             comparedAgainstVersionObject = null;

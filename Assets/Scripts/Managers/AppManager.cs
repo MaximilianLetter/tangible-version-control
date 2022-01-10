@@ -25,7 +25,7 @@ public class AppManager : MonoBehaviour
     private Transform           trackedTransform;
 
     private ComparisonObject    comparisonObjectLogic;
-    private ObjectParts         differencesObjectLogic;
+    //private ObjectParts         differencesObjectLogic;
 
     private GameObject          timelineContainer;
     private Transform           branchContainer;
@@ -56,7 +56,7 @@ public class AppManager : MonoBehaviour
         trackedTransform = trackedObjectLogic.transform.parent.parent; // could be alternatively found as MultiTargetBehaviour or similar
 
         comparisonObjectLogic = GameObject.FindObjectOfType<ComparisonObject>();
-        differencesObjectLogic = trackedObjectLogic.transform.parent.Find("DifferencesObject").GetComponent<ObjectParts>();
+        //differencesObjectLogic = trackedObjectLogic.transform.parent.Find("DifferencesObject").GetComponent<ObjectParts>();
 
         timelineContainer = GameObject.Find("Timeline");
         branchContainer = timelineContainer.transform.Find("BranchContainer");
@@ -127,10 +127,10 @@ public class AppManager : MonoBehaviour
         return branchContainer;
     }
 
-    public ObjectParts GetDifferencesObjectLogic()
-    {
-        return differencesObjectLogic;
-    }
+    //public ObjectParts GetDifferencesObjectLogic()
+    //{
+    //    return differencesObjectLogic;
+    //}
 
     public GitHubAPIManager GetApiManager()
     {
@@ -195,11 +195,11 @@ public class AppManager : MonoBehaviour
             return false;
         }
 
-        if (GetDifferencesObjectLogic() == null)
-        {
-            Debug.LogError("DifferencesObjectLogic not found");
-            return false;
-        }
+        //if (GetDifferencesObjectLogic() == null)
+        //{
+        //    Debug.LogError("DifferencesObjectLogic not found");
+        //    return false;
+        //}
 
         if (GetTimelineContainer() == null)
         {

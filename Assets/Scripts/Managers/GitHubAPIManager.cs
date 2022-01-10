@@ -161,7 +161,6 @@ public class GitHubAPIManager : MonoBehaviour
         {
             // Reflect state in progress indicator
             loadingProgress = ((float)i / listCommitsInfo.Count);
-            Debug.Log(loadingProgress); // always is 0
             progressIndicator.Message = "Loading commits " + Mathf.RoundToInt(loadingProgress * 100) + "%";
 
             Debug.Log(listCommitsInfo[i]["commit"]["message"]);
@@ -248,15 +247,26 @@ public class GitHubAPIManager : MonoBehaviour
 
             newVersion.transform.SetParent(branchesContainer.GetChild(0)); // TODO find correct branch
 
-            // The glTF result is the complete scene, including light and camera. Only keep the real mesh, destroy other or dont even create other
+            Transform modelContainer = versionLogic.GetModelContainer();
+
+            // The glTF result is the complete scene, including light and camera
+            // only keep the actual mesh, destroy other or dont even create other
             var model = result.transform.GetChild(0).gameObject;
-            model.transform.SetParent(newVersion.transform);
+            model.transform.SetParent(modelContainer);
+
+            modelContainer.localScale = model.transform.localScale;
+            modelContainer.localPosition = model.transform.transform.localPosition;
+            modelContainer.localRotation = model.transform.localRotation;
+
+            model.transform.localScale = Vector3.one;
+            model.transform.localPosition = Vector3.zero;
+            model.transform.localRotation = Quaternion.identity;
 
             model.name = "model";
-            var coll = model.AddComponent<BoxCollider>();
-            ColliderToFit.FitToChildren(model); // todo
 
-            model.tag = "VersionObjectInside";
+            ColliderToFit.FitToChildren(modelContainer.gameObject);
+
+            versionLogic.Initialize();
 
             // Destroy the glTF scene, the required model was already moved out
             Destroy(result);
