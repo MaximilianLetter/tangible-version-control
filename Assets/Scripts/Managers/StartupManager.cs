@@ -51,6 +51,8 @@ public class StartupManager : MonoBehaviour
         AppManager.Instance.FindAndSetVirtualTwin(true);
         AppManager.Instance.GetTrackedObjectLogic().Initialize();
 
+        AppManager.Instance.GetComparisonManager().Initialize();
+
 #if UNITY_EDITOR
         AppManager.Instance.GetTimelineManager().StartPlacement();
 #else

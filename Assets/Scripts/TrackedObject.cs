@@ -18,7 +18,7 @@ public class TrackedObject : MonoBehaviour
         Transform virtTwinModel = AppManager.Instance.GetVirtualTwin().transform.GetChild(0);
         var clonedModel = Instantiate(virtTwinModel, transform).gameObject;
 
-        clonedModel.tag = null;
+        clonedModel.tag = "Untagged";
         clonedModel.AddComponent<CollisionInteraction>();
 
         meshRenderer = clonedModel.GetComponentInChildren<MeshRenderer>();

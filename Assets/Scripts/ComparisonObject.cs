@@ -175,24 +175,27 @@ public class ComparisonObject : MonoBehaviour
     /// <summary>
     /// Activates the object and applies the mesh and size of the given object to itself.
     /// </summary>
-    /// <param name="toClone">Object to obtain mesh and scale from.</param>
-    public void Activate(GameObject toClone)
+    /// <param name="voToClone">VersionObject to obtain mesh and scale from.</param>
+    public void Initialize(VersionObject voToClone)
     {
-        parts = new GameObject[toClone.transform.childCount];
+        //parts = new GameObject[toClone.transform.childCount];
 
-        for (int i = 0; i < toClone.transform.childCount; i++)
-        {
-            // Clone each part of the object, remove the MeshOutline Script
-            GameObject original = toClone.transform.GetChild(i).gameObject;
-            GameObject part = Instantiate(original, transform);
+        //for (int i = 0; i < toClone.transform.childCount; i++)
+        //{
+        //    // Clone each part of the object, remove the MeshOutline Script
+        //    GameObject original = toClone.transform.GetChild(i).gameObject;
+        //    GameObject part = Instantiate(original, transform);
 
-            // Make sure the real name of the part is kept for part-wise comparisons
-            part.name = original.name;
+        //    // Make sure the real name of the part is kept for part-wise comparisons
+        //    part.name = original.name;
 
-            // Store necessary information about parts
-            parts[i] = part;
-        }
-        partMgmt.CollectRenderersAndMaterials(parts);
+        //    // Store necessary information about parts
+        //    parts[i] = part;
+        //}
+        //partMgmt.CollectRenderersAndMaterials(parts);
+        var modelContainer = Instantiate(voToClone.GetModelContainer(), transform);
+        Destroy(modelContainer.GetComponent<BoxCollider>());
+        modelContainer.tag = "Untagged";
 
         // Set pivot point according the the current mode
         if (pivotCenter) SetPivotPointCenter();

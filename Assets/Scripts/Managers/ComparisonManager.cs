@@ -44,7 +44,6 @@ public class ComparisonManager : MonoBehaviour
     private TimelineManager timelineManager;
 
     // State variables
-    private bool ready;
     private VersionObject comparedAgainstVersionObject;
     private float floatingDistance;
     private bool inComparison;
@@ -52,29 +51,18 @@ public class ComparisonManager : MonoBehaviour
     [Space(14)]
     public ComparisonMode mode;
 
-    private void Start()
+    public void Initialize()
     {
         // Get relevant gameobject logic
-        actionPanel = GameObject.FindObjectOfType<ActionPanel>();
-        trackedObj = GameObject.FindObjectOfType<TrackedObject>();
-        
-        // Find the virtual twin between the version objects
-        var vObjs = GameObject.FindObjectsOfType<VersionObject>();
-        foreach (var obj in vObjs)
-        {
-            if (obj.virtualTwin)
-            {
-                virtualTwin = obj;
-                break;
-            }
-        }
-
+        virtualTwin = AppManager.Instance.GetVirtualTwin();
+        actionPanel = AppManager.Instance.GetActionPanel();
         timelineManager = AppManager.Instance.GetTimelineManager();
         comparisonObj = AppManager.Instance.GetComparisonObjectLogic();
         comparisonObjContainer = comparisonObj.transform.parent;
 
         // Get relevant transform information
-        trackedTransform = trackedObj.transform.parent;
+        trackedObj = AppManager.Instance.GetTrackedObjectLogic();
+        trackedTransform = AppManager.Instance.GetTrackedTransform();
         
         // NOTE: giving the markerPlane a phantom materials results in unwanted behavior occluding the comparison object
         //var markerPlane = trackedTransform.Find("MarkerPlane");
@@ -91,15 +79,13 @@ public class ComparisonManager : MonoBehaviour
         // A bigger floating distance is required on HoloLens
         staticFloatingDistance = 0.045f;
 #endif
-
-        ready = true;
     }
 
     /// <summary>
     /// Starts a comparison between the tracked physical object and the collided object of the version history.
     /// </summary>
     /// <param name="physicalObj"></param>
-    /// <param name="versionObj"></param>
+    /// <param name="virtualObj"></param>
     public void StartComparison(GameObject physicalObj, GameObject virtualObj)
     {
         VersionObject versionObj = virtualObj.GetComponentInParent<VersionObject>();
@@ -129,7 +115,7 @@ public class ComparisonManager : MonoBehaviour
         comparedAgainstVersionObject = versionObj;
 
         // NOTE: Order matters, first clone the object, then activate the comparison
-        comparisonObj.Activate(virtualObj);
+        comparisonObj.Initialize(versionObj);
 
         // Highlight in timeline
         //comparedAgainstVersionObject.GetComponentInParent<ObjectParts>().ToggleOutlines(true);
@@ -286,10 +272,5 @@ public class ComparisonManager : MonoBehaviour
     public bool IsInComparison()
     {
         return inComparison;
-    }
-
-    public bool IsReady()
-    {
-        return ready;
     }
 }

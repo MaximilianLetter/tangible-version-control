@@ -32,6 +32,7 @@ public class AppManager : MonoBehaviour
     private VersionObject       virtualTwin;
     private ConnectionLine      connectionLine;
     private LineRenderer        comparisonLine;
+    private ActionPanel         actionPanel;
 
     // References to all managers
     private TimelineManager     timelineManager;
@@ -62,6 +63,7 @@ public class AppManager : MonoBehaviour
         branchContainer = timelineContainer.transform.Find("BranchContainer");
         connectionLine = FindObjectOfType<ConnectionLine>();
         comparisonLine = GameObject.Find("ComparisonLine").GetComponent<LineRenderer>();
+        actionPanel = FindObjectOfType<ActionPanel>();
     }
 
     private void Start()
@@ -145,6 +147,11 @@ public class AppManager : MonoBehaviour
     public LineRenderer GetComparisonLine()
     {
         return comparisonLine;
+    }
+
+    public ActionPanel GetActionPanel()
+    {
+        return actionPanel;
     }
 #endregion
 
@@ -258,6 +265,12 @@ public class AppManager : MonoBehaviour
         if (GetComparisonLine() == null)
         {
             Debug.LogError("Comparison line not found");
+            return false;
+        }
+
+        if (GetActionPanel() == null)
+        {
+            Debug.LogError("Action panel not found");
             return false;
         }
 
