@@ -53,10 +53,14 @@ public class StartupManager : MonoBehaviour
 
         AppManager.Instance.GetComparisonManager().Initialize();
 
-#if UNITY_EDITOR
         AppManager.Instance.GetTimelineManager().StartPlacement();
+#if UNITY_EDITOR
+        if (AppManager.Instance.GetComparisonManager().usePhysical)
+        {
+            markerHint.SetActive(true);
+        }
 #else
-        markerHint.setActive(true);
+        markerHint.SetActive(true);
 #endif
 
         Debug.Log("Startup finished.");

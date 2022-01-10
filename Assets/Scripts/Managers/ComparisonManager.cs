@@ -127,7 +127,6 @@ public class ComparisonManager : MonoBehaviour
 
         // Fill information panel with content and show
         actionPanel.gameObject.SetActive(true);
-        //actionPanel.SetContents(virtualTwin, versionObj, floatingDistance);
 
         DisplayComparison();
     }
