@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Scenes/CubeMarkerScene.unity
     guid: d207590d2e9783545b73597f55e04242
+  - enabled: 0
+    path: Assets/_Scenes/_ExperimentScene.unity
+    guid: f545e95d700e0a245acfda04821d88ef
   m_configObjects: {}

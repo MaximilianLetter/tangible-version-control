@@ -18,7 +18,7 @@ public class GitHubAPIManager : MonoBehaviour
     //private readonly string baseRepo = "MaximilianLetter/model-comparison-by-github/";
     private readonly string baseRepo = "MaximilianLetter/glTF-models-dev/";
     private readonly string virtualTwinId = "809006d27a067559e8312fbd2bd14c480b091d04";
-    private readonly string accessToken = "token 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"; // created by dump account
+    private readonly string accessToken = "token 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"; // created by dump account
 
     private ProgressIndicatorObjectDisplay progressIndicator;
     private Transform branchesContainer;

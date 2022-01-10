@@ -12,8 +12,8 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: ML
-  productName: TVC_physical_HL1
+  companyName: MLetter
+  productName: TVC 2.0
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -124,7 +124,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 0.1
+  bundleVersion: 0.2
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -143,8 +143,8 @@ PlayerSettings:
       minimumSupportedHeadTracking: 0
       maximumSupportedHeadTracking: 1
     hololens:
-      depthFormat: 0
-      depthBufferSharingEnabled: 0
+      depthFormat: 1
+      depthBufferSharingEnabled: 1
     lumin:
       depthFormat: 0
       frameTiming: 2
@@ -617,16 +617,16 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: TVCphysicalHL1
+  metroPackageName: TVC2.0
   metroPackageVersion: 1.0.0.0
   metroCertificatePath: Assets\WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: ML
   metroCertificateIssuer: ML
   metroCertificateNotAfter: 006dd3901c4cd801
-  metroApplicationDescription: Tangible Version Control on HoloLens1
+  metroApplicationDescription: Tangible Version Control in version 2.0 on HoloLens1
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: TVC 2.0
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0
@@ -635,7 +635,7 @@ PlayerSettings:
   metroLastRequiredScene: 0
   metroDefaultTileSize: 1
   metroTileForegroundText: 2
-  metroTileBackgroundColor: {r: 0.13333334, g: 0.17254902, b: 0.21568628, a: 0}
+  metroTileBackgroundColor: {r: 0.31648272, g: 0.417349, b: 0.5283019, a: 0}
   metroSplashScreenBackgroundColor: {r: 0.12941177, g: 0.17254902, b: 0.21568628,
     a: 1}
   metroSplashScreenUseBackgroundColor: 0
