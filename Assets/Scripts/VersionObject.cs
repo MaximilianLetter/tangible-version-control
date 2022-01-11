@@ -15,15 +15,11 @@ public class VersionObject : MonoBehaviour
     [SerializeField]
     private Transform modelContainer;
 
-    private ComparisonManager comparisonManager;
-
     private MeshRenderer meshRenderer;
     private Material baseMat;
 
     public void Initialize()
     {
-        comparisonManager = AppManager.Instance.GetComparisonManager();
-
         meshRenderer = GetComponentInChildren<MeshRenderer>();
         baseMat = meshRenderer.material;
     }

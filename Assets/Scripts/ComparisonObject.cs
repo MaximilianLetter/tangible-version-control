@@ -45,6 +45,9 @@ public class ComparisonObject : MonoBehaviour
     private Differences differences;
     private DifferencesDisplayMode diffMode;
 
+    private MeshRenderer meshRenderer;
+    private Material baseMat;
+
     // Internal values
     private Transform transformInUse;
     private bool pivotCenter;
@@ -168,7 +171,9 @@ public class ComparisonObject : MonoBehaviour
     {
         sideBySide = false;
 
-        partMgmt.ResetMaterial();
+        //partMgmt.ResetMaterial();
+        meshRenderer.material = baseMat;
+
         ClearDifferenceHighlights();
     }
 
@@ -176,8 +181,9 @@ public class ComparisonObject : MonoBehaviour
     /// Activates the object and applies the mesh and size of the given object to itself.
     /// </summary>
     /// <param name="voToClone">VersionObject to obtain mesh and scale from.</param>
-    public void Initialize(VersionObject voToClone)
+    public GameObject Initialize(VersionObject voToClone)
     {
+        Debug.Log("New comparison object initialized");
         //parts = new GameObject[toClone.transform.childCount];
 
         //for (int i = 0; i < toClone.transform.childCount; i++)
@@ -197,11 +203,18 @@ public class ComparisonObject : MonoBehaviour
         Destroy(modelContainer.GetComponent<BoxCollider>());
         modelContainer.tag = "Untagged";
 
+        meshRenderer = GetComponentInChildren<MeshRenderer>();
+        baseMat = meshRenderer.material;
+
+        Debug.Log(modelContainer);
+
         // Set pivot point according the the current mode
         if (pivotCenter) SetPivotPointCenter();
         else SetPivotPointBottom();
 
         gameObject.SetActive(true);
+
+        return modelContainer.gameObject;
     }
 
     /// <summary>

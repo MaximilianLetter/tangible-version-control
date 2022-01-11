@@ -15,14 +15,23 @@ public class TrackedObject : MonoBehaviour
     {
         comparisonManager = AppManager.Instance.GetComparisonManager();
 
-        Transform virtTwinModel = AppManager.Instance.GetVirtualTwin().transform.GetChild(0);
+        VersionObject virtTwin = AppManager.Instance.GetVirtualTwin();
+        Transform virtTwinModel = virtTwin.transform.GetChild(0);
         var clonedModel = Instantiate(virtTwinModel, transform).gameObject;
 
         clonedModel.tag = "Untagged";
         clonedModel.AddComponent<CollisionInteraction>();
 
         meshRenderer = clonedModel.GetComponentInChildren<MeshRenderer>();
-        baseMat = meshRenderer.material;
+
+        if (comparisonManager.usePhysical)
+        {
+            baseMat = comparisonManager.phantomMat;
+        }
+        else
+        {
+            baseMat = virtTwin.GetBaseMaterial();
+        }
 
         if (comparisonManager.usePhysical)
         {

@@ -157,13 +157,13 @@ Material:
     - _VertexExtrusion: 0
     - _VertexExtrusionSmoothNormals: 0
     - _VertexExtrusionValue: 0
-    - _ZOffsetFactor: 0
-    - _ZOffsetUnits: 0
+    - _ZOffsetFactor: 1
+    - _ZOffsetUnits: 1
     - _ZTest: 4
     - _ZWrite: 1
     m_Colors:
     - _ClippingBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
-    - _Color: {r: 1, g: 0.3924323, b: 0.2924528, a: 0.7911633}
+    - _Color: {r: 1, g: 0.3924323, b: 0.2924528, a: 0.5238463}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
     - _EnvironmentColorX: {r: 1, g: 0, b: 0, a: 1}

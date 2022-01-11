@@ -29,6 +29,7 @@ public class AppManager : MonoBehaviour
 
     private GameObject          timelineContainer;
     private Transform           branchContainer;
+    private Transform           contentContainer;
     private VersionObject       virtualTwin;
     private ConnectionLine      connectionLine;
     private LineRenderer        comparisonLine;
@@ -59,6 +60,7 @@ public class AppManager : MonoBehaviour
         comparisonObjectLogic = GameObject.FindObjectOfType<ComparisonObject>();
         //differencesObjectLogic = trackedObjectLogic.transform.parent.Find("DifferencesObject").GetComponent<ObjectParts>();
 
+        contentContainer = GameObject.Find("Content").transform;
         timelineContainer = GameObject.Find("Timeline");
         branchContainer = timelineContainer.transform.Find("BranchContainer");
         connectionLine = FindObjectOfType<ConnectionLine>();
@@ -153,7 +155,12 @@ public class AppManager : MonoBehaviour
     {
         return actionPanel;
     }
-#endregion
+
+    public Transform GetContentContainer()
+    {
+        return contentContainer;
+    }
+    #endregion
 
     /// <summary>
     /// Iterate through objects in the timeline to find the virtual twin and set it as reference.
@@ -271,6 +278,12 @@ public class AppManager : MonoBehaviour
         if (GetActionPanel() == null)
         {
             Debug.LogError("Action panel not found");
+            return false;
+        }
+
+        if (GetContentContainer() == null)
+        {
+            Debug.LogError("Content container not found");
             return false;
         }
 

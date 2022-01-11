@@ -21,6 +21,9 @@ public class TiltToMove : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
+#if UNITY_EDITOR
+        if (AppManager.Instance.GetComparisonManager().usePhysical) return;
+#endif
         // Actually doesnt really matter
         if (!other.CompareTag("VersionObjectArea")) return;
 

@@ -43,13 +43,16 @@ public class ComparisonManager : MonoBehaviour
     private ActionPanel actionPanel;
     private TrackedObject trackedObj;
     private Transform trackedTransform;
+    private Transform trackedObjContainer;
     private ComparisonObject comparisonObj;
     private Transform comparisonObjContainer;
     private VersionObject virtualTwin;
     private TimelineManager timelineManager;
+    private Transform contentContainer;
 
     // State variables
     private VersionObject comparedAgainstVersionObject;
+    private GameObject mainComparisonObject;
     private float floatingDistance;
     private bool inComparison;
 
@@ -63,10 +66,12 @@ public class ComparisonManager : MonoBehaviour
         actionPanel = AppManager.Instance.GetActionPanel();
         timelineManager = AppManager.Instance.GetTimelineManager();
         comparisonObj = AppManager.Instance.GetComparisonObjectLogic();
-        comparisonObjContainer = comparisonObj.transform.parent;
+        comparisonObjContainer = comparisonObj.transform;
+        contentContainer = AppManager.Instance.GetContentContainer();
 
         // Get relevant transform information
         trackedObj = AppManager.Instance.GetTrackedObjectLogic();
+        trackedObjContainer = trackedObj.transform.parent;
         trackedTransform = AppManager.Instance.GetTrackedTransform();
         
         // NOTE: giving the markerPlane a phantom materials results in unwanted behavior occluding the comparison object
@@ -120,7 +125,7 @@ public class ComparisonManager : MonoBehaviour
         comparedAgainstVersionObject = versionObj;
 
         // NOTE: Order matters, first clone the object, then activate the comparison
-        comparisonObj.Initialize(versionObj);
+        mainComparisonObject = comparisonObj.Initialize(versionObj);
 
         // Highlight in timeline
         //comparedAgainstVersionObject.GetComponentInParent<ObjectParts>().ToggleOutlines(true);
@@ -157,27 +162,27 @@ public class ComparisonManager : MonoBehaviour
     /// </summary>
     private void DisplayComparison()
     {
+        Debug.Log("display comparison reached");
+
         // Reset properties of tracked object and comparison object
         comparisonObj.Reset();
+        DestoryDifferenceObjects();
         trackedObj.ResetMaterial();
 
         // Activate effects based on activated mode
         if (mode == ComparisonMode.SideBySide)
         {
-            DestoryDifferenceObjects();
-            comparisonObjContainer.SetParent(null);
+            comparisonObjContainer.SetParent(contentContainer);
 
             comparisonObj.SetSideBySide(floatingDistance);
             comparisonObj.SetOverlayMaterial(true);
         }
         else if (mode == ComparisonMode.Overlay)
         {
-            DestoryDifferenceObjects();
             comparisonObj.SetPivotPointBottom();
-            comparisonObj.transform.localPosition = Vector3.zero;
 
             // Parent the comparison object container under the tracked transform to match the physical object
-            comparisonObjContainer.SetParent(trackedTransform);
+            comparisonObjContainer.SetParent(trackedObjContainer);
             comparisonObjContainer.localPosition = Vector3.zero;
 
             // NOTE: the phantom Mat occludes the overlayed mat, short term solution > invisible material
@@ -191,9 +196,9 @@ public class ComparisonManager : MonoBehaviour
             trackedObj.SetMaterial(invisibleMat);
 
             // Parent the comparison object container under the tracked transform to match the physical object
-            comparisonObjContainer.SetParent(trackedTransform);
+            comparisonObjContainer.SetParent(trackedObjContainer);
             comparisonObjContainer.localPosition = Vector3.zero;
-            comparisonObj.transform.parent = comparisonObjContainer;
+            comparisonObjContainer.localRotation = Quaternion.identity;
 
             // Create two more GameObjects to display the differences
             // currently only the compared against is visible, we now need two base objects
@@ -202,11 +207,21 @@ public class ComparisonManager : MonoBehaviour
 
             var diffBase = Instantiate(baseModelContainer, comparisonObjContainer);
             var diffSub = Instantiate(baseModelContainer, comparisonObjContainer);
-            var diffAdded = comparisonObj;
+            var diffAdded = mainComparisonObject;
 
-            diffBase.transform.localPosition = Vector3.zero;
-            diffSub.transform.localPosition = Vector3.zero;
-            diffAdded.transform.localPosition = Vector3.zero;
+            // Clean up copied components, except the already existing comparison object
+            for (int i = 1; i < comparisonObjContainer.childCount; i++)
+            {
+                var coll = comparisonObjContainer.GetChild(i).GetComponent<BoxCollider>();
+                if (coll) Destroy(coll);
+
+                var collScript = comparisonObjContainer.GetChild(i).GetComponent<CollisionInteraction>();
+                if (collScript) Destroy(collScript);
+            }
+
+            diffBase.transform.localPosition = baseModelContainer.transform.localPosition;
+            diffSub.transform.localPosition = baseModelContainer.transform.localPosition;
+            diffAdded.transform.localPosition = baseModelContainer.transform.localPosition;
 
             diffBase.GetComponentInChildren<Renderer>().material = diffMatBase;
             diffSub.GetComponentInChildren<Renderer>().material = diffMatSubtracted;
@@ -218,13 +233,19 @@ public class ComparisonManager : MonoBehaviour
 
     public void DestoryDifferenceObjects()
     {
-        foreach (Transform go in comparisonObjContainer)
+        for (int i = 0; i < comparisonObjContainer.childCount; i++)
         {
-            if (go.gameObject != comparisonObj.gameObject)
-            {
-                Destroy(go.gameObject);
-            }
+            if (comparisonObjContainer.GetChild(i).gameObject == mainComparisonObject) continue;
+
+            Destroy(comparisonObjContainer.GetChild(i).gameObject);
         }
+        //foreach (Transform go in comparisonObjContainer)
+        //{
+        //    if (go.gameObject != comparisonObj.gameObject)
+        //    {
+        //        Destroy(go.gameObject);
+        //    }
+        //}
     }
 
     /// <summary>
