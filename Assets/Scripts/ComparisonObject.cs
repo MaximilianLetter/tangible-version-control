@@ -234,80 +234,80 @@ public class ComparisonObject : MonoBehaviour
     {
         // Get references to the now relevant differences obj
         GameObject actualObj = AppManager.Instance.GetTrackedObjectLogic().gameObject;
-        differences = DetectDifferences(actualObj, parts);
+        //differences = DetectDifferences(actualObj, parts);
 
         // NOTE: The boolean comparison is kind of a workaround to identify if overall objects need to be added or are missing
-        actualObj.GetComponent<ObjectParts>().ResetMaterial(true);
+        //actualObj.GetComponent<ObjectParts>().ResetMaterial(true);
 
-        int i = 0;
-        GameObject[] diffPartsAdded = new GameObject[differences.added.Length];
-        foreach (var diff in differences.added)
-        {
-            var newGO = Instantiate(diff, differencesMgmt.transform);
-            MeshOutline outL = newGO.GetComponent<MeshOutline>();
-            if (outL == null)
-            {
-                outL = newGO.AddComponent<MeshOutline>();
-                outL.OutlineWidth = comparisonManager.outlineWidth;
-            }
-            outL.OutlineMaterial = comparisonManager.greenHighlight;
+        //int i = 0;
+        //GameObject[] diffPartsAdded = new GameObject[differences.added.Length];
+        //foreach (var diff in differences.added)
+        //{
+        //    var newGO = Instantiate(diff, differencesMgmt.transform);
+        //    MeshOutline outL = newGO.GetComponent<MeshOutline>();
+        //    if (outL == null)
+        //    {
+        //        outL = newGO.AddComponent<MeshOutline>();
+        //        outL.OutlineWidth = comparisonManager.outlineWidth;
+        //    }
+        //    outL.OutlineMaterial = comparisonManager.greenHighlight;
 
-            diffPartsAdded[i] = newGO;
-            i++;
-        }
+        //    diffPartsAdded[i] = newGO;
+        //    i++;
+        //}
 
-        i = 0;
-        GameObject[] diffPartsRemoved = new GameObject[differences.removed.Length];
-        foreach (var diff in differences.removed)
-        {
-            var newGO = Instantiate(diff, differencesMgmt.transform);
-            MeshOutline outL = newGO.GetComponent<MeshOutline>();
-            if (outL == null)
-            {
-                outL = newGO.AddComponent<MeshOutline>();
-                outL.OutlineWidth = comparisonManager.outlineWidth;
-            }
-            outL.OutlineMaterial = comparisonManager.redHighlight;
+        //i = 0;
+        //GameObject[] diffPartsRemoved = new GameObject[differences.removed.Length];
+        //foreach (var diff in differences.removed)
+        //{
+        //    var newGO = Instantiate(diff, differencesMgmt.transform);
+        //    MeshOutline outL = newGO.GetComponent<MeshOutline>();
+        //    if (outL == null)
+        //    {
+        //        outL = newGO.AddComponent<MeshOutline>();
+        //        outL.OutlineWidth = comparisonManager.outlineWidth;
+        //    }
+        //    outL.OutlineMaterial = comparisonManager.redHighlight;
 
-            // HACK: Unique to removed materials, this cause a lot of additional GetComponentCalls
-            newGO.GetComponent<PreserveMaterial>().CopyPreservedMat(diff.GetComponent<PreserveMaterial>().GetBaseMat());
+        //    // HACK: Unique to removed materials, this cause a lot of additional GetComponentCalls
+        //    newGO.GetComponent<PreserveMaterial>().CopyPreservedMat(diff.GetComponent<PreserveMaterial>().GetBaseMat());
 
-            diffPartsRemoved[i] = newGO;
-            i++;
-        }
+        //    diffPartsRemoved[i] = newGO;
+        //    i++;
+        //}
 
-        i = 0;
-        GameObject[] diffPartsModified = new GameObject[differences.modified.Length];
-        foreach (var diff in differences.modified)
-        {
-            var newGO = Instantiate(diff, differencesMgmt.transform);
-            MeshOutline outL = newGO.GetComponent<MeshOutline>();
-            if (outL == null)
-            {
-                outL = newGO.AddComponent<MeshOutline>();
-                outL.OutlineWidth = comparisonManager.outlineWidth;
-            }
-            outL.OutlineMaterial = comparisonManager.transitionHighlight;
+        //i = 0;
+        //GameObject[] diffPartsModified = new GameObject[differences.modified.Length];
+        //foreach (var diff in differences.modified)
+        //{
+        //    var newGO = Instantiate(diff, differencesMgmt.transform);
+        //    MeshOutline outL = newGO.GetComponent<MeshOutline>();
+        //    if (outL == null)
+        //    {
+        //        outL = newGO.AddComponent<MeshOutline>();
+        //        outL.OutlineWidth = comparisonManager.outlineWidth;
+        //    }
+        //    outL.OutlineMaterial = comparisonManager.transitionHighlight;
 
-            diffPartsModified[i] = newGO;
-            i++;
-        }
+        //    diffPartsModified[i] = newGO;
+        //    i++;
+        //}
 
         // Override the difference instance with the newly created objects
         // so they can be individually altered
-        differences = new Differences(diffPartsAdded, diffPartsRemoved, diffPartsModified);
+        //differences = new Differences(diffPartsAdded, diffPartsRemoved, diffPartsModified);
 
         // Set the differences obj as phantom with outlines
         // NOTE: order matters! collect > outlines > material
-        differencesMgmt.CollectRenderersAndMaterials();
-        differencesMgmt.ToggleOutlines(true);
-        SetDifferenceMode(diffMode);
+        //differencesMgmt.CollectRenderersAndMaterials();
+        //differencesMgmt.ToggleOutlines(true);
+        //SetDifferenceMode(diffMode);
 
-        // HACK
-        actualObj.GetComponent<ObjectParts>().SetMaterial(comparisonManager.invisibleMat);
+        //// HACK
+        //actualObj.GetComponent<ObjectParts>().SetMaterial(comparisonManager.invisibleMat);
 
-        // Set the comparison obj itself completely invisible
-        partMgmt.SetMaterial(comparisonManager.invisibleMat);
+        //// Set the comparison obj itself completely invisible
+        //partMgmt.SetMaterial(comparisonManager.invisibleMat);
     }
 
     /// <summary>
@@ -329,64 +329,64 @@ public class ComparisonObject : MonoBehaviour
     /// <param name="obj1">The physical object.</param>
     /// <param name="obj2Parts">This is always the comparison object, which has its parts stored in a separate variable.</param>
     /// <returns>List of parts that differ between the two given objects.</returns>
-    private Differences DetectDifferences(GameObject obj1, GameObject[] obj2Parts)
-    {
-        // Transfer child information in array to be in line with obj2Parts
-        GameObject[] obj1Parts = new GameObject[obj1.transform.childCount];
-        for (int i = 0; i < obj1.transform.childCount; i++)
-        {
-            obj1Parts[i] = obj1.transform.GetChild(i).gameObject;
-        }
+    //private Differences DetectDifferences(GameObject obj1, GameObject[] obj2Parts)
+    //{
+    //    // Transfer child information in array to be in line with obj2Parts
+    //    GameObject[] obj1Parts = new GameObject[obj1.transform.childCount];
+    //    for (int i = 0; i < obj1.transform.childCount; i++)
+    //    {
+    //        obj1Parts[i] = obj1.transform.GetChild(i).gameObject;
+    //    }
 
-        List<GameObject> parts1 = new List<GameObject>(obj1Parts);
-        List<GameObject> parts2 = new List<GameObject>(obj2Parts);
-        List<GameObject> modifiedParts = new List<GameObject>();
+    //    List<GameObject> parts1 = new List<GameObject>(obj1Parts);
+    //    List<GameObject> parts2 = new List<GameObject>(obj2Parts);
+    //    List<GameObject> modifiedParts = new List<GameObject>();
 
-        // Compare each part with each in a double loop
-        GameObject part1, part2;
-        bool restart = false;
-        for (int i = 0; i < parts1.Count; i++)
-        {
-            // As the lists are updated restart iterating the reduced list after a match was found
-            if (restart)
-            {
-                i = 0;
-                restart = false;
-            }
+    //    // Compare each part with each in a double loop
+    //    GameObject part1, part2;
+    //    bool restart = false;
+    //    for (int i = 0; i < parts1.Count; i++)
+    //    {
+    //        // As the lists are updated restart iterating the reduced list after a match was found
+    //        if (restart)
+    //        {
+    //            i = 0;
+    //            restart = false;
+    //        }
 
-            part1 = parts1[i];
+    //        part1 = parts1[i];
 
-            for (int j = 0; j < parts2.Count; j++)
-            {
-                part2 = parts2[j];
+    //        for (int j = 0; j < parts2.Count; j++)
+    //        {
+    //            part2 = parts2[j];
 
-                if (part1.transform.localPosition == part2.transform.localPosition &&
-                    part1.transform.localRotation == part2.transform.localRotation)
-                {
-                    // If the name does not fit, the parts were modified
-                    if (part1.name != part2.name)
-                    {
-                        modifiedParts.Add(part2);
-                    }
+    //            if (part1.transform.localPosition == part2.transform.localPosition &&
+    //                part1.transform.localRotation == part2.transform.localRotation)
+    //            {
+    //                // If the name does not fit, the parts were modified
+    //                if (part1.name != part2.name)
+    //                {
+    //                    modifiedParts.Add(part2);
+    //                }
 
-                    parts1.RemoveAt(i);
-                    parts2.RemoveAt(j);
+    //                parts1.RemoveAt(i);
+    //                parts2.RemoveAt(j);
 
-                    restart = true;
-                    i = -1; // HACK: so the for-loop does not abort if 1 part is missing and the increments sets i to 1 before it is reset to 0
-                    break;
-                }
-            }
-        }
+    //                restart = true;
+    //                i = -1; // HACK: so the for-loop does not abort if 1 part is missing and the increments sets i to 1 before it is reset to 0
+    //                break;
+    //            }
+    //        }
+    //    }
 
-        // The remaining parts2 must be additions to the existing parts, the remaining parts1 must be removed parts
-        List<GameObject> addedParts = parts2;
-        List<GameObject> removedParts = parts1;
+    //    // The remaining parts2 must be additions to the existing parts, the remaining parts1 must be removed parts
+    //    List<GameObject> addedParts = parts2;
+    //    List<GameObject> removedParts = parts1;
 
-        Differences diffs = new Differences(addedParts.ToArray(), removedParts.ToArray(), modifiedParts.ToArray());
+    //    Differences diffs = new Differences(addedParts.ToArray(), removedParts.ToArray(), modifiedParts.ToArray());
 
-        return diffs;
-    }
+    //    return diffs;
+    //}
 
     /// <summary>
     /// Flips the side the object floats from left to right and visa versa.

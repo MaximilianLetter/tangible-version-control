@@ -21,6 +21,11 @@ public class ComparisonManager : MonoBehaviour
     public Material yellowMat;
     public Material[] overlayMats;
 
+    //NEW
+    public Material diffMatBase;
+    public Material diffMatAdded;
+    public Material diffMatSubtracted;
+
     //[Space(10)]
     [Header("Outline Materials")]
     public float outlineWidth;
@@ -159,15 +164,21 @@ public class ComparisonManager : MonoBehaviour
         // Activate effects based on activated mode
         if (mode == ComparisonMode.SideBySide)
         {
-            comparisonObj.transform.parent = comparisonObjContainer;
+            DestoryDifferenceObjects();
+            comparisonObjContainer.SetParent(null);
+
             comparisonObj.SetSideBySide(floatingDistance);
             comparisonObj.SetOverlayMaterial(true);
         }
         else if (mode == ComparisonMode.Overlay)
         {
+            DestoryDifferenceObjects();
             comparisonObj.SetPivotPointBottom();
-            comparisonObj.transform.parent = trackedTransform;
             comparisonObj.transform.localPosition = Vector3.zero;
+
+            // Parent the comparison object container under the tracked transform to match the physical object
+            comparisonObjContainer.SetParent(trackedTransform);
+            comparisonObjContainer.localPosition = Vector3.zero;
 
             // NOTE: the phantom Mat occludes the overlayed mat, short term solution > invisible material
             //trackedObj.SetMaterial(phantomMat);
@@ -177,14 +188,43 @@ public class ComparisonManager : MonoBehaviour
         else if (mode == ComparisonMode.Differences)
         {
             comparisonObj.SetPivotPointBottom();
-            comparisonObj.transform.parent = trackedTransform;
-            comparisonObj.transform.localPosition = Vector3.zero;
-
             trackedObj.SetMaterial(invisibleMat);
-            comparisonObj.HighlightDifferences();
+
+            // Parent the comparison object container under the tracked transform to match the physical object
+            comparisonObjContainer.SetParent(trackedTransform);
+            comparisonObjContainer.localPosition = Vector3.zero;
+            comparisonObj.transform.parent = comparisonObjContainer;
+
+            // Create two more GameObjects to display the differences
+            // currently only the compared against is visible, we now need two base objects
+
+            var baseModelContainer = trackedObj.transform.GetChild(0).gameObject;
+
+            var diffBase = Instantiate(baseModelContainer, comparisonObjContainer);
+            var diffSub = Instantiate(baseModelContainer, comparisonObjContainer);
+            var diffAdded = comparisonObj;
+
+            diffBase.transform.localPosition = Vector3.zero;
+            diffSub.transform.localPosition = Vector3.zero;
+            diffAdded.transform.localPosition = Vector3.zero;
+
+            diffBase.GetComponentInChildren<Renderer>().material = diffMatBase;
+            diffSub.GetComponentInChildren<Renderer>().material = diffMatSubtracted;
+            diffAdded.GetComponentInChildren<Renderer>().material = diffMatAdded;
         }
 
         actionPanel.SetOptions();
+    }
+
+    public void DestoryDifferenceObjects()
+    {
+        foreach (Transform go in comparisonObjContainer)
+        {
+            if (go.gameObject != comparisonObj.gameObject)
+            {
+                Destroy(go.gameObject);
+            }
+        }
     }
 
     /// <summary>
