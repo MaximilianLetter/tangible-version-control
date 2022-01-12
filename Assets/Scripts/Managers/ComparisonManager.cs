@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Microsoft.MixedReality.Toolkit.Utilities;
+
 public enum ComparisonMode { SideBySide, Overlay, Differences }
 
 public class ComparisonManager : MonoBehaviour
@@ -16,49 +16,36 @@ public class ComparisonManager : MonoBehaviour
     public Material phantomMat;
     public Material invisibleMat;
     public Material edgesMat;
-    public Material greenMat;
-    public Material redMat;
-    public Material yellowMat;
-    public Material[] overlayMats;
 
-    //NEW
+    [Space(10)]
     public Material diffMatBase;
     public Material diffMatAdded;
     public Material diffMatSubtracted;
 
-    //[Space(10)]
-    [Header("Outline Materials")]
-    public float outlineWidth;
-    public Material neutralHighlight;
-    public Material greenHighlight;
-    public Material redHighlight;
-    public Material transitionHighlight;
-
-    public Color32 textHighlight;
-    public Color32 textDefault;
-    public Color32 red;
-    public Color32 green;
+    [Space(10)]
+    public ComparisonMode mode = ComparisonMode.SideBySide;
 
     // Required object references
     private ActionPanel actionPanel;
-    private TrackedObject trackedObj;
-    private Transform trackedTransform;
-    private Transform trackedObjContainer;
-    private ComparisonObject comparisonObj;
-    private Transform comparisonObjContainer;
     private VersionObject virtualTwin;
     private TimelineManager timelineManager;
+
+    // Transforms ordered by hierarchy
     private Transform contentContainer;
+    private Transform trackedObjContainer;
+    private TrackedObject trackedObj;
+    private Transform comparisonObjContainer;
+    private ComparisonObject comparisonObj;
 
     // State variables
     private VersionObject comparedAgainstVersionObject;
-    private GameObject mainComparisonObject;
+    private GameObject mainComparisonModel;
     private float floatingDistance;
     private bool inComparison;
 
-    [Space(14)]
-    public ComparisonMode mode;
-
+    /// <summary>
+    /// Initialize this manager, similar to a start function. This is required to get the virtual twin from the AppManager.
+    /// </summary>
     public void Initialize()
     {
         // Get relevant gameobject logic
@@ -67,28 +54,19 @@ public class ComparisonManager : MonoBehaviour
         timelineManager = AppManager.Instance.GetTimelineManager();
         comparisonObj = AppManager.Instance.GetComparisonObjectLogic();
         comparisonObjContainer = comparisonObj.transform;
-        contentContainer = AppManager.Instance.GetContentContainer();
 
         // Get relevant transform information
+        contentContainer = AppManager.Instance.GetContentContainer();
         trackedObj = AppManager.Instance.GetTrackedObjectLogic();
         trackedObjContainer = trackedObj.transform.parent;
-        trackedTransform = AppManager.Instance.GetTrackedTransform();
-        
-        // NOTE: giving the markerPlane a phantom materials results in unwanted behavior occluding the comparison object
-        //var markerPlane = trackedTransform.Find("MarkerPlane");
-        //if (markerPlane != null)
-        //{
-        //    markerPlane.GetComponent<Renderer>().material = phantomMat;
-        //}
 
-        // Initialize states
         inComparison = false;
-        mode = ComparisonMode.SideBySide;
 
 #if UNITY_EDITOR
         // A bigger floating distance is required on HoloLens
         staticFloatingDistance = 0.045f;
 #endif
+        StartCoroutine(PulseMaterials());
     }
 
     /// <summary>
@@ -124,37 +102,19 @@ public class ComparisonManager : MonoBehaviour
         // Save reference to object for avoiding reinitializing the same comparison
         comparedAgainstVersionObject = versionObj;
 
-        // NOTE: Order matters, first clone the object, then activate the comparison
-        mainComparisonObject = comparisonObj.Initialize(versionObj);
+        // Save the main model that is used by the comparison object
+        mainComparisonModel = comparisonObj.Initialize(versionObj);
 
         // Highlight in timeline
-        //comparedAgainstVersionObject.GetComponentInParent<ObjectParts>().ToggleOutlines(true);
         timelineManager.EnableComparisonLine(virtualTwin.transform, comparedAgainstVersionObject.transform);
 
         inComparison = true;
-
         floatingDistance = CalculateFloatingDistance(physicalObj, virtualObj);
 
-        // Fill information panel with content and show
+        // Show panel
         actionPanel.gameObject.SetActive(true);
 
         DisplayComparison();
-    }
-
-    private float CalculateFloatingDistance(GameObject obj1, GameObject obj2)
-    {
-        float dist;
-        // Calculate floating distance based on object sizes
-        // NOTE: this could further be improved by calculating the maximum diaginonal distance
-        var coll1 = obj1.GetComponent<Collider>().bounds.size;
-        var coll2 = obj2.GetComponent<Collider>().bounds.size;
-
-        float coll1max = Mathf.Max(Mathf.Max(coll1.x, coll1.y), coll1.z);
-        float coll2max = Mathf.Max(Mathf.Max(coll2.x, coll2.z), coll2.z);
-
-        dist = (coll1max / 2) + (coll2max / 2) + staticFloatingDistance;
-
-        return dist;
     }
 
     /// <summary>
@@ -162,20 +122,15 @@ public class ComparisonManager : MonoBehaviour
     /// </summary>
     private void DisplayComparison()
     {
-        Debug.Log("display comparison reached");
-
         // Reset properties of tracked object and comparison object
-        comparisonObj.Reset();
-        DestoryDifferenceObjects();
-        trackedObj.ResetMaterial();
+        CleanUpComparison();
 
         // Activate effects based on activated mode
         if (mode == ComparisonMode.SideBySide)
         {
+            trackedObj.ResetMaterial();
             comparisonObjContainer.SetParent(contentContainer);
-
-            comparisonObj.SetSideBySide(floatingDistance);
-            comparisonObj.SetOverlayMaterial(true);
+            comparisonObj.SetSideBySide(true, floatingDistance);
         }
         else if (mode == ComparisonMode.Overlay)
         {
@@ -185,10 +140,7 @@ public class ComparisonManager : MonoBehaviour
             comparisonObjContainer.SetParent(trackedObjContainer);
             comparisonObjContainer.localPosition = Vector3.zero;
 
-            // NOTE: the phantom Mat occludes the overlayed mat, short term solution > invisible material
-            //trackedObj.SetMaterial(phantomMat);
             trackedObj.SetMaterial(invisibleMat);
-            comparisonObj.SetOverlayMaterial();
         }
         else if (mode == ComparisonMode.Differences)
         {
@@ -201,13 +153,12 @@ public class ComparisonManager : MonoBehaviour
             comparisonObjContainer.localRotation = Quaternion.identity;
 
             // Create two more GameObjects to display the differences
-            // currently only the compared against is visible, we now need two base objects
-
+            // currently only the compared against is visible, two base objects need to be instantiated
             var baseModelContainer = trackedObj.transform.GetChild(0).gameObject;
 
             var diffBase = Instantiate(baseModelContainer, comparisonObjContainer);
             var diffSub = Instantiate(baseModelContainer, comparisonObjContainer);
-            var diffAdded = mainComparisonObject;
+            var diffAdded = mainComparisonModel;
 
             // Clean up copied components, except the already existing comparison object
             for (int i = 1; i < comparisonObjContainer.childCount; i++)
@@ -231,43 +182,56 @@ public class ComparisonManager : MonoBehaviour
         actionPanel.SetOptions();
     }
 
-    public void DestoryDifferenceObjects()
-    {
-        for (int i = 0; i < comparisonObjContainer.childCount; i++)
-        {
-            if (comparisonObjContainer.GetChild(i).gameObject == mainComparisonObject) continue;
-
-            Destroy(comparisonObjContainer.GetChild(i).gameObject);
-        }
-        //foreach (Transform go in comparisonObjContainer)
-        //{
-        //    if (go.gameObject != comparisonObj.gameObject)
-        //    {
-        //        Destroy(go.gameObject);
-        //    }
-        //}
-    }
-
     /// <summary>
     /// Resets the status of tracked and comparison object, also resets internal values.
     /// </summary>
+    /// <param name="softReset">Models are not destroyed and values are not fully reset.</param>
     public void StopComparison()
     {
         // Disable highlight on version object
         if (comparedAgainstVersionObject != null)
         {
-            //comparedAgainstVersionObject.GetComponentInParent<ObjectParts>().ToggleOutlines(false);
-            //versionHistoryObj.GetComponentInParent<VersionObject>().ChangeTextColor(textDefault);
             timelineManager.DisableComparisonLine();
             comparedAgainstVersionObject = null;
         }
 
         actionPanel.gameObject.SetActive(false);
 
-        comparisonObj.Deactivate();
         trackedObj.ResetMaterial();
 
+        // Destroy all objects
+        foreach (Transform child in comparisonObjContainer)
+        {
+            Destroy(child.gameObject);
+        }
+        comparisonObj.gameObject.SetActive(false);
+
         inComparison = false;
+    }
+
+    /// <summary>
+    /// Cleans up the comparison object so that it can be repopulated.
+    /// </summary>
+    void CleanUpComparison()
+    {
+        int modelsInUse = comparisonObjContainer.childCount;
+
+        if (modelsInUse > 1)
+        {
+            for (int i = 0; i < comparisonObjContainer.childCount; i++)
+            {
+                if (comparisonObjContainer.GetChild(i).gameObject == mainComparisonModel)
+                {
+                    comparisonObj.ReInitialize(mainComparisonModel);
+                    continue;
+                }
+
+                Destroy(comparisonObjContainer.GetChild(i).gameObject);
+            }
+        }
+
+        comparisonObj.ResetMaterial();
+        comparisonObj.SetSideBySide(false, floatingDistance);
     }
 
     /// <summary>
@@ -316,6 +280,63 @@ public class ComparisonManager : MonoBehaviour
                 virtualTwin = vo;
                 break;
             }
+        }
+    }
+
+    /// <summary>
+    /// Calculate the floating distance between two objects, based off their colliders.
+    /// </summary>
+    /// <param name="obj1">First object, probably the tracked one.</param>
+    /// <param name="obj2">Second object, probably from the timeline.</param>
+    /// <returns>Calculated distance between objects.</returns>
+    private float CalculateFloatingDistance(GameObject obj1, GameObject obj2)
+    {
+        float dist;
+        // Calculate floating distance based on object sizes
+        // NOTE: this could further be improved by calculating the maximum diaginonal distance
+        var coll1 = obj1.GetComponent<Collider>().bounds.size;
+        var coll2 = obj2.GetComponent<Collider>().bounds.size;
+
+        float coll1max = Mathf.Max(Mathf.Max(coll1.x, coll1.y), coll1.z);
+        float coll2max = Mathf.Max(Mathf.Max(coll2.x, coll2.z), coll2.z);
+
+        dist = (coll1max / 2) + (coll2max / 2) + staticFloatingDistance;
+
+        return dist;
+    }
+
+    /// <summary>
+    /// Pulses the difference materials between visible and transparent.
+    /// </summary>
+    IEnumerator PulseMaterials()
+    {
+        // Initialize values
+        float passedTime = 0.0f;
+        bool invertDirection = false;
+
+        while (true)
+        {
+            if (!inComparison) yield return null;
+
+            passedTime += Time.deltaTime;
+            if (passedTime >= pulseCadence)
+            {
+                passedTime = 0f;
+                invertDirection = !invertDirection;
+
+                // Hold state
+                yield return new WaitForSeconds(pulseHold);
+            }
+
+            float alpha = invertDirection ? Mathf.SmoothStep(0f, 1.0f, passedTime / pulseCadence) : Mathf.SmoothStep(1.0f, 0f, passedTime / pulseCadence);
+
+            var subColor = diffMatSubtracted.color;
+            diffMatSubtracted.color = new Color(subColor.r, subColor.g, subColor.b, alpha);
+
+            var addColor = diffMatAdded.color;
+            diffMatAdded.color = new Color(addColor.r, addColor.g, addColor.b, alpha);
+
+            yield return null;
         }
     }
 

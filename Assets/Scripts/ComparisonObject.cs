@@ -1,75 +1,36 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Microsoft.MixedReality.Toolkit.Utilities;
 
-
-public enum DifferencesDisplayMode { OutlinesOnly, HighlightColor, OriginalColor, AnimatedHighlights }
-
-struct Differences
-{
-    public GameObject[] added;
-    public GameObject[] removed;
-    public GameObject[] modified;
-
-    public Differences(GameObject[] added, GameObject[] removed, GameObject[] modified)
-    {
-        this.added = added;
-        this.removed = removed;
-        this.modified = modified;
-    }
-}
-
-[RequireComponent(typeof(ObjectParts))]
 public class ComparisonObject : MonoBehaviour
 {
     // External references
     private ComparisonManager comparisonManager;
     private Transform trackedObjTransform;
-    private ObjectParts differencesMgmt;
-    public Transform panel;
-
-    // Internal references
-    private GameObject[] parts;
-    private ObjectParts partMgmt;
+    private Transform panel;
 
     // Side by side variables
     private float floatingDistance;
     private bool sideBySide;
     private bool hoverSide;
 
-    // Overlay variables
-    private int materialIndex;
-
-    // Differences variables
-    private Differences differences;
-    private DifferencesDisplayMode diffMode;
-
+    // Internal values
     private MeshRenderer meshRenderer;
     private Material baseMat;
-
-    // Internal values
     private Transform transformInUse;
     private bool pivotCenter;
-    private bool ready;
 
     void Start()
     {
         // Get references to necessary gameobjects
         comparisonManager = AppManager.Instance.GetComparisonManager();
         trackedObjTransform = AppManager.Instance.GetTrackedTransform();
-        differencesMgmt =  GameObject.Find("DifferencesObject").GetComponent<ObjectParts>();
-        partMgmt = GetComponent<ObjectParts>();
+        panel = AppManager.Instance.GetActionPanel().transform;
 
         // Side by side variables
         transformInUse = transform;
         pivotCenter = false;
         hoverSide = false;
-
-        // Differences variables
-        diffMode = DifferencesDisplayMode.AnimatedHighlights;
-
-        ready = true;
     }
 
     void Update()
@@ -116,97 +77,33 @@ public class ComparisonObject : MonoBehaviour
     /// Activates the floating mode besides the tracked object.
     /// </summary>
     /// <param name="distance">Distance between the tracked and the compared object.</param>
-    public void SetSideBySide(float distance)
+    public void SetSideBySide(bool state, float distance)
     {
         floatingDistance = distance;
-        sideBySide = true;
+        sideBySide = state;
     }
 
     /// <summary>
-    /// Cycles through the possible difference modes.
+    /// Resets the material of the comparison object.
     /// </summary>
-    public void CycleDifferencesDisplay()
+    public void ResetMaterial()
     {
-        diffMode = (DifferencesDisplayMode)(((int)diffMode + 1) % 4);
-
-        SetDifferenceMode(diffMode);
-    }
-
-    /// <summary>
-    /// Set the specified mode for displaying the differences.
-    /// </summary>
-    /// <param name="mode">Which mode shall be displayed.</param>
-    private void SetDifferenceMode(DifferencesDisplayMode mode)
-    {
-        differencesMgmt.StopPulseParts();
-        diffMode = mode;
-
-        if (diffMode == DifferencesDisplayMode.OutlinesOnly)
-        {
-            differencesMgmt.SetMaterial(comparisonManager.phantomMat);
-        }
-        else if (diffMode == DifferencesDisplayMode.HighlightColor)
-        {
-            differencesMgmt.SetMaterial(comparisonManager.greenMat, differences.added);
-            differencesMgmt.SetMaterial(comparisonManager.redMat, differences.removed);
-            differencesMgmt.SetMaterial(comparisonManager.yellowMat, differences.modified);
-        }
-        else if (diffMode == DifferencesDisplayMode.OriginalColor)
-        {
-            differencesMgmt.ResetMaterial(true);
-        }
-        else if (diffMode == DifferencesDisplayMode.AnimatedHighlights)
-        {
-            differencesMgmt.ResetMaterial(true);
-            differencesMgmt.StartPulseParts(differences.added, differences.modified);
-            differencesMgmt.SetMaterial(comparisonManager.phantomMat, differences.removed);
-        }
-    }
-
-
-    /// <summary>
-    /// Resets any applied comparison operations to default.
-    /// </summary>
-    public void Reset()
-    {
-        sideBySide = false;
-
-        //partMgmt.ResetMaterial();
         meshRenderer.material = baseMat;
-
-        ClearDifferenceHighlights();
     }
 
     /// <summary>
-    /// Activates the object and applies the mesh and size of the given object to itself.
-    /// </summary>
+    /// Activates the object and clones the model from the given VersionObject.
     /// <param name="voToClone">VersionObject to obtain mesh and scale from.</param>
+    /// <returns>The primary model used for comparison.</returns>
     public GameObject Initialize(VersionObject voToClone)
     {
-        Debug.Log("New comparison object initialized");
-        //parts = new GameObject[toClone.transform.childCount];
-
-        //for (int i = 0; i < toClone.transform.childCount; i++)
-        //{
-        //    // Clone each part of the object, remove the MeshOutline Script
-        //    GameObject original = toClone.transform.GetChild(i).gameObject;
-        //    GameObject part = Instantiate(original, transform);
-
-        //    // Make sure the real name of the part is kept for part-wise comparisons
-        //    part.name = original.name;
-
-        //    // Store necessary information about parts
-        //    parts[i] = part;
-        //}
-        //partMgmt.CollectRenderersAndMaterials(parts);
         var modelContainer = Instantiate(voToClone.GetModelContainer(), transform);
         Destroy(modelContainer.GetComponent<BoxCollider>());
         modelContainer.tag = "Untagged";
 
         meshRenderer = GetComponentInChildren<MeshRenderer>();
-        baseMat = meshRenderer.material;
-
-        Debug.Log(modelContainer);
+        // Get base material directly from version Object;
+        baseMat = voToClone.GetComponentInChildren<MeshRenderer>().material;
 
         // Set pivot point according the the current mode
         if (pivotCenter) SetPivotPointCenter();
@@ -217,192 +114,15 @@ public class ComparisonObject : MonoBehaviour
         return modelContainer.gameObject;
     }
 
-    /// <summary>
-    /// Deactivates the object and removes applied mesh and scale operations.
-    /// </summary>
-    public void Deactivate()
+    public void ReInitialize(GameObject mainModel)
     {
-        // Reset mesh and scale
-        foreach (Transform child in transform)
-        {
-            child.gameObject.SetActive(false);
-            Destroy(child.gameObject);
-        }
-
-        parts = null;
-        partMgmt.ResetRenderersAndMaterials();
-
-        if (comparisonManager.mode == ComparisonMode.Differences)
-        {
-            ClearDifferenceHighlights();
-        }
-
-        gameObject.SetActive(false);
+        Debug.Log("ReInitialize called");
+        meshRenderer = mainModel.GetComponentInChildren<MeshRenderer>();
+        Debug.Log(meshRenderer);
     }
 
     /// <summary>
-    /// Highlight the detected differing object parts.
-    /// </summary>
-    public void HighlightDifferences()
-    {
-        // Get references to the now relevant differences obj
-        GameObject actualObj = AppManager.Instance.GetTrackedObjectLogic().gameObject;
-        //differences = DetectDifferences(actualObj, parts);
-
-        // NOTE: The boolean comparison is kind of a workaround to identify if overall objects need to be added or are missing
-        //actualObj.GetComponent<ObjectParts>().ResetMaterial(true);
-
-        //int i = 0;
-        //GameObject[] diffPartsAdded = new GameObject[differences.added.Length];
-        //foreach (var diff in differences.added)
-        //{
-        //    var newGO = Instantiate(diff, differencesMgmt.transform);
-        //    MeshOutline outL = newGO.GetComponent<MeshOutline>();
-        //    if (outL == null)
-        //    {
-        //        outL = newGO.AddComponent<MeshOutline>();
-        //        outL.OutlineWidth = comparisonManager.outlineWidth;
-        //    }
-        //    outL.OutlineMaterial = comparisonManager.greenHighlight;
-
-        //    diffPartsAdded[i] = newGO;
-        //    i++;
-        //}
-
-        //i = 0;
-        //GameObject[] diffPartsRemoved = new GameObject[differences.removed.Length];
-        //foreach (var diff in differences.removed)
-        //{
-        //    var newGO = Instantiate(diff, differencesMgmt.transform);
-        //    MeshOutline outL = newGO.GetComponent<MeshOutline>();
-        //    if (outL == null)
-        //    {
-        //        outL = newGO.AddComponent<MeshOutline>();
-        //        outL.OutlineWidth = comparisonManager.outlineWidth;
-        //    }
-        //    outL.OutlineMaterial = comparisonManager.redHighlight;
-
-        //    // HACK: Unique to removed materials, this cause a lot of additional GetComponentCalls
-        //    newGO.GetComponent<PreserveMaterial>().CopyPreservedMat(diff.GetComponent<PreserveMaterial>().GetBaseMat());
-
-        //    diffPartsRemoved[i] = newGO;
-        //    i++;
-        //}
-
-        //i = 0;
-        //GameObject[] diffPartsModified = new GameObject[differences.modified.Length];
-        //foreach (var diff in differences.modified)
-        //{
-        //    var newGO = Instantiate(diff, differencesMgmt.transform);
-        //    MeshOutline outL = newGO.GetComponent<MeshOutline>();
-        //    if (outL == null)
-        //    {
-        //        outL = newGO.AddComponent<MeshOutline>();
-        //        outL.OutlineWidth = comparisonManager.outlineWidth;
-        //    }
-        //    outL.OutlineMaterial = comparisonManager.transitionHighlight;
-
-        //    diffPartsModified[i] = newGO;
-        //    i++;
-        //}
-
-        // Override the difference instance with the newly created objects
-        // so they can be individually altered
-        //differences = new Differences(diffPartsAdded, diffPartsRemoved, diffPartsModified);
-
-        // Set the differences obj as phantom with outlines
-        // NOTE: order matters! collect > outlines > material
-        //differencesMgmt.CollectRenderersAndMaterials();
-        //differencesMgmt.ToggleOutlines(true);
-        //SetDifferenceMode(diffMode);
-
-        //// HACK
-        //actualObj.GetComponent<ObjectParts>().SetMaterial(comparisonManager.invisibleMat);
-
-        //// Set the comparison obj itself completely invisible
-        //partMgmt.SetMaterial(comparisonManager.invisibleMat);
-    }
-
-    /// <summary>
-    /// Removes all children from the difference object and resets the overlay material of the comparison obj.
-    /// </summary>
-    private void ClearDifferenceHighlights()
-    {
-        foreach (Transform child in differencesMgmt.transform)
-        {
-            Destroy(child.gameObject);
-        }
-
-        SetOverlayMaterial(true);
-    }
-
-    /// <summary>
-    /// Detect block differences between objects based on the part order, replacement of existing parts is not supported.
-    /// </summary>
-    /// <param name="obj1">The physical object.</param>
-    /// <param name="obj2Parts">This is always the comparison object, which has its parts stored in a separate variable.</param>
-    /// <returns>List of parts that differ between the two given objects.</returns>
-    //private Differences DetectDifferences(GameObject obj1, GameObject[] obj2Parts)
-    //{
-    //    // Transfer child information in array to be in line with obj2Parts
-    //    GameObject[] obj1Parts = new GameObject[obj1.transform.childCount];
-    //    for (int i = 0; i < obj1.transform.childCount; i++)
-    //    {
-    //        obj1Parts[i] = obj1.transform.GetChild(i).gameObject;
-    //    }
-
-    //    List<GameObject> parts1 = new List<GameObject>(obj1Parts);
-    //    List<GameObject> parts2 = new List<GameObject>(obj2Parts);
-    //    List<GameObject> modifiedParts = new List<GameObject>();
-
-    //    // Compare each part with each in a double loop
-    //    GameObject part1, part2;
-    //    bool restart = false;
-    //    for (int i = 0; i < parts1.Count; i++)
-    //    {
-    //        // As the lists are updated restart iterating the reduced list after a match was found
-    //        if (restart)
-    //        {
-    //            i = 0;
-    //            restart = false;
-    //        }
-
-    //        part1 = parts1[i];
-
-    //        for (int j = 0; j < parts2.Count; j++)
-    //        {
-    //            part2 = parts2[j];
-
-    //            if (part1.transform.localPosition == part2.transform.localPosition &&
-    //                part1.transform.localRotation == part2.transform.localRotation)
-    //            {
-    //                // If the name does not fit, the parts were modified
-    //                if (part1.name != part2.name)
-    //                {
-    //                    modifiedParts.Add(part2);
-    //                }
-
-    //                parts1.RemoveAt(i);
-    //                parts2.RemoveAt(j);
-
-    //                restart = true;
-    //                i = -1; // HACK: so the for-loop does not abort if 1 part is missing and the increments sets i to 1 before it is reset to 0
-    //                break;
-    //            }
-    //        }
-    //    }
-
-    //    // The remaining parts2 must be additions to the existing parts, the remaining parts1 must be removed parts
-    //    List<GameObject> addedParts = parts2;
-    //    List<GameObject> removedParts = parts1;
-
-    //    Differences diffs = new Differences(addedParts.ToArray(), removedParts.ToArray(), modifiedParts.ToArray());
-
-    //    return diffs;
-    //}
-
-    /// <summary>
-    /// Flips the side the object floats from left to right and visa versa.
+    /// Flips the side the object floats from left to right and vice versa.
     /// </summary>
     public void FlipHoverSide()
     {
@@ -489,30 +209,5 @@ public class ComparisonObject : MonoBehaviour
         transformInUse = transform;
 
         pivotCenter = false;
-    }
-
-    /// <summary>
-    /// Cycle through the options for displaying the overlayed object.
-    /// </summary>
-    public void CycleMaterials()
-    {
-        materialIndex = (materialIndex + 1) % comparisonManager.overlayMats.Length;
-
-        SetOverlayMaterial();
-    }
-
-    /// <summary>
-    /// Sets the currently active overlay material.
-    /// </summary>
-    public void SetOverlayMaterial(bool reset = false)
-    {
-        if (reset) materialIndex = 0;
-
-        if (materialIndex == 0) partMgmt.ResetMaterial();
-        else partMgmt.SetMaterial(comparisonManager.overlayMats[materialIndex]);
-    }
-    public bool IsReady()
-    {
-        return ready;
     }
 }

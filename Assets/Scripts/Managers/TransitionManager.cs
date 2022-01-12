@@ -13,7 +13,7 @@ public class TransitionManager : MonoBehaviour
     private TimelineManager timelineManager;
 
     private TrackedObject physObj;
-    private ObjectParts physObjParts;
+    //private ObjectParts physObjParts;
 
     private void Start()
     {
@@ -21,7 +21,7 @@ public class TransitionManager : MonoBehaviour
         timelineManager = AppManager.Instance.GetTimelineManager();
 
         physObj = AppManager.Instance.GetTrackedObjectLogic();
-        physObjParts = physObj.GetComponent<ObjectParts>();
+        //physObjParts = physObj.GetComponent<ObjectParts>();
 
         ResetTransitionUI();
     }
@@ -75,7 +75,8 @@ public class TransitionManager : MonoBehaviour
             var outL = part.GetComponent<MeshOutline>();
             if (outL != null)
             {
-                Material[] mats = new Material[1] { part.GetComponent<PreserveMaterial>().GetBaseMat() };
+                //Material[] mats = new Material[1] { part.GetComponent<PreserveMaterial>().GetBaseMat() };
+                Material[] mats = new Material[0];
                 part.GetComponent<MeshRenderer>().materials = mats;
             }
 
@@ -92,10 +93,10 @@ public class TransitionManager : MonoBehaviour
         {
             // Set and override base material as phantom
             physObj.SetMaterial(comparisonManager.phantomMat);
-            physObjParts.CollectRenderersAndMaterials(parts);
+            //physObjParts.CollectRenderersAndMaterials(parts);
         } else
         {
-            physObjParts.CollectRenderersAndMaterials(parts);
+            //physObjParts.CollectRenderersAndMaterials(parts);
         }
 
         // Actual transition

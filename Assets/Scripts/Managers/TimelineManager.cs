@@ -213,6 +213,8 @@ public class TimelineManager : MonoBehaviour
     /// <param name="obj2">Endpoint of line.</param>
     public void EnableComparisonLine(Transform obj1, Transform obj2)
     {
+        Debug.Log(obj1);
+        Debug.Log(obj2);
         float height1 = obj1.GetChild(0).GetComponent<Collider>().bounds.size.y;
         float height2 = obj2.GetChild(0).GetComponent<Collider>().bounds.size.y;
 

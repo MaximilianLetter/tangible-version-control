@@ -53,6 +53,7 @@ public class StartupManager : MonoBehaviour
 
         AppManager.Instance.GetComparisonManager().Initialize();
 
+
         AppManager.Instance.GetTimelineManager().StartPlacement();
 #if UNITY_EDITOR
         if (AppManager.Instance.GetComparisonManager().usePhysical)
