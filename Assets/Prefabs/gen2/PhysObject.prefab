@@ -73,8 +73,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fda4d5249abb14b4bb0f0ad9ae10e181, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tiltThresholdHorizontal: 7.5
+  minBranchesZ: 2
+  minVersionsX: 6
+  tiltThresholdHorizontal: 10
   tiltThresholdVertical: 10
   maxTilt: 60
   speedHorizontal: 0.35
-  speedVertical: 0.25
+  speedVertical: 0.2
