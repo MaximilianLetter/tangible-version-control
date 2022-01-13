@@ -24,6 +24,12 @@ public class VersionObject : MonoBehaviour
         baseMat = meshRenderer.material;
     }
 
+    public void OverrideBaseMaterial(Material newMat)
+    {
+        baseMat = newMat;
+        meshRenderer.material = newMat;
+    }
+
     /// <summary>
     /// Replaces every material of the object with a placement material.
     /// </summary>

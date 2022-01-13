@@ -13,6 +13,8 @@ public class GitHubAPIManager : MonoBehaviour
     private GameObject branchPrefab;
     [SerializeField]
     private GameObject versionPrefab;
+    [SerializeField]
+    private Material alternativeDefaultMat;
 
     private readonly string baseURL = "https://api.github.com/repos/";
     //private readonly string baseRepo = "MaximilianLetter/model-comparison-by-github/";
@@ -241,8 +243,8 @@ public class GitHubAPIManager : MonoBehaviour
 
             if (versionLogic.id == virtualTwinId)
             {
-                Debug.Log("Virtual twin loaded and updated.");
                 versionLogic.virtualTwin = true;
+                Debug.Log("Virtual twin loaded and updated.");
             }
 
             newVersion.transform.SetParent(branchesContainer.GetChild(0)); // TODO find correct branch
@@ -267,6 +269,12 @@ public class GitHubAPIManager : MonoBehaviour
             ColliderToFit.FitToChildren(modelContainer.gameObject);
 
             versionLogic.Initialize();
+
+            if (alternativeDefaultMat != null)
+            {
+                versionLogic.OverrideBaseMaterial(alternativeDefaultMat);
+                Debug.Log("Base material overridden");
+            }
 
             // Destroy the glTF scene, the required model was already moved out
             Destroy(result);
