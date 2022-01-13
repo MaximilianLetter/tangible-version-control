@@ -25,7 +25,7 @@ public class ConnectionLine : MonoBehaviour
         lineCol = lineMat.color;
         lineRend.positionCount = 2;
 
-        physObj = AppManager.Instance.GetTrackedTransform();
+        physObj = AppManager.Instance.GetTrackedObjectLogic().transform;
         timelineManager = AppManager.Instance.GetTimelineManager();
     }
 

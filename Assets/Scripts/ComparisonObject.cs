@@ -7,6 +7,7 @@ public class ComparisonObject : MonoBehaviour
     // External references
     private ComparisonManager comparisonManager;
     private Transform trackedObjTransform;
+    private Vector3 markerOffset;
     private Transform panel;
 
     // Side by side variables
@@ -25,6 +26,7 @@ public class ComparisonObject : MonoBehaviour
         // Get references to necessary gameobjects
         comparisonManager = AppManager.Instance.GetComparisonManager();
         trackedObjTransform = AppManager.Instance.GetTrackedTransform();
+        markerOffset = AppManager.Instance.GetTrackedObjectLogic().transform.parent.localPosition;
         panel = AppManager.Instance.GetActionPanel().transform;
 
         // Side by side variables
@@ -39,7 +41,7 @@ public class ComparisonObject : MonoBehaviour
 
         Vector3 offset, menuOffset;
         Transform camTransform = Camera.main.transform;
-        Vector3 trackedPos = trackedObjTransform.position;
+        Vector3 trackedPos = trackedObjTransform.position + markerOffset;
 
         // Get distance and direction relative to camera
         float distance = Vector3.Distance(camTransform.position, trackedPos);
