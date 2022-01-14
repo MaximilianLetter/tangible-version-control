@@ -59,9 +59,11 @@ public class StartupManager : MonoBehaviour
 #if UNITY_EDITOR
         if (AppManager.Instance.GetComparisonManager().usePhysical)
         {
+            yield return new WaitForSeconds(0.5f);
             markerHint.SetActive(true);
         }
 #else
+        yield return new WaitForSeconds(0.5f);
         markerHint.SetActive(true);
 #endif
 

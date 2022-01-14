@@ -324,7 +324,7 @@ public class GitHubAPIManager : MonoBehaviour
             var versionLogic = newVersion.GetComponent<VersionObject>();
 
             versionLogic.id = i.ToString(); ;
-            versionLogic.description = "Exemplary description " + i;
+            versionLogic.description = "Version " + i;
             versionLogic.createdBy = "Maximilian Letter";
             versionLogic.createdAt = RandomDayFunc().ToString();
 

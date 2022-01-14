@@ -96,7 +96,7 @@ public class TimelineManager : MonoBehaviour
         }
 
         // Sort by their createdAt field
-        allVersions.Sort(SortByDate);
+        allVersions.Sort(SortByID);
         int totalAmountOfVOs = allVersions.Count;
 
         // Prepare arrays of positions for branch lines
@@ -455,5 +455,10 @@ public class TimelineManager : MonoBehaviour
     static int SortByDate(VersionObject vo1, VersionObject vo2)
     {
         return vo1.createdAt.CompareTo(vo2.createdAt);
+    }
+
+    static int SortByID(VersionObject vo1, VersionObject vo2)
+    {
+        return vo1.id.CompareTo(vo2.id);
     }
 }
