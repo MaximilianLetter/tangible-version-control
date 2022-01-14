@@ -24,6 +24,7 @@ public class GitHubAPIManager : MonoBehaviour
 
     private ProgressIndicatorObjectDisplay progressIndicator;
     private Transform branchesContainer;
+    private ShowcaseObjLoader showcaseObjLoader;
 
     private float loadingProgress = 0f;
     private bool ready = false;
@@ -32,6 +33,7 @@ public class GitHubAPIManager : MonoBehaviour
     {
         branchesContainer = AppManager.Instance.GetTimelineContainer().transform.GetChild(0);
         progressIndicator = FindObjectOfType<ProgressIndicatorObjectDisplay>();
+        showcaseObjLoader = GetComponent<ShowcaseObjLoader>();
 
         StartCoroutine(CollectDataFromAPI());
     }
@@ -42,13 +44,21 @@ public class GitHubAPIManager : MonoBehaviour
 
         OpenProgressIndicator();
 
-        yield return StartCoroutine(GetListOfBranches());
-
-        yield return StartCoroutine(GetListOfCommits());
-
-        if (loadingProgress != 1f)
+        if (showcaseObjLoader.doShowcase)
         {
-            progressIndicator.Message = "Loading failed";
+            // This variant uses pre-imported .obj files. No internet connection is required.
+            yield return StartCoroutine(BuildShowcaseTimeline());
+        }
+        else
+        {
+            yield return StartCoroutine(GetListOfBranches());
+
+            yield return StartCoroutine(GetListOfCommits());
+
+            if (loadingProgress != 1f)
+            {
+                progressIndicator.Message = "Loading failed";
+            }
         }
 
         Debug.Log("Data collection done.");
@@ -281,6 +291,88 @@ public class GitHubAPIManager : MonoBehaviour
         }
 
         Debug.Log("Building GameObject from glTF done.");
+    }
+
+    IEnumerator BuildShowcaseTimeline()
+    {
+        string showcaseVirtTwinID = showcaseObjLoader.virtTwinID.ToString();
+        GameObject[] allObjs = showcaseObjLoader.allObjs;
+
+        // Build branches
+        //for (int i = 0; i < branchesInfo.Count; i++)
+        //{
+        var newBranch = Instantiate(branchPrefab, branchesContainer);
+
+        var branchLogic = newBranch.GetComponent<Branch>();
+        branchLogic.index = 0;
+        branchLogic.branchName = "main";
+        newBranch.name = branchLogic.branchName;
+        newBranch.transform.SetAsFirstSibling();
+
+        Debug.Log("New branch created: " + branchLogic.branchName);
+        //}
+
+        // Load objects
+        for (int i = 0; i < allObjs.Length; i++)
+        {
+            // Reflect state in progress indicator
+            loadingProgress = ((float)i / allObjs.Length);
+            progressIndicator.Message = "Loading commits " + Mathf.RoundToInt(loadingProgress * 100) + "%";
+
+            var loadedOBJ = Instantiate(allObjs[i]);
+            var newVersion = Instantiate(versionPrefab);
+            var versionLogic = newVersion.GetComponent<VersionObject>();
+
+            versionLogic.id = i.ToString(); ;
+            versionLogic.description = "Exemplary description " + i;
+            versionLogic.createdBy = "Maximilian Letter";
+            versionLogic.createdAt = RandomDayFunc().ToString();
+
+            if (versionLogic.id == showcaseVirtTwinID)
+            {
+                versionLogic.virtualTwin = true;
+                Debug.Log("Virtual twin loaded and updated.");
+            }
+
+            newVersion.transform.SetParent(branchesContainer.GetChild(0)); // TODO find correct branch
+
+            Transform modelContainer = versionLogic.GetModelContainer();
+
+            // The glTF result is the complete scene, including light and camera
+            // only keep the actual mesh, destroy other or dont even create other
+            var model = loadedOBJ.transform.GetChild(0).gameObject;
+            model.transform.SetParent(modelContainer);
+
+            modelContainer.localScale = model.transform.localScale;
+            modelContainer.localPosition = model.transform.transform.localPosition;
+            modelContainer.localRotation = model.transform.localRotation;
+
+            model.transform.localScale = Vector3.one;
+            model.transform.localPosition = Vector3.zero;
+            model.transform.localRotation = Quaternion.identity;
+
+            model.name = "model";
+
+            ColliderToFit.FitToChildren(modelContainer.gameObject);
+
+            versionLogic.Initialize();
+
+            // Destroy the glTF scene, the required model was already moved out
+            Destroy(loadedOBJ);
+
+            yield return new WaitForSeconds(0.1f);
+        }
+        loadingProgress = 1f;
+    }
+
+    private System.DateTime RandomDayFunc()
+    {
+        System.DateTime start = new System.DateTime(1995, 1, 1);
+        int range = (System.DateTime.Today - start).Days;
+        int randomDay = Random.Range(0, range);
+        System.DateTime randomDate = start.AddDays(randomDay);
+
+        return randomDate;
     }
 
     public bool IsReady()
