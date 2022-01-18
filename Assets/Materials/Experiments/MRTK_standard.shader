@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+// This variant is modified to also display wireframes.
+
 // NOTE: MRTK Shaders are versioned via the MRTK.Shaders.sentinel file.
 // When making changes to any shader's source file, the value in the sentinel _must_ be incremented.
 
@@ -183,6 +185,7 @@ Shader "Mixed Reality Toolkit/Standard"
             #pragma shader_feature _IRIDESCENCE
             #pragma shader_feature _ENVIRONMENT_COLORING
             #pragma shader_feature _IGNORE_Z_SCALE
+            #pragma shader_feature _EDGES
 
             #define IF(a, b, c) lerp(b, c, step((fixed) (a), 0.0)); 
 
