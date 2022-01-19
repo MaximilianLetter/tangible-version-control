@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: test_add
+  m_Shader: {fileID: 4800000, guid: e323a66a8e143b649b51496e3aaff134, type: 3}
+  m_ShaderKeywords: _STENCIL
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 2001
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Floats:
+    - _BlendOp: 0
+    - _DstBlend: 0
+    - _LineWidth: 0.05
+    - _SrcBlend: 5
+    - _Stencil: 1
+    - _StencilComparison: 8
+    - _StencilOperation: 2
+    - _StencilReference: 100
+    - _Thickness: 0.0177
+    - _ZOffsetFactor: 0
+    - _ZOffsetUnits: 0
+    m_Colors:
+    - _BackgroundColor: {r: 0, g: 0.81960785, b: 0.05490486, a: 0.53333336}
+    - _Color: {r: 0, g: 1, b: 0, a: 0.5}
+    - _FrontColor: {r: 1, g: 1, b: 1, a: 1}
+    - _GridColor: {r: 0.5377358, g: 0.19277322, b: 0.19277322, a: 0.03529412}
+    - _LineColor: {r: 1, g: 1, b: 1, a: 1}
+    - _WireframeColor: {r: 1, g: 1, b: 1, a: 1}

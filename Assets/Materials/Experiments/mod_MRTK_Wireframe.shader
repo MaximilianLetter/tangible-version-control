@@ -7,7 +7,7 @@
 ///
 /// Basic wireframe shader that can be used for rendering spatial mapping meshes.
 ///
-Shader "Mixed Reality Toolkit/Wireframe"
+Shader "Mixed Reality Toolkit/Wireframe modified"
 {
     Properties
     {
@@ -28,6 +28,12 @@ Shader "Mixed Reality Toolkit/Wireframe"
         _BaseColor("Base color", Color) = (0.0, 0.0, 0.0, 1.0)
         _WireColor("Wire color", Color) = (1.0, 1.0, 1.0, 1.0)
         _WireThickness("Wire thickness", Range(0, 800)) = 100
+
+        // Added options.
+        [Toggle(_STENCIL)] _Stencil("Enable Stencil Testing", Float) = 0.0
+        _StencilReference("Stencil Reference", Range(0, 255)) = 0
+        [Enum(UnityEngine.Rendering.CompareFunction)]_StencilComparison("Stencil Comparison", Int) = 0
+        [Enum(UnityEngine.Rendering.StencilOp)]_StencilOperation("Stencil Operation", Int) = 0
     }
     SubShader
     {
@@ -43,6 +49,13 @@ Shader "Mixed Reality Toolkit/Wireframe"
         Pass
         {
             Offset 50, 100
+
+            Stencil
+            {
+                Ref[_StencilReference]
+                Comp[_StencilComparison]
+                Pass[_StencilOperation]
+            }
 
             CGPROGRAM
             #pragma vertex vert
@@ -141,5 +154,5 @@ Shader "Mixed Reality Toolkit/Wireframe"
     }
 
     FallBack "Mixed Reality Toolkit/Standard"
-    CustomEditor "Microsoft.MixedReality.Toolkit.Editor.MixedRealityWireframeShaderGUI"
+    //CustomEditor "Microsoft.MixedReality.Toolkit.Editor.MixedRealityWireframeShaderGUI"
 }
