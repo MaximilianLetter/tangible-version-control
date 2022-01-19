@@ -831,12 +831,13 @@ MonoBehaviour:
   staticFloatingDistance: 0.045
   pulseCadence: 1
   pulseHold: 0.5
+  pulseAlphaLimit: 0.6
   phantomMat: {fileID: 2100000, guid: 61238261a8dc1134db68eb7094ee170a, type: 2}
   invisibleMat: {fileID: 2100000, guid: 680ce2717dd7a0349b5547614be44abf, type: 2}
   edgesMat: {fileID: 2100000, guid: 8a2eb0a7f7ce218499260558df6c19d7, type: 2}
   diffMatBase: {fileID: 2100000, guid: d7046a59404915248ba699e8327ec7e0, type: 2}
-  diffMatAdded: {fileID: 2100000, guid: d404ec540ac552b44a09e0506f702f63, type: 2}
-  diffMatSubtracted: {fileID: 2100000, guid: f013d08929e1ed04f835a069e7664841, type: 2}
+  diffMatAdded: {fileID: 2100000, guid: 05ebd99ef702e6443966e1d4dd8b7988, type: 2}
+  diffMatSubtracted: {fileID: 2100000, guid: c7db75e37596a714d8b525ba5e006548, type: 2}
   mode: 0
 --- !u!1 &324248960
 GameObject:

@@ -11,6 +11,8 @@ public class ComparisonManager : MonoBehaviour
     public float staticFloatingDistance;
     public float pulseCadence;
     public float pulseHold;
+    [Range(0f, 1f)]
+    public float pulseAlphaLimit = 0.5f;
 
     [Header("Object Materials")]
     public Material phantomMat;
@@ -328,7 +330,7 @@ public class ComparisonManager : MonoBehaviour
                 yield return new WaitForSeconds(pulseHold);
             }
 
-            float alpha = invertDirection ? Mathf.SmoothStep(0f, 1.0f, passedTime / pulseCadence) : Mathf.SmoothStep(1.0f, 0f, passedTime / pulseCadence);
+            float alpha = invertDirection ? Mathf.SmoothStep(0f, pulseAlphaLimit, passedTime / pulseCadence) : Mathf.SmoothStep(pulseAlphaLimit, 0f, passedTime / pulseCadence);
 
             var subColor = diffMatSubtracted.color;
             diffMatSubtracted.color = new Color(subColor.r, subColor.g, subColor.b, alpha);
