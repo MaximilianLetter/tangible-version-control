@@ -23,19 +23,20 @@ Material:
     - _BlendOp: 0
     - _DstBlend: 0
     - _LineWidth: 0.05
+    - _RemoveDiag: 0
     - _SrcBlend: 5
     - _Stencil: 1
     - _StencilComparison: 8
     - _StencilOperation: 0
     - _StencilReference: 100
     - _Thickness: 0.0177
-    - _WireThickness: 0.02
+    - _WireThickness: 0.001
     - _ZOffsetFactor: 1
     - _ZOffsetUnits: 1
     m_Colors:
     - _BackgroundColor: {r: 0.6698113, g: 0.07582767, b: 0.07582767, a: 0.42745098}
-    - _Color: {r: 1, g: 0, b: 0.033492565, a: 0.7}
+    - _Color: {r: 1, g: 0, b: 0.033492565, a: 0.5}
     - _FrontColor: {r: 1, g: 1, b: 1, a: 1}
     - _GridColor: {r: 0.5377358, g: 0.19277322, b: 0.19277322, a: 0.03529412}
     - _LineColor: {r: 1, g: 1, b: 1, a: 1}
-    - _WireframeColor: {r: 1, g: 1, b: 1, a: 1}
+    - _WireframeColor: {r: 1, g: 1, b: 1, a: 0.7058824}

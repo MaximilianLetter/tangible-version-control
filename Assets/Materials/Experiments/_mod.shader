@@ -113,12 +113,6 @@ Shader "Mixed Reality Toolkit/Standard modified"
         _StencilReference("Stencil Reference", Range(0, 255)) = 0
         [Enum(UnityEngine.Rendering.CompareFunction)]_StencilComparison("Stencil Comparison", Int) = 0
         [Enum(UnityEngine.Rendering.StencilOp)]_StencilOperation("Stencil Operation", Int) = 0
-
-        // Custom options.    
-        [Toggle(_EDGES)]_Edges("Enable Display of Edges", Float) = 0.0
-        _BaseColor("Base color", Color) = (0.0, 0.0, 0.0, 1.0)
-        _WireColor("Wire color", Color) = (1.0, 1.0, 1.0, 1.0)
-        _WireThickness("Wire thickness", Range(0, 800)) = 100
 }
 
     SubShader
@@ -146,7 +140,6 @@ Shader "Mixed Reality Toolkit/Standard modified"
             CGPROGRAM
 
             #pragma vertex vert
-            #pragma geometry geom
             #pragma fragment frag
 
             #pragma multi_compile_instancing
@@ -266,12 +259,6 @@ Shader "Mixed Reality Toolkit/Standard modified"
             #undef _UV
 #endif
 
-//#if defined(_EDGES)
-            float4 _BaseColor;
-            float4 _WireColor;
-            float _WireThickness;
-//#endif
-
             struct appdata_t
             {
                 float4 vertex : POSITION;
@@ -294,79 +281,6 @@ Shader "Mixed Reality Toolkit/Standard modified"
 #endif
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
-
-            struct v2g
-            {
-                float4 viewPos : SV_POSITION;
-                UNITY_VERTEX_OUTPUT_STEREO
-            };
-
-            v2g vert(appdata_base v)
-            {
-                UNITY_SETUP_INSTANCE_ID(v);
-                v2g o;
-                o.viewPos = UnityObjectToClipPos(v.vertex);
-                UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
-                return o;
-            }
-
-            struct g2f
-            {
-                float4 viewPos : SV_POSITION;
-                //float inverseW : TEXCOORD0;
-                float3 dist : TEXCOORD1;
-                UNITY_VERTEX_OUTPUT_STEREO
-            };
-
-            [maxvertexcount(3)]
-            void geom(triangle v2g i[3], inout TriangleStream<g2f> triStream)
-            {
-                // Calculate the vectors that define the triangle from the input points.
-                float2 point0 = i[0].viewPos.xy / i[0].viewPos.w;
-                float2 point1 = i[1].viewPos.xy / i[1].viewPos.w;
-                float2 point2 = i[2].viewPos.xy / i[2].viewPos.w;
-
-                // Calculate the area of the triangle.
-                float2 vector0 = point2 - point1;
-                float2 vector1 = point2 - point0;
-                float2 vector2 = point1 - point0;
-                float area = abs(vector1.x * vector2.y - vector1.y * vector2.x);
-
-                float3 distScale[3];
-                distScale[0] = float3(area / length(vector0), 0, 0);
-                distScale[1] = float3(0, area / length(vector1), 0);
-                distScale[2] = float3(0, 0, area / length(vector2));
-
-                float wireScale = 800 - _WireThickness;
-
-                // Output each original vertex with its distance to the opposing line defined
-                // by the other two vertices.
-                g2f o;
-                UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
-
-                [unroll]
-                for (uint idx = 0; idx < 3; ++idx)
-                {
-                    o.viewPos = i[idx].viewPos;
-                    //o.inverseW = 1.0 / o.viewPos.w;
-                    o.dist = distScale[idx] * o.viewPos.w * wireScale;
-                    UNITY_TRANSFER_VERTEX_OUTPUT_STEREO(i[idx], o);
-                    triStream.Append(o);
-                }
-            }
-
-            float4 frag(g2f i) : COLOR
-            {
-                // Calculate  minimum distance to one of the triangle lines, making sure to correct
-                // for perspective-correct interpolation.
-                float dist = min(i.dist[0], min(i.dist[1], i.dist[2]));
-
-            // Make the intensity of the line very bright along the triangle edges but fall-off very
-            // quickly.
-            float I = exp2(-2 * dist * dist);
-
-            return I * _WireColor + (1 - I) * _BaseColor;
-            }
 
             struct v2f 
             {
@@ -1260,6 +1174,18 @@ Shader "Mixed Reality Toolkit/Standard modified"
 #if defined(_CLIPPING_PRIMITIVE) && !defined(_ALPHA_CLIP)
                 output *= saturate(primitiveDistance * (1.0f / _BlendedClippingWidth));
 #endif
+
+                // testing simple normal based outline, not working
+//#if defined(_FRESNEL)
+//                //return output;
+//                float edge1 = 1 - 0.75;
+//                float edge2 = edge1 + 0.35;
+//                float fresnel2 = pow(1.0 - saturate(dot(worldNormal, worldViewDir)), 4);
+//                return output + lerp(1, smoothstep(edge1, edge2, fresnel2), step(0, edge1)) * fixed4(1.0, 1.0, 1.0, 1.0);
+//#else
+//
+//                return output;
+//#endif
                 return output;
             }
 
@@ -1346,5 +1272,5 @@ Shader "Mixed Reality Toolkit/Standard modified"
     }
     
     Fallback "Hidden/InternalErrorShader"
-    /*CustomEditor "Microsoft.MixedReality.Toolkit.Editor.MixedRealityStandardShaderGUI"*/
+    CustomEditor "Microsoft.MixedReality.Toolkit.Editor.MixedRealityStandardShaderGUI"
 }

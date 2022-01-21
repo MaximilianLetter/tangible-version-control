@@ -7,13 +7,14 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: _added
-  m_Shader: {fileID: 4800000, guid: 5bdea20278144b11916d77503ba1467a, type: 3}
-  m_ShaderKeywords: _DIRECTIONAL_LIGHT _DISABLE_ALBEDO_MAP _SPECULAR_HIGHLIGHTS _STENCIL
+  m_Name: _mod_sub
+  m_Shader: {fileID: 4800000, guid: 0fd32825c93aef84c9fbe3c825d8c4a0, type: 3}
+  m_ShaderKeywords: _DIRECTIONAL_LIGHT _DISABLE_ALBEDO_MAP _EDGES _RIM_LIGHT _SPECULAR_HIGHLIGHTS
+    _STENCIL
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2001
+  m_CustomRenderQueue: 2000
   stringTagMap:
     RenderType: Opaque
   disabledShaderPasses: []
@@ -25,6 +26,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ChannelMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DepthTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -91,6 +96,7 @@ Material:
     - _DirectionalLight: 1
     - _DstBlend: 0
     - _EdgeSmoothingValue: 0.002
+    - _Edges: 1
     - _EnableChannelMap: 0
     - _EnableEmission: 0
     - _EnableHoverColorOverride: 0
@@ -99,8 +105,8 @@ Material:
     - _EnableProximityLightColorOverride: 0
     - _EnableSSAA: 0
     - _EnableTriplanarMapping: 0
-    - _EnvironmentColorIntensity: 0.5
-    - _EnvironmentColorThreshold: 1.5
+    - _EnvironmentColorIntensity: 1
+    - _EnvironmentColorThreshold: 0.83
     - _EnvironmentColoring: 0
     - _FadeBeginDistance: 0.2
     - _FadeCompleteDistance: 0.05
@@ -126,15 +132,17 @@ Material:
     - _NormalMapScale: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _PressIntensity: 1
+    - _PressRimPower: 5
     - _ProximityLight: 0
     - _ProximityLightSubtractive: 0
     - _ProximityLightTwoSided: 0
     - _Reflections: 0
     - _Refraction: 0
     - _RefractiveIndex: 0
-    - _RenderQueueOverride: 2001
-    - _RimLight: 0
-    - _RimPower: 0.25
+    - _RenderQueueOverride: 2000
+    - _RimLight: 1
+    - _RimPower: 0
     - _RoundCornerMargin: 0.01
     - _RoundCornerRadius: 0.25
     - _RoundCorners: 0
@@ -145,7 +153,7 @@ Material:
     - _SrcBlend: 5
     - _Stencil: 1
     - _StencilComparison: 8
-    - _StencilOperation: 2
+    - _StencilOperation: 0
     - _StencilReference: 100
     - _TriplanarMappingBlendSharpness: 4
     - _UVSec: 0
@@ -153,22 +161,26 @@ Material:
     - _VertexExtrusion: 0
     - _VertexExtrusionSmoothNormals: 0
     - _VertexExtrusionValue: 0
-    - _ZOffsetFactor: 0
-    - _ZOffsetUnits: 0
+    - _WireThickness: 319
+    - _ZOffsetFactor: 1
+    - _ZOffsetUnits: 1
     - _ZTest: 4
     - _ZWrite: 1
     m_Colors:
+    - _BaseColor: {r: 0.5849056, g: 0.2924528, b: 0.2924528, a: 1}
     - _ClippingBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
-    - _Color: {r: 0.13764042, g: 0.8207547, b: 0, a: 0.5546178}
+    - _Color: {r: 1, g: 0.1388889, b: 0, a: 0.5}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
     - _EnvironmentColorX: {r: 1, g: 0, b: 0, a: 1}
-    - _EnvironmentColorY: {r: 0, g: 1, b: 0, a: 1}
-    - _EnvironmentColorZ: {r: 0, g: 0, b: 1, a: 1}
+    - _EnvironmentColorY: {r: 1, g: 1, b: 1, a: 1}
+    - _EnvironmentColorZ: {r: 1, g: 1, b: 1, a: 1}
     - _HoverColorOverride: {r: 1, g: 1, b: 1, a: 1}
     - _InnerGlowColor: {r: 1, g: 1, b: 1, a: 0.75}
+    - _PressRimColor: {r: 1, g: 1, b: 1, a: 1}
     - _ProximityLightCenterColorOverride: {r: 1, g: 0, b: 0, a: 0}
-    - _ProximityLightMiddleColorOverride: {r: 0, g: 1, b: 0, a: 0.5}
-    - _ProximityLightOuterColorOverride: {r: 0, g: 0, b: 1, a: 1}
-    - _RimColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _ProximityLightMiddleColorOverride: {r: 0, g: 1, b: 0, a: 0}
+    - _ProximityLightOuterColorOverride: {r: 1, g: 1, b: 1, a: 1}
+    - _RimColor: {r: 0, g: 0, b: 0, a: 0}
     - _RoundCornersRadius: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
+    - _WireColor: {r: 1, g: 1, b: 1, a: 1}
