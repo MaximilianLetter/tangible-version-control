@@ -55,6 +55,8 @@ public class StartupManager : MonoBehaviour
 
         AppManager.Instance.GetTrackedObjectLogic().GetComponent<TiltToMove>().Initialize();
 
+        yield return new WaitForSeconds(0.5f);
+
         AppManager.Instance.GetTimelineManager().StartPlacement();
 #if UNITY_EDITOR
         if (AppManager.Instance.GetComparisonManager().usePhysical)

@@ -12,7 +12,7 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: MLetter
+  companyName: AnonymousCompany
   productName: TVC 2.0
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
@@ -632,7 +632,7 @@ PlayerSettings:
   metroLastRequiredScene: 0
   metroDefaultTileSize: 1
   metroTileForegroundText: 2
-  metroTileBackgroundColor: {r: 0.31648272, g: 0.417349, b: 0.5283019, a: 0}
+  metroTileBackgroundColor: {r: 0.8396226, g: 0.46741408, b: 0.100332186, a: 0}
   metroSplashScreenBackgroundColor: {r: 0.12941177, g: 0.17254902, b: 0.21568628,
     a: 1}
   metroSplashScreenUseBackgroundColor: 0

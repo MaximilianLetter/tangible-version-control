@@ -99,7 +99,7 @@ public class GitHubAPIManager : MonoBehaviour
 
         yield return repoBranchesRequest.SendWebRequest();
 
-        if (repoBranchesRequest.isNetworkError || repoBranchesRequest.isHttpError)
+        if (repoBranchesRequest.result == UnityWebRequest.Result.ConnectionError || repoBranchesRequest.result == UnityWebRequest.Result.ProtocolError || repoBranchesRequest.result == UnityWebRequest.Result.DataProcessingError)
         {
             Debug.LogError(repoBranchesRequest.error);
             yield break;
@@ -147,7 +147,7 @@ public class GitHubAPIManager : MonoBehaviour
 
         yield return repoCommitsRequest.SendWebRequest();
 
-        if (repoCommitsRequest.isNetworkError || repoCommitsRequest.isHttpError)
+        if (repoCommitsRequest.result == UnityWebRequest.Result.ConnectionError || repoCommitsRequest.result == UnityWebRequest.Result.ProtocolError || repoCommitsRequest.result == UnityWebRequest.Result.DataProcessingError)
         {
             Debug.LogError(repoCommitsRequest.error);
             yield break;
@@ -177,7 +177,7 @@ public class GitHubAPIManager : MonoBehaviour
 
             yield return singleCommitRequest.SendWebRequest();
 
-            if (singleCommitRequest.isNetworkError || singleCommitRequest.isHttpError)
+            if (singleCommitRequest.result == UnityWebRequest.Result.ConnectionError || singleCommitRequest.result == UnityWebRequest.Result.ProtocolError || singleCommitRequest.result == UnityWebRequest.Result.DataProcessingError)
             {
                 Debug.LogError(singleCommitRequest.error);
                 yield break;
@@ -203,7 +203,7 @@ public class GitHubAPIManager : MonoBehaviour
 
             yield return modelDataRequest.SendWebRequest();
 
-            if (modelDataRequest.isNetworkError || modelDataRequest.isHttpError)
+            if (modelDataRequest.result == UnityWebRequest.Result.ConnectionError || modelDataRequest.result == UnityWebRequest.Result.ProtocolError || modelDataRequest.result == UnityWebRequest.Result.DataProcessingError)
             {
                 Debug.LogError(modelDataRequest.error);
                 yield break;
