@@ -11,4 +11,8 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/_Scenes/_ExperimentScene.unity
     guid: f545e95d700e0a245acfda04821d88ef
-  m_configObjects: {}
+  m_configObjects:
+    Unity.XR.WindowsMR.Settings: {fileID: 11400000, guid: b740a6b577d024146895173517a5f53e,
+      type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: fe059c0790cf733438f6670a808e03dc,
+      type: 2}
