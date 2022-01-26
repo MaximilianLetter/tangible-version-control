@@ -150,7 +150,8 @@ public class GitHubAPIManager : MonoBehaviour
 
         for (int j = 0; j < branches.Count; j++)
         {
-            string commitsURL = baseURL + baseRepo + "commits" + "?sha=" + branches[j].branchName;
+            string branchSelector = "?sha=" + branches[j].branchName;
+            string commitsURL = baseURL + baseRepo + "commits" + branchSelector;
             // Example URL: https://api.github.com/repos/MaximilianLetter/model-comparison-by-github/commits
 
             UnityWebRequest repoCommitsRequest = UnityWebRequest.Get(commitsURL);
@@ -170,7 +171,7 @@ public class GitHubAPIManager : MonoBehaviour
             for (int i = 0; i < listCommitsInfo.Count; i++)
             {
                 // Reflect state in progress indicator
-                loadingProgress = ((float)i / listCommitsInfo.Count * ((float)j / branches.Count));
+                loadingProgress = ((float)i / listCommitsInfo.Count * ((j + 1f) / branches.Count));
                 progressIndicator.Message = "Loading commits " + Mathf.RoundToInt(loadingProgress * 100) + "%";
 
                 Debug.Log(listCommitsInfo[i]["commit"]["message"]);

@@ -101,11 +101,6 @@ public class TimelineManager : MonoBehaviour
 
         // Prepare arrays of positions for branch lines
         Transform mainBranch = allVersions[0].transform.parent;
-        List<List<Vector3>> linePositions = new List<List<Vector3>>();
-        foreach (var b in branches)
-        {
-            linePositions.Add(new List<Vector3>());
-        }
 
         int prevBranchIndex = 0;
         int prevOffset = 0;
@@ -131,26 +126,6 @@ public class TimelineManager : MonoBehaviour
 
             currentVO.localPosition = pos;
 
-            if ((branchIndex != prevBranchIndex)) // A change from one branch to another occurs
-            {
-                Vector3 transitionPos = new Vector3(
-                    xPos - betweenVersionsDistance,
-                    0,
-                    zPos + (prevOffset - offset) * betweenBranchesDistance);
-
-                if (branchIndex < prevBranchIndex) // Going back into prev branch
-                {
-                    linePositions[prevBranchIndex].Add(pos);
-                    Debug.Log("back to main line");
-                }
-                else
-                {
-                    linePositions[branchIndex].Add(transitionPos);
-                }
-            }
-
-            linePositions[branchIndex].Add(pos);
-
             prevBranchIndex = branchIndex;
             prevOffset = offset;
         }
@@ -159,7 +134,7 @@ public class TimelineManager : MonoBehaviour
         for (int i = 0; i < branches.Length; i++)
         {
             int inverseOrder = branches.Length - i;
-            branches[i].SetBranchLinePositionsAndOrder(linePositions[i].ToArray(), inverseOrder);
+            branches[i].SetBranchLinePositionsAndOrder(inverseOrder);
         }
 
         // Calculate values for timeline collider

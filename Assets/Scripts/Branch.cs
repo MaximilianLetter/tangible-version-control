@@ -68,11 +68,18 @@ public class Branch : MonoBehaviour
         ready = true;
     }
 
-    public void SetBranchLinePositionsAndOrder(Vector3[] positions, int order)
+    public void SetBranchLinePositionsAndOrder(int order)
     {
-        branchLine.positionCount = positions.Length;
+        branchLine.positionCount = transform.childCount;
 
-        branchLine.SetPositions(positions);
+        List<Vector3> positions = new List<Vector3>();
+
+        foreach (Transform child in transform)
+        {
+            positions.Add(child.localPosition);
+        }
+
+        branchLine.SetPositions(positions.ToArray());
 
         branchLine.sortingOrder = order;
     }
