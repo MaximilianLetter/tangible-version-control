@@ -24,6 +24,7 @@ public class GitHubAPIManager : MonoBehaviour
 
     private ProgressIndicatorObjectDisplay progressIndicator;
     private Transform branchesContainer;
+    private List<Branch> branches;
 
     private float loadingProgress = 0f;
     private bool ready = false;
@@ -32,6 +33,7 @@ public class GitHubAPIManager : MonoBehaviour
     {
         branchesContainer = AppManager.Instance.GetTimelineContainer().transform.GetChild(0);
         progressIndicator = FindObjectOfType<ProgressIndicatorObjectDisplay>();
+        branches = new List<Branch>();
 
         StartCoroutine(CollectDataFromAPI());
     }
@@ -115,11 +117,16 @@ public class GitHubAPIManager : MonoBehaviour
             var branchLogic = newBranch.GetComponent<Branch>();
             branchLogic.index = i;
             branchLogic.branchName = branchesInfo[i]["name"];
+            branchLogic.lastCommit = branchesInfo[i]["commit"]["sha"];
             newBranch.name = branchLogic.branchName;
             newBranch.transform.SetAsFirstSibling();
 
             Debug.Log("New branch created: " + branchLogic.branchName);
+            branches.Add(branchLogic);
         }
+
+        // Make sure the main branch is called first
+        branches.Reverse();
 
         Debug.Log("Processing branches done.");
     }
@@ -139,81 +146,88 @@ public class GitHubAPIManager : MonoBehaviour
 
         Debug.Log("Collect information about commits ...");
 
-        string commitsURL = baseURL + baseRepo + "commits";
-        // Example URL: https://api.github.com/repos/MaximilianLetter/model-comparison-by-github/commits
+        List<string> processedCommits = new List<string>();
 
-        UnityWebRequest repoCommitsRequest = UnityWebRequest.Get(commitsURL);
-        repoCommitsRequest.SetRequestHeader("Authorization", accessToken);
-
-        yield return repoCommitsRequest.SendWebRequest();
-
-        if (repoCommitsRequest.result == UnityWebRequest.Result.ConnectionError || repoCommitsRequest.result == UnityWebRequest.Result.ProtocolError || repoCommitsRequest.result == UnityWebRequest.Result.DataProcessingError)
+        for (int j = 0; j < branches.Count; j++)
         {
-            Debug.LogError(repoCommitsRequest.error);
-            yield break;
-        }
+            string commitsURL = baseURL + baseRepo + "commits" + "?sha=" + branches[j].branchName;
+            // Example URL: https://api.github.com/repos/MaximilianLetter/model-comparison-by-github/commits
 
-        // Alternative, Unity default approach with serializable objects
-        //JsonUtility.FromJson<TODO_serializable_class>(repoBranchesRequest.downloadHandler.text);
+            UnityWebRequest repoCommitsRequest = UnityWebRequest.Get(commitsURL);
+            repoCommitsRequest.SetRequestHeader("Authorization", accessToken);
 
-        JSONNode listCommitsInfo = JSON.Parse(repoCommitsRequest.downloadHandler.text);
+            yield return repoCommitsRequest.SendWebRequest();
 
-        Debug.Log("Total amount of commits: " + listCommitsInfo.Count);
-        for (int i = 0; i < listCommitsInfo.Count; i++)
-        {
-            // Reflect state in progress indicator
-            loadingProgress = ((float)i / listCommitsInfo.Count);
-            progressIndicator.Message = "Loading commits " + Mathf.RoundToInt(loadingProgress * 100) + "%";
-
-            Debug.Log(listCommitsInfo[i]["commit"]["message"]);
-            string commitID = listCommitsInfo[i]["sha"];
-            // TODO what about node id, is that a link to branches?
-
-            // Get single commit information
-
-            string singleCommitURL = baseURL + baseRepo + "commits/" + commitID;
-            UnityWebRequest singleCommitRequest = UnityWebRequest.Get(singleCommitURL);
-            singleCommitRequest.SetRequestHeader("Authorization", accessToken);
-
-            yield return singleCommitRequest.SendWebRequest();
-
-            if (singleCommitRequest.result == UnityWebRequest.Result.ConnectionError || singleCommitRequest.result == UnityWebRequest.Result.ProtocolError || singleCommitRequest.result == UnityWebRequest.Result.DataProcessingError)
+            if (repoCommitsRequest.result == UnityWebRequest.Result.ConnectionError || repoCommitsRequest.result == UnityWebRequest.Result.ProtocolError || repoCommitsRequest.result == UnityWebRequest.Result.DataProcessingError)
             {
-                Debug.LogError(singleCommitRequest.error);
+                Debug.LogError(repoCommitsRequest.error);
                 yield break;
             }
 
-            JSONNode singleCommitInfo = JSON.Parse(singleCommitRequest.downloadHandler.text);
-            var fileName = (string)singleCommitInfo["files"][0]["filename"];
+            JSONNode listCommitsInfo = JSON.Parse(repoCommitsRequest.downloadHandler.text);
 
-            if (System.IO.Path.GetExtension(fileName) != ".glb")
+            Debug.Log("Total amount of commits for branch " + branches[j].branchName + ": " + listCommitsInfo.Count);
+            for (int i = 0; i < listCommitsInfo.Count; i++)
             {
-                // If file is invalid, check the next commit
-                Debug.Log("Not a glTF file, continue.");
-                continue;
+                // Reflect state in progress indicator
+                loadingProgress = ((float)i / listCommitsInfo.Count * ((float)j / branches.Count));
+                progressIndicator.Message = "Loading commits " + Mathf.RoundToInt(loadingProgress * 100) + "%";
+
+                Debug.Log(listCommitsInfo[i]["commit"]["message"]);
+                string commitID = listCommitsInfo[i]["sha"];
+                
+                // Do not double process or download content of commits
+                if (processedCommits.Contains(commitID)) continue;
+                else processedCommits.Add(commitID);
+
+                // Get single commit information
+
+                string singleCommitURL = baseURL + baseRepo + "commits/" + commitID;
+                UnityWebRequest singleCommitRequest = UnityWebRequest.Get(singleCommitURL);
+                singleCommitRequest.SetRequestHeader("Authorization", accessToken);
+
+                yield return singleCommitRequest.SendWebRequest();
+
+                if (singleCommitRequest.result == UnityWebRequest.Result.ConnectionError || singleCommitRequest.result == UnityWebRequest.Result.ProtocolError || singleCommitRequest.result == UnityWebRequest.Result.DataProcessingError)
+                {
+                    Debug.LogError(singleCommitRequest.error);
+                    yield break;
+                }
+
+                JSONNode singleCommitInfo = JSON.Parse(singleCommitRequest.downloadHandler.text);
+                var fileName = (string)singleCommitInfo["files"][0]["filename"];
+
+                if (System.IO.Path.GetExtension(fileName) != ".glb")
+                {
+                    // If file is invalid, check the next commit
+                    Debug.Log("Not a glTF file, continue.");
+                    continue;
+                }
+
+                string modelURL = singleCommitInfo["files"][0]["raw_url"];
+
+                // Fallback for testing
+                //modelURL = "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb";
+
+                UnityWebRequest modelDataRequest = UnityWebRequest.Get(modelURL);
+                modelDataRequest.SetRequestHeader("Authorization", accessToken);
+
+                yield return modelDataRequest.SendWebRequest();
+
+                if (modelDataRequest.result == UnityWebRequest.Result.ConnectionError || modelDataRequest.result == UnityWebRequest.Result.ProtocolError || modelDataRequest.result == UnityWebRequest.Result.DataProcessingError)
+                {
+                    Debug.LogError(modelDataRequest.error);
+                    yield break;
+                }
+
+                var modelInfoRaw = modelDataRequest.downloadHandler.data;
+
+                Debug.Log("File found and downloaded.");
+                BuildObject(modelInfoRaw, singleCommitInfo, i);
             }
-
-            string modelURL = singleCommitInfo["files"][0]["raw_url"];
-
-            // Fallback for testing
-            //modelURL = "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb";
-
-            UnityWebRequest modelDataRequest = UnityWebRequest.Get(modelURL);
-            modelDataRequest.SetRequestHeader("Authorization", accessToken);
-
-            yield return modelDataRequest.SendWebRequest();
-
-            if (modelDataRequest.result == UnityWebRequest.Result.ConnectionError || modelDataRequest.result == UnityWebRequest.Result.ProtocolError || modelDataRequest.result == UnityWebRequest.Result.DataProcessingError)
-            {
-                Debug.LogError(modelDataRequest.error);
-                yield break;
-            }
-
-            var modelInfoRaw = modelDataRequest.downloadHandler.data;
-
-            Debug.Log("File found and downloaded.");
-            BuildObject(modelInfoRaw, singleCommitInfo);
         }
+
+        
         loadingProgress = 1f;
 
         Debug.Log("Processing commits done.");
@@ -224,7 +238,7 @@ public class GitHubAPIManager : MonoBehaviour
     /// </summary>
     /// <param name="data">glTF raw data.</param>
     /// <param name="info">Info about commit that is provided by API call.</param>
-    async void BuildObject(byte[] data, JSONNode info)
+    async void BuildObject(byte[] data, JSONNode info, int commitNumber)
     {
         Debug.Log("Building GameObject from glTF ...");
         var t = Task<GameObject>.Run(() => ConstructGltf.ConstructAsync(GltfUtility.GetGltfObjectFromGlb(data)));
@@ -237,8 +251,10 @@ public class GitHubAPIManager : MonoBehaviour
             var versionLogic = newVersion.GetComponent<VersionObject>();
 
             versionLogic.id = info["sha"];
+            versionLogic.sequence = commitNumber;
             versionLogic.description = info["commit"]["message"];
-            versionLogic.createdBy = info["commit"]["author"]["name"];
+            //versionLogic.createdBy = info["commit"]["author"]["name"];
+            versionLogic.createdBy = "Anonymous";
             versionLogic.createdAt = info["commit"]["author"]["date"];
 
             if (versionLogic.id == virtualTwinId)
@@ -247,7 +263,37 @@ public class GitHubAPIManager : MonoBehaviour
                 Debug.Log("Virtual twin loaded and updated.");
             }
 
-            newVersion.transform.SetParent(branchesContainer.GetChild(0)); // TODO find correct branch
+            //newVersion.transform.SetParent(branchesContainer.GetChild(0)); // TODO find correct branch
+            // Sort into correct branch
+            bool sortedIn = false;
+            foreach (var branch in branches)
+            {
+                // Commit fits to branch
+                if (branch.lastCommit == versionLogic.id)
+                {
+                    newVersion.transform.SetParent(branch.transform);
+
+                    // Check commit parents
+                    var commitParents = info["parents"];
+                    if (commitParents.Count > 0)
+                    {
+                        // Override branch last commit with parent commit
+                        branch.lastCommit = commitParents[0]["sha"];
+
+                        if (commitParents.Count > 1)
+                        {
+                            Debug.Log("MERGE found");
+                        }
+                    }
+
+                    sortedIn = true;
+                }
+            }
+
+            if (!sortedIn)
+            {
+                Debug.LogError("Commit couldnt be resolved to a branch!");
+            }
 
             Transform modelContainer = versionLogic.GetModelContainer();
 

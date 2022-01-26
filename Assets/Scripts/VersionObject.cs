@@ -11,6 +11,8 @@ public class VersionObject : MonoBehaviour
     public string createdBy;
     [HideInInspector]
     public string id;
+    [HideInInspector]
+    public int sequence;
 
     [SerializeField]
     private Transform modelContainer;

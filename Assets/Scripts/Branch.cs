@@ -15,6 +15,7 @@ public class Branch : MonoBehaviour
     // Meta data of branch
     public int index;
     public string branchName;
+    public string lastCommit;
     private int numberOfVersions;
 
     private bool ready;
