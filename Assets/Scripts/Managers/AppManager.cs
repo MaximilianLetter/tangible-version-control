@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AppManager : MonoBehaviour
 {
@@ -288,5 +289,10 @@ public class AppManager : MonoBehaviour
         }
 
         return true;
+    }
+
+    public void BackToSceneSelection()
+    {
+        SceneManager.LoadScene("_SelectionScene");
     }
 }
