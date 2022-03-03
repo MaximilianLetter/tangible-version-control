@@ -176,9 +176,15 @@ public class ComparisonManager : MonoBehaviour
             diffSub.transform.localPosition = baseModelContainer.transform.localPosition;
             diffAdded.transform.localPosition = baseModelContainer.transform.localPosition;
 
-            diffBase.GetComponentInChildren<Renderer>().material = diffMatBase;
-            diffSub.GetComponentInChildren<Renderer>().material = diffMatSubtracted;
-            diffAdded.GetComponentInChildren<Renderer>().material = diffMatAdded;
+            //diffBase.GetComponentInChildren<Renderer>().material = diffMatBase;
+            //diffSub.GetComponentInChildren<Renderer>().material = diffMatSubtracted;
+            //diffAdded.GetComponentInChildren<Renderer>().material = diffMatAdded;
+            var rendBase = diffBase.GetComponentInChildren<Renderer>();
+            rendBase.materials = MultiMats.BuildMaterials(diffMatBase, rendBase.materials.Length);
+            var rendDiff = diffSub.GetComponentInChildren<Renderer>();
+            rendDiff.materials = MultiMats.BuildMaterials(diffMatSubtracted, rendDiff.materials.Length);
+            var rendAdded = diffAdded.GetComponentInChildren<Renderer>();
+            rendAdded.materials = MultiMats.BuildMaterials(diffMatAdded, rendAdded.materials.Length);
         }
 
         actionPanel.SetOptions();

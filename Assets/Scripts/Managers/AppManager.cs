@@ -42,6 +42,7 @@ public class AppManager : MonoBehaviour
     private TransitionManager   transitionManager;
     private StartupManager      startupManager;
     private GitHubAPIManager    apiManager;
+    private ExperimentManager   experimentManager;
 
     private void Awake()
     {
@@ -53,6 +54,7 @@ public class AppManager : MonoBehaviour
         transitionManager = GameObject.FindObjectOfType<TransitionManager>();
         startupManager = GameObject.FindObjectOfType<StartupManager>();
         apiManager = GameObject.FindObjectOfType<GitHubAPIManager>();
+        experimentManager = FindObjectOfType<ExperimentManager>();
 
         // Find all required objects
         trackedObjectLogic = GameObject.FindObjectOfType<TrackedObject>();
@@ -61,7 +63,7 @@ public class AppManager : MonoBehaviour
         comparisonObjectLogic = GameObject.FindObjectOfType<ComparisonObject>();
         //differencesObjectLogic = trackedObjectLogic.transform.parent.Find("DifferencesObject").GetComponent<ObjectParts>();
 
-        contentContainer = GameObject.Find("Content").transform;
+        contentContainer = GameObject.Find("MixedRealitySceneContent").transform;
         timelineContainer = GameObject.Find("Timeline");
         branchContainer = timelineContainer.transform.Find("BranchContainer");
         connectionLine = FindObjectOfType<ConnectionLine>();
@@ -74,6 +76,10 @@ public class AppManager : MonoBehaviour
         if (ReadyVerification())
         {
             Debug.Log("The AppManager is ready.");
+            if (experimentManager != null)
+            {
+                experimentManager.SetupExperiment();
+            }
             startupManager.StartCoroutine("StartUp");
         } else
         {
@@ -100,6 +106,11 @@ public class AppManager : MonoBehaviour
     public StartupManager GetStartupManager()
     {
         return startupManager;
+    }
+
+    public ExperimentManager GetExperimentManager()
+    {
+        return experimentManager;
     }
 
     public TrackedObject GetTrackedObjectLogic()
@@ -252,16 +263,25 @@ public class AppManager : MonoBehaviour
             return false;
         }
 
+        // Not mandatory
         if (GetTransitionManager() == null)
         {
             Debug.LogError("TransitionManager not found");
-            return false;
+            //return false;
         }
 
+        // Not mandatory
         if (GetApiManager() == null)
         {
             Debug.LogError("ApiManager not found");
-            return false;
+            //return false;
+        }
+
+        // Not mandatory
+        if (GetExperimentManager() == null)
+        {
+            Debug.LogError("ExperimentManager not found");
+            //return false;
         }
 
         if (GetConnectionLine() == null)

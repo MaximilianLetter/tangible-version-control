@@ -21,9 +21,17 @@ public class StartupManager : MonoBehaviour
 
         // First of wait for the ApiManager to finish
         var apiManager = AppManager.Instance.GetApiManager();
+        var experimentManager = AppManager.Instance.GetExperimentManager();
         while (true)
         {
-            if (apiManager.IsReady()) break;
+            if (apiManager != null)
+            {
+                if (apiManager.IsReady()) break;
+            }
+            if (experimentManager != null)
+            {
+                if (experimentManager.IsReady()) break;
+            }
             
             yield return null;
         }
@@ -61,9 +69,11 @@ public class StartupManager : MonoBehaviour
 #if UNITY_EDITOR
         if (AppManager.Instance.GetComparisonManager().usePhysical)
         {
+            yield return new WaitForSeconds(0.5f);
             markerHint.SetActive(true);
         }
 #else
+        yield return new WaitForSeconds(0.5f);
         markerHint.SetActive(true);
 #endif
 

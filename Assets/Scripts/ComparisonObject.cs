@@ -17,7 +17,7 @@ public class ComparisonObject : MonoBehaviour
 
     // Internal values
     private MeshRenderer meshRenderer;
-    private Material baseMat;
+    private Material[] baseMat;
     private Transform transformInUse;
     private bool pivotCenter;
 
@@ -90,7 +90,7 @@ public class ComparisonObject : MonoBehaviour
     /// </summary>
     public void ResetMaterial()
     {
-        meshRenderer.material = baseMat;
+        meshRenderer.materials = baseMat;
     }
 
     /// <summary>
@@ -105,7 +105,7 @@ public class ComparisonObject : MonoBehaviour
 
         meshRenderer = GetComponentInChildren<MeshRenderer>();
         // Get base material directly from version Object;
-        baseMat = voToClone.GetComponentInChildren<MeshRenderer>().material;
+        baseMat = voToClone.GetComponentInChildren<MeshRenderer>().materials;
 
         // Set pivot point according the the current mode
         if (pivotCenter) SetPivotPointCenter();

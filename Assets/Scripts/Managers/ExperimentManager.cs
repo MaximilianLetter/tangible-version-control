@@ -8,20 +8,25 @@ public class ExperimentManager : MonoBehaviour
     public GameObject[] objectsMedium;
     public GameObject[] objectsHard;
 
-    public GameObject virtualTwinPrefab;
+    public GameObject virtualTwinModel;
+    public GameObject versionPrefab;
     public GameObject branchPrefab;
 
-    private TimelineManager timelineManager;
-
+    [SerializeField]
     private int difficulty; // 0 - easy; 1 - medium; 2 - hard;
+
+    [SerializeField]
     private int amountOfVersions; // + the virtual twin
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        timelineManager = AppManager.Instance.GetTimelineManager();
+    private bool ready;
 
+    public void SetupExperiment()
+    {
+        Debug.Log("Difficulty: " + difficulty);
+        Debug.Log("Amount of versions: " + amountOfVersions);
         InstantiateTimelineObjects();
+
+        ready = true;
     }
 
     void InstantiateTimelineObjects()
@@ -37,28 +42,68 @@ public class ExperimentManager : MonoBehaviour
         singleBranch.name = branchLogic.branchName;
 
         // Spawn the previously selected prefabs
-        var objsToSpawn = RandomelySelectTimelineObjects();
-        for (int i = 0; i < objsToSpawn.Length; i++)
+        var objsToSpawn = RandomlySelectTimelineObjects();
+        for (int i = 0; i < objsToSpawn.Length + 1; i++)
         {
-            var newVersion = Instantiate(objsToSpawn[i], singleBranch.transform);
+            GameObject loadedOBJ;
+            // Virtual twin extra condition
+            if (i == objsToSpawn.Length)
+            {
+                loadedOBJ = Instantiate(virtualTwinModel);
+            }
+            else
+            {
+                loadedOBJ = Instantiate(objsToSpawn[i]);
+            }
+            var newVersion = Instantiate(versionPrefab);
             var versionLogic = newVersion.GetComponent<VersionObject>();
 
             versionLogic.id = i.ToString();
             versionLogic.description = "MESSAGE TO SET"; // TODO message is important, as this might be the description fitting to the looked for object
             versionLogic.createdBy = "Anonymous";
             versionLogic.createdAt = Random.Range(0, System.DateTime.Today.Hour).ToString();
+
+            if (i == objsToSpawn.Length)
+            {
+                versionLogic.virtualTwin = true;
+            }
+
+            newVersion.transform.SetParent(singleBranch.transform);
+
+            Transform modelContainer = versionLogic.GetModelContainer();
+
+            // The glTF result is the complete scene, including light and camera
+            // only keep the actual mesh, destroy other or dont even create other
+            var model = loadedOBJ.transform.GetChild(0).gameObject;
+            model.transform.SetParent(modelContainer);
+
+            modelContainer.localScale = model.transform.localScale;
+            modelContainer.localPosition = model.transform.transform.localPosition;
+            modelContainer.localRotation = model.transform.localRotation;
+
+            model.transform.localScale = Vector3.one;
+            model.transform.localPosition = Vector3.zero;
+            model.transform.localRotation = Quaternion.identity;
+
+            model.name = "model";
+
+            ColliderToFit.FitToChildren(modelContainer.gameObject);
+
+            versionLogic.Initialize();
+
+            // Destroy the glTF scene, the required model was already moved out
+            Destroy(loadedOBJ);
         }
 
-        // Spawn virtual twin at random position
-        var virtTwin = Instantiate(virtualTwinPrefab);
-        virtTwin.transform.SetSiblingIndex(Random.Range(0, singleBranch.transform.childCount));
+        // Reorder virtual twin
+        singleBranch.transform.GetChild(objsToSpawn.Length).SetSiblingIndex(Random.Range(0, objsToSpawn.Length));
     }
 
     /// <summary>
-    /// 
+    /// Select a number of objects out of an object pool. Based on the set difficulty and number of versions defined.
     /// </summary>
-    /// <returns></returns>
-    GameObject[] RandomelySelectTimelineObjects()
+    /// <returns>Array with the objects to spawn in the timeline.</returns>
+    GameObject[] RandomlySelectTimelineObjects()
     {
         GameObject[] objectsToSpawn = new GameObject[amountOfVersions];
 
@@ -90,5 +135,10 @@ public class ExperimentManager : MonoBehaviour
         }
 
         return objectsToSpawn;
+    }
+
+    public bool IsReady()
+    {
+        return ready;
     }
 }

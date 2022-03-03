@@ -9,7 +9,7 @@ public class TrackedObject : MonoBehaviour
     //private ObjectParts parts;
 
     private MeshRenderer meshRenderer;
-    private Material baseMat;
+    private Material[] baseMat;
 
     public void Initialize()
     {
@@ -26,7 +26,7 @@ public class TrackedObject : MonoBehaviour
 
         if (comparisonManager.usePhysical)
         {
-            baseMat = comparisonManager.phantomMat;
+            baseMat = MultiMats.BuildMaterials(comparisonManager.phantomMat, meshRenderer.materials.Length);
         }
         else
         {
@@ -50,9 +50,14 @@ public class TrackedObject : MonoBehaviour
     /// Replaces the used material by the given material.
     /// </summary>
     /// <param name="mat">Material to display.</param>
+    public void SetMaterial(Material[] mat)
+    {
+        meshRenderer.materials = mat;
+    }
+
     public void SetMaterial(Material mat)
     {
-        meshRenderer.material = mat;
+        meshRenderer.materials = MultiMats.BuildMaterials(mat, meshRenderer.materials.Length);
     }
 
     /// <summary>
@@ -60,6 +65,6 @@ public class TrackedObject : MonoBehaviour
     /// </summary>
     public void ResetMaterial()
     {
-        meshRenderer.material = baseMat;
+        meshRenderer.materials = baseMat;
     }
 }

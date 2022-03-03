@@ -20,11 +20,11 @@ public class GitHubAPIManager : MonoBehaviour
     //private readonly string baseRepo = "MaximilianLetter/model-comparison-by-github/";
     private readonly string baseRepo = "MaximilianLetter/glTF-models-dev/";
     private readonly string virtualTwinId = "809006d27a067559e8312fbd2bd14c480b091d04";
-    private readonly string accessToken = "token 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"; // created by dump account
+    private readonly string accessToken = "token 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"; // created by dump account
 
     private ProgressIndicatorObjectDisplay progressIndicator;
     private Transform branchesContainer;
-    private List<Branch> branches;
+    private ShowcaseObjLoader showcaseObjLoader;
 
     private float loadingProgress = 0f;
     private bool ready = false;
@@ -33,7 +33,7 @@ public class GitHubAPIManager : MonoBehaviour
     {
         branchesContainer = AppManager.Instance.GetTimelineContainer().transform.GetChild(0);
         progressIndicator = FindObjectOfType<ProgressIndicatorObjectDisplay>();
-        branches = new List<Branch>();
+        showcaseObjLoader = GetComponent<ShowcaseObjLoader>();
 
         StartCoroutine(CollectDataFromAPI());
     }
@@ -44,13 +44,21 @@ public class GitHubAPIManager : MonoBehaviour
 
         OpenProgressIndicator();
 
-        yield return StartCoroutine(GetListOfBranches());
-
-        yield return StartCoroutine(GetListOfCommits());
-
-        if (loadingProgress != 1f)
+        if (showcaseObjLoader.doShowcase)
         {
-            progressIndicator.Message = "Loading failed";
+            // This variant uses pre-imported .obj files. No internet connection is required.
+            yield return StartCoroutine(BuildShowcaseTimeline());
+        }
+        else
+        {
+            yield return StartCoroutine(GetListOfBranches());
+
+            yield return StartCoroutine(GetListOfCommits());
+
+            if (loadingProgress != 1f)
+            {
+                progressIndicator.Message = "Loading failed";
+            }
         }
 
         Debug.Log("Data collection done.");
@@ -101,7 +109,7 @@ public class GitHubAPIManager : MonoBehaviour
 
         yield return repoBranchesRequest.SendWebRequest();
 
-        if (repoBranchesRequest.result == UnityWebRequest.Result.ConnectionError || repoBranchesRequest.result == UnityWebRequest.Result.ProtocolError || repoBranchesRequest.result == UnityWebRequest.Result.DataProcessingError)
+        if (repoBranchesRequest.isNetworkError || repoBranchesRequest.isHttpError)
         {
             Debug.LogError(repoBranchesRequest.error);
             yield break;
@@ -117,16 +125,11 @@ public class GitHubAPIManager : MonoBehaviour
             var branchLogic = newBranch.GetComponent<Branch>();
             branchLogic.index = i;
             branchLogic.branchName = branchesInfo[i]["name"];
-            branchLogic.lastCommit = branchesInfo[i]["commit"]["sha"];
             newBranch.name = branchLogic.branchName;
             newBranch.transform.SetAsFirstSibling();
 
             Debug.Log("New branch created: " + branchLogic.branchName);
-            branches.Add(branchLogic);
         }
-
-        // Make sure the main branch is called first
-        branches.Reverse();
 
         Debug.Log("Processing branches done.");
     }
@@ -146,89 +149,81 @@ public class GitHubAPIManager : MonoBehaviour
 
         Debug.Log("Collect information about commits ...");
 
-        List<string> processedCommits = new List<string>();
+        string commitsURL = baseURL + baseRepo + "commits";
+        // Example URL: https://api.github.com/repos/MaximilianLetter/model-comparison-by-github/commits
 
-        for (int j = 0; j < branches.Count; j++)
+        UnityWebRequest repoCommitsRequest = UnityWebRequest.Get(commitsURL);
+        repoCommitsRequest.SetRequestHeader("Authorization", accessToken);
+
+        yield return repoCommitsRequest.SendWebRequest();
+
+        if (repoCommitsRequest.isNetworkError || repoCommitsRequest.isHttpError)
         {
-            string branchSelector = "?sha=" + branches[j].branchName;
-            string commitsURL = baseURL + baseRepo + "commits" + branchSelector;
-            // Example URL: https://api.github.com/repos/MaximilianLetter/model-comparison-by-github/commits
+            Debug.LogError(repoCommitsRequest.error);
+            yield break;
+        }
 
-            UnityWebRequest repoCommitsRequest = UnityWebRequest.Get(commitsURL);
-            repoCommitsRequest.SetRequestHeader("Authorization", accessToken);
+        // Alternative, Unity default approach with serializable objects
+        //JsonUtility.FromJson<TODO_serializable_class>(repoBranchesRequest.downloadHandler.text);
 
-            yield return repoCommitsRequest.SendWebRequest();
+        JSONNode listCommitsInfo = JSON.Parse(repoCommitsRequest.downloadHandler.text);
 
-            if (repoCommitsRequest.result == UnityWebRequest.Result.ConnectionError || repoCommitsRequest.result == UnityWebRequest.Result.ProtocolError || repoCommitsRequest.result == UnityWebRequest.Result.DataProcessingError)
+        Debug.Log("Total amount of commits: " + listCommitsInfo.Count);
+        for (int i = 0; i < listCommitsInfo.Count; i++)
+        {
+            // Reflect state in progress indicator
+            loadingProgress = ((float)i / listCommitsInfo.Count);
+            progressIndicator.Message = "Loading commits " + Mathf.RoundToInt(loadingProgress * 100) + "%";
+
+            Debug.Log(listCommitsInfo[i]["commit"]["message"]);
+            string commitID = listCommitsInfo[i]["sha"];
+            // TODO what about node id, is that a link to branches?
+
+            // Get single commit information
+
+            string singleCommitURL = baseURL + baseRepo + "commits/" + commitID;
+            UnityWebRequest singleCommitRequest = UnityWebRequest.Get(singleCommitURL);
+            singleCommitRequest.SetRequestHeader("Authorization", accessToken);
+
+            yield return singleCommitRequest.SendWebRequest();
+
+            if (singleCommitRequest.isNetworkError || singleCommitRequest.isHttpError)
             {
-                Debug.LogError(repoCommitsRequest.error);
+                Debug.LogError(singleCommitRequest.error);
                 yield break;
             }
 
-            JSONNode listCommitsInfo = JSON.Parse(repoCommitsRequest.downloadHandler.text);
+            JSONNode singleCommitInfo = JSON.Parse(singleCommitRequest.downloadHandler.text);
+            var fileName = (string)singleCommitInfo["files"][0]["filename"];
 
-            Debug.Log("Total amount of commits for branch " + branches[j].branchName + ": " + listCommitsInfo.Count);
-            for (int i = 0; i < listCommitsInfo.Count; i++)
+            if (System.IO.Path.GetExtension(fileName) != ".glb")
             {
-                // Reflect state in progress indicator
-                loadingProgress = ((float)i / listCommitsInfo.Count * ((j + 1f) / branches.Count));
-                progressIndicator.Message = "Loading commits " + Mathf.RoundToInt(loadingProgress * 100) + "%";
-
-                Debug.Log(listCommitsInfo[i]["commit"]["message"]);
-                string commitID = listCommitsInfo[i]["sha"];
-                
-                // Do not double process or download content of commits
-                if (processedCommits.Contains(commitID)) continue;
-                else processedCommits.Add(commitID);
-
-                // Get single commit information
-
-                string singleCommitURL = baseURL + baseRepo + "commits/" + commitID;
-                UnityWebRequest singleCommitRequest = UnityWebRequest.Get(singleCommitURL);
-                singleCommitRequest.SetRequestHeader("Authorization", accessToken);
-
-                yield return singleCommitRequest.SendWebRequest();
-
-                if (singleCommitRequest.result == UnityWebRequest.Result.ConnectionError || singleCommitRequest.result == UnityWebRequest.Result.ProtocolError || singleCommitRequest.result == UnityWebRequest.Result.DataProcessingError)
-                {
-                    Debug.LogError(singleCommitRequest.error);
-                    yield break;
-                }
-
-                JSONNode singleCommitInfo = JSON.Parse(singleCommitRequest.downloadHandler.text);
-                var fileName = (string)singleCommitInfo["files"][0]["filename"];
-
-                if (System.IO.Path.GetExtension(fileName) != ".glb")
-                {
-                    // If file is invalid, check the next commit
-                    Debug.Log("Not a glTF file, continue.");
-                    continue;
-                }
-
-                string modelURL = singleCommitInfo["files"][0]["raw_url"];
-
-                // Fallback for testing
-                //modelURL = "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb";
-
-                UnityWebRequest modelDataRequest = UnityWebRequest.Get(modelURL);
-                modelDataRequest.SetRequestHeader("Authorization", accessToken);
-
-                yield return modelDataRequest.SendWebRequest();
-
-                if (modelDataRequest.result == UnityWebRequest.Result.ConnectionError || modelDataRequest.result == UnityWebRequest.Result.ProtocolError || modelDataRequest.result == UnityWebRequest.Result.DataProcessingError)
-                {
-                    Debug.LogError(modelDataRequest.error);
-                    yield break;
-                }
-
-                var modelInfoRaw = modelDataRequest.downloadHandler.data;
-
-                Debug.Log("File found and downloaded.");
-                BuildObject(modelInfoRaw, singleCommitInfo, i);
+                // If file is invalid, check the next commit
+                Debug.Log("Not a glTF file, continue.");
+                continue;
             }
-        }
 
-        
+            string modelURL = singleCommitInfo["files"][0]["raw_url"];
+
+            // Fallback for testing
+            //modelURL = "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb";
+
+            UnityWebRequest modelDataRequest = UnityWebRequest.Get(modelURL);
+            modelDataRequest.SetRequestHeader("Authorization", accessToken);
+
+            yield return modelDataRequest.SendWebRequest();
+
+            if (modelDataRequest.isNetworkError || modelDataRequest.isHttpError)
+            {
+                Debug.LogError(modelDataRequest.error);
+                yield break;
+            }
+
+            var modelInfoRaw = modelDataRequest.downloadHandler.data;
+
+            Debug.Log("File found and downloaded.");
+            BuildObject(modelInfoRaw, singleCommitInfo);
+        }
         loadingProgress = 1f;
 
         Debug.Log("Processing commits done.");
@@ -239,7 +234,7 @@ public class GitHubAPIManager : MonoBehaviour
     /// </summary>
     /// <param name="data">glTF raw data.</param>
     /// <param name="info">Info about commit that is provided by API call.</param>
-    async void BuildObject(byte[] data, JSONNode info, int commitNumber)
+    async void BuildObject(byte[] data, JSONNode info)
     {
         Debug.Log("Building GameObject from glTF ...");
         var t = Task<GameObject>.Run(() => ConstructGltf.ConstructAsync(GltfUtility.GetGltfObjectFromGlb(data)));
@@ -252,10 +247,8 @@ public class GitHubAPIManager : MonoBehaviour
             var versionLogic = newVersion.GetComponent<VersionObject>();
 
             versionLogic.id = info["sha"];
-            versionLogic.sequence = commitNumber;
             versionLogic.description = info["commit"]["message"];
-            //versionLogic.createdBy = info["commit"]["author"]["name"];
-            versionLogic.createdBy = "Anonymous";
+            versionLogic.createdBy = info["commit"]["author"]["name"];
             versionLogic.createdAt = info["commit"]["author"]["date"];
 
             if (versionLogic.id == virtualTwinId)
@@ -264,37 +257,7 @@ public class GitHubAPIManager : MonoBehaviour
                 Debug.Log("Virtual twin loaded and updated.");
             }
 
-            //newVersion.transform.SetParent(branchesContainer.GetChild(0)); // TODO find correct branch
-            // Sort into correct branch
-            bool sortedIn = false;
-            foreach (var branch in branches)
-            {
-                // Commit fits to branch
-                if (branch.lastCommit == versionLogic.id)
-                {
-                    newVersion.transform.SetParent(branch.transform);
-
-                    // Check commit parents
-                    var commitParents = info["parents"];
-                    if (commitParents.Count > 0)
-                    {
-                        // Override branch last commit with parent commit
-                        branch.lastCommit = commitParents[0]["sha"];
-
-                        if (commitParents.Count > 1)
-                        {
-                            Debug.Log("MERGE found");
-                        }
-                    }
-
-                    sortedIn = true;
-                }
-            }
-
-            if (!sortedIn)
-            {
-                Debug.LogError("Commit couldnt be resolved to a branch!");
-            }
+            newVersion.transform.SetParent(branchesContainer.GetChild(0)); // TODO find correct branch
 
             Transform modelContainer = versionLogic.GetModelContainer();
 
@@ -328,6 +291,88 @@ public class GitHubAPIManager : MonoBehaviour
         }
 
         Debug.Log("Building GameObject from glTF done.");
+    }
+
+    IEnumerator BuildShowcaseTimeline()
+    {
+        string showcaseVirtTwinID = showcaseObjLoader.virtTwinID.ToString();
+        GameObject[] allObjs = showcaseObjLoader.allObjs;
+
+        // Build branches
+        //for (int i = 0; i < branchesInfo.Count; i++)
+        //{
+        var newBranch = Instantiate(branchPrefab, branchesContainer);
+
+        var branchLogic = newBranch.GetComponent<Branch>();
+        branchLogic.index = 0;
+        branchLogic.branchName = "main";
+        newBranch.name = branchLogic.branchName;
+        newBranch.transform.SetAsFirstSibling();
+
+        Debug.Log("New branch created: " + branchLogic.branchName);
+        //}
+
+        // Load objects
+        for (int i = 0; i < allObjs.Length; i++)
+        {
+            // Reflect state in progress indicator
+            loadingProgress = ((float)i / allObjs.Length);
+            progressIndicator.Message = "Loading commits " + Mathf.RoundToInt(loadingProgress * 100) + "%";
+
+            var loadedOBJ = Instantiate(allObjs[i]);
+            var newVersion = Instantiate(versionPrefab);
+            var versionLogic = newVersion.GetComponent<VersionObject>();
+
+            versionLogic.id = i.ToString(); ;
+            versionLogic.description = "Version " + i;
+            versionLogic.createdBy = "Maximilian Letter";
+            versionLogic.createdAt = RandomDayFunc().ToString();
+
+            if (versionLogic.id == showcaseVirtTwinID)
+            {
+                versionLogic.virtualTwin = true;
+                Debug.Log("Virtual twin loaded and updated.");
+            }
+
+            newVersion.transform.SetParent(branchesContainer.GetChild(0)); // TODO find correct branch
+
+            Transform modelContainer = versionLogic.GetModelContainer();
+
+            // The glTF result is the complete scene, including light and camera
+            // only keep the actual mesh, destroy other or dont even create other
+            var model = loadedOBJ.transform.GetChild(0).gameObject;
+            model.transform.SetParent(modelContainer);
+
+            modelContainer.localScale = model.transform.localScale;
+            modelContainer.localPosition = model.transform.transform.localPosition;
+            modelContainer.localRotation = model.transform.localRotation;
+
+            model.transform.localScale = Vector3.one;
+            model.transform.localPosition = Vector3.zero;
+            model.transform.localRotation = Quaternion.identity;
+
+            model.name = "model";
+
+            ColliderToFit.FitToChildren(modelContainer.gameObject);
+
+            versionLogic.Initialize();
+
+            // Destroy the glTF scene, the required model was already moved out
+            Destroy(loadedOBJ);
+
+            yield return new WaitForSeconds(0.1f);
+        }
+        loadingProgress = 1f;
+    }
+
+    private System.DateTime RandomDayFunc()
+    {
+        System.DateTime start = new System.DateTime(1995, 1, 1);
+        int range = (System.DateTime.Today - start).Days;
+        int randomDay = Random.Range(0, range);
+        System.DateTime randomDate = start.AddDays(randomDay);
+
+        return randomDate;
     }
 
     public bool IsReady()

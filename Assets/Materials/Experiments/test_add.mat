@@ -35,7 +35,7 @@ Material:
     - _ZOffsetUnits: 0
     m_Colors:
     - _BackgroundColor: {r: 0, g: 0.81960785, b: 0.05490486, a: 0.53333336}
-    - _Color: {r: 0, g: 1, b: 0, a: 0.22020526}
+    - _Color: {r: 0, g: 1, b: 0, a: 0.5944276}
     - _FrontColor: {r: 1, g: 1, b: 1, a: 1}
     - _GridColor: {r: 0.5377358, g: 0.19277322, b: 0.19277322, a: 0.03529412}
     - _LineColor: {r: 1, g: 1, b: 1, a: 1}

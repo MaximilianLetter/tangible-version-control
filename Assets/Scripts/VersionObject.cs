@@ -18,17 +18,17 @@ public class VersionObject : MonoBehaviour
     private Transform modelContainer;
 
     private MeshRenderer meshRenderer;
-    private Material baseMat;
+    private Material[] baseMat;
 
     public void Initialize()
     {
         meshRenderer = GetComponentInChildren<MeshRenderer>();
-        baseMat = meshRenderer.material;
+        baseMat = meshRenderer.materials;
     }
 
     public void OverrideBaseMaterial(Material newMat)
     {
-        baseMat = newMat;
+        baseMat = MultiMats.BuildMaterials(newMat, meshRenderer.materials.Length);
         meshRenderer.material = newMat;
     }
 
@@ -38,7 +38,7 @@ public class VersionObject : MonoBehaviour
     /// <param name="mat">Material to display.</param>
     public void SetMaterial(Material mat)
     {
-        meshRenderer.material = mat;
+        meshRenderer.materials = MultiMats.BuildMaterials(mat, meshRenderer.materials.Length);
     }
 
     /// <summary>
@@ -46,10 +46,10 @@ public class VersionObject : MonoBehaviour
     /// </summary>
     public void ResetMaterial()
     {
-        meshRenderer.material = baseMat;
+        meshRenderer.materials = baseMat;
     }
 
-    public Material GetBaseMaterial()
+    public Material[] GetBaseMaterial()
     {
         return baseMat;
     }
