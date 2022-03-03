@@ -348,6 +348,20 @@ public class ComparisonManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Always reset material to opacity limit when program is shut down.
+    /// </summary>
+    private void OnDisable()
+    {
+        Debug.Log("RESET COLORS");
+
+        var subColor = diffMatSubtracted.color;
+        diffMatSubtracted.color = new Color(subColor.r, subColor.g, subColor.b, pulseAlphaLimit);
+
+        var addColor = diffMatAdded.color;
+        diffMatAdded.color = new Color(addColor.r, addColor.g, addColor.b, pulseAlphaLimit);
+    }
+
     public VersionObject GetVirtualTwin()
     {
         return virtualTwin;
