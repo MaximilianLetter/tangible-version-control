@@ -77,6 +77,7 @@ public class ExperimentManager : MonoBehaviour
             if (i == objsToSpawn.Length)
             {
                 versionLogic.virtualTwin = true;
+                versionLogic.name = "virtTwin";
             }
 
             newVersion.transform.SetParent(singleBranch.transform);
@@ -106,8 +107,15 @@ public class ExperimentManager : MonoBehaviour
             Destroy(loadedOBJ);
         }
 
-        // Reorder virtual twin
-        singleBranch.transform.GetChild(objsToSpawn.Length).SetSiblingIndex(Random.Range(0, objsToSpawn.Length));
+        // Reorder virtual twin and change ID with other version
+        var randomizedIndex = Random.Range(0, objsToSpawn.Length);
+        var versionToSwapWith = singleBranch.transform.GetChild(randomizedIndex);
+
+        var virtTwinObj = singleBranch.transform.GetChild(objsToSpawn.Length);
+        virtTwinObj.SetSiblingIndex(randomizedIndex); // this works, however, sibling index is not correctly ordered
+        virtTwinObj.GetComponent<VersionObject>().id = randomizedIndex.ToString();
+        versionToSwapWith.SetSiblingIndex(objsToSpawn.Length);
+        versionToSwapWith.GetComponent<VersionObject>().id = objsToSpawn.Length.ToString();
 
         ready = true;
 
