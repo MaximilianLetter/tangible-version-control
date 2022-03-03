@@ -24,13 +24,24 @@ public class ExperimentManager : MonoBehaviour
     {
         Debug.Log("Difficulty: " + difficulty);
         Debug.Log("Amount of versions: " + amountOfVersions);
-        InstantiateTimelineObjects();
-
-        ready = true;
+        StartCoroutine(InstantiateTimelineObjects());
     }
 
-    void InstantiateTimelineObjects()
+    IEnumerator InstantiateTimelineObjects()
     {
+        var branches = FindObjectsOfType<Branch>();
+        if (branches != null)
+        {
+            foreach (var b in branches)
+            {
+                Debug.Log("Destroy existing branch: " + b.name);
+                Destroy(b.gameObject);
+            }
+        }
+
+        // Wait until objects are really destroyed
+        yield return null;
+
         var branchesContainer = AppManager.Instance.GetTimelineContainer().transform.GetChild(0);
         var singleBranch = Instantiate(branchPrefab, branchesContainer);
 
@@ -97,6 +108,12 @@ public class ExperimentManager : MonoBehaviour
 
         // Reorder virtual twin
         singleBranch.transform.GetChild(objsToSpawn.Length).SetSiblingIndex(Random.Range(0, objsToSpawn.Length));
+
+        ready = true;
+
+        yield return null;
+
+        AppManager.Instance.GetStartupManager().StartCoroutine("StartUp");
     }
 
     /// <summary>

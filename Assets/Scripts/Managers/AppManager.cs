@@ -78,9 +78,13 @@ public class AppManager : MonoBehaviour
             Debug.Log("The AppManager is ready.");
             if (experimentManager != null)
             {
+                // experiment Manager will call StartupManaer by itself
                 experimentManager.SetupExperiment();
             }
-            startupManager.StartCoroutine("StartUp");
+            else
+            {
+                startupManager.StartCoroutine("StartUp");
+            }
         } else
         {
             Debug.LogError("The AppManager was not able to find all required components.");
