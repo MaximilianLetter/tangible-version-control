@@ -7,8 +7,9 @@ public class StartupManager : MonoBehaviour
 {
     public GameObject[] sceneObjects;
     public GameObject markerHint;
+    public GameObject taskPanel;
 
-    public IEnumerator StartUp()
+    public IEnumerator StartUp(bool experiment = false)
     {
         // Wait one frame for other objects to instantiate
         yield return null;
@@ -76,6 +77,13 @@ public class StartupManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         markerHint.SetActive(true);
 #endif
+
+        if (experiment)
+        {
+            Debug.Log("EXPERIMENT MODE");
+            taskPanel.SetActive(true);
+            AppManager.Instance.GetTimelineContainer().SetActive(false);
+        }
 
         Debug.Log("Startup finished.");
     }

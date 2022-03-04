@@ -12,6 +12,10 @@ public class ExperimentManager : MonoBehaviour
     public GameObject versionPrefab;
     public GameObject branchPrefab;
 
+    private GameObject lookedForVersion;
+    public GameObject taskPanel;
+    private Transform modelImageTransform;
+
     [SerializeField]
     private int difficulty; // 0 - easy; 1 - medium; 2 - hard;
 
@@ -19,6 +23,11 @@ public class ExperimentManager : MonoBehaviour
     private int amountOfVersions; // + the virtual twin
 
     private bool ready;
+
+    void Start()
+    {
+        modelImageTransform = taskPanel.transform.GetChild(0);
+    }
 
     public void SetupExperiment()
     {
@@ -37,6 +46,13 @@ public class ExperimentManager : MonoBehaviour
                 Debug.Log("Destroy existing branch: " + b.name);
                 Destroy(b.gameObject);
             }
+        }
+
+        // Destroy model of last searched for object
+        if (modelImageTransform.childCount > 0)
+        {
+            var oldLookedForVersion = modelImageTransform.GetChild(0);
+            Destroy(oldLookedForVersion.gameObject);
         }
 
         // Wait until objects are really destroyed
@@ -107,8 +123,15 @@ public class ExperimentManager : MonoBehaviour
             Destroy(loadedOBJ);
         }
 
-        // Reorder virtual twin and change ID with other version
+        // Select randomly the looked for version
         var randomizedIndex = Random.Range(0, objsToSpawn.Length);
+        lookedForVersion = singleBranch.transform.GetChild(randomizedIndex).gameObject;
+
+        var modelCopy = lookedForVersion.transform.GetChild(0);
+        Instantiate(modelCopy, modelImageTransform);
+
+        // Reorder virtual twin and change ID with other version
+        randomizedIndex = Random.Range(0, objsToSpawn.Length);
         var versionToSwapWith = singleBranch.transform.GetChild(randomizedIndex);
 
         var virtTwinObj = singleBranch.transform.GetChild(objsToSpawn.Length);
@@ -121,7 +144,8 @@ public class ExperimentManager : MonoBehaviour
 
         yield return null;
 
-        AppManager.Instance.GetStartupManager().StartCoroutine("StartUp");
+        var startupManager = AppManager.Instance.GetStartupManager();
+        startupManager.StartCoroutine(startupManager.StartUp(true));
     }
 
     /// <summary>
