@@ -8,6 +8,7 @@ public class ExperimentManager : MonoBehaviour
     public GameObject[] objectsMedium;
     public GameObject[] objectsHard;
 
+    public GameObject placeHolderModel;
     public GameObject virtualTwinModel;
     public GameObject versionPrefab;
     public GameObject branchPrefab;
@@ -22,22 +23,27 @@ public class ExperimentManager : MonoBehaviour
     [SerializeField]
     private int amountOfVersions; // + the virtual twin
 
+
+    private TimelineManager timelineManager;
     private bool ready;
 
     void Start()
     {
         modelImageTransform = taskPanel.transform.GetChild(0);
+        timelineManager = AppManager.Instance.GetTimelineManager();
     }
 
-    public void SetupExperiment()
+    public void SetupExperiment(bool firstTime = false)
     {
         Debug.Log("Difficulty: " + difficulty);
         Debug.Log("Amount of versions: " + amountOfVersions);
-        StartCoroutine(InstantiateTimelineObjects());
+        StartCoroutine(InstantiateTimelineObjects(firstTime));
     }
 
-    IEnumerator InstantiateTimelineObjects()
+    IEnumerator InstantiateTimelineObjects(bool firstTime)
     {
+        timelineManager.ResetForTimelineChange();
+
         var branches = FindObjectsOfType<Branch>();
         if (branches != null)
         {
@@ -56,7 +62,7 @@ public class ExperimentManager : MonoBehaviour
         }
 
         // Wait until objects are really destroyed
-        yield return null;
+        yield return new WaitForSeconds(0.1f);
 
         var branchesContainer = AppManager.Instance.GetTimelineContainer().transform.GetChild(0);
         var singleBranch = Instantiate(branchPrefab, branchesContainer);
@@ -80,7 +86,15 @@ public class ExperimentManager : MonoBehaviour
             }
             else
             {
-                loadedOBJ = Instantiate(objsToSpawn[i]);
+                if (firstTime)
+                {
+                    // Could alternatively load a placeholder object for first placement such as cubes
+                    loadedOBJ = Instantiate(placeHolderModel);
+                }
+                else
+                {
+                    loadedOBJ = Instantiate(objsToSpawn[i]);
+                }
             }
             var newVersion = Instantiate(versionPrefab);
             var versionLogic = newVersion.GetComponent<VersionObject>();
@@ -88,7 +102,7 @@ public class ExperimentManager : MonoBehaviour
             versionLogic.id = i.ToString();
             versionLogic.description = "MESSAGE TO SET"; // TODO message is important, as this might be the description fitting to the looked for object
             versionLogic.createdBy = "Anonymous";
-            versionLogic.createdAt = Random.Range(0, System.DateTime.Today.Hour).ToString();
+            versionLogic.createdAt = System.DateTime.Now.ToString();
 
             if (i == objsToSpawn.Length)
             {
@@ -123,29 +137,34 @@ public class ExperimentManager : MonoBehaviour
             Destroy(loadedOBJ);
         }
 
-        // Select randomly the looked for version
-        var randomizedIndex = Random.Range(0, objsToSpawn.Length);
-        lookedForVersion = singleBranch.transform.GetChild(randomizedIndex).gameObject;
+        if (!firstTime)
+        {
+            // Select randomly the looked for version
+            var randomizedIndex = Random.Range(0, objsToSpawn.Length);
+            lookedForVersion = singleBranch.transform.GetChild(randomizedIndex).gameObject;
 
-        var modelCopy = lookedForVersion.transform.GetChild(0);
-        Instantiate(modelCopy, modelImageTransform);
+            var modelCopy = lookedForVersion.transform.GetChild(0);
+            Instantiate(modelCopy, modelImageTransform);
 
-        // Reorder virtual twin and change ID with other version
-        randomizedIndex = Random.Range(0, objsToSpawn.Length);
-        var versionToSwapWith = singleBranch.transform.GetChild(randomizedIndex);
+            // Reorder virtual twin and change ID with other version
+            randomizedIndex = Random.Range(0, objsToSpawn.Length);
+            var versionToSwapWith = singleBranch.transform.GetChild(randomizedIndex);
 
-        var virtTwinObj = singleBranch.transform.GetChild(objsToSpawn.Length);
-        virtTwinObj.SetSiblingIndex(randomizedIndex); // this works, however, sibling index is not correctly ordered
-        virtTwinObj.GetComponent<VersionObject>().id = randomizedIndex.ToString();
-        versionToSwapWith.SetSiblingIndex(objsToSpawn.Length);
-        versionToSwapWith.GetComponent<VersionObject>().id = objsToSpawn.Length.ToString();
+            var virtTwinObj = singleBranch.transform.GetChild(objsToSpawn.Length);
+            virtTwinObj.SetSiblingIndex(randomizedIndex); // this works, however, sibling index is not correctly ordered
+            virtTwinObj.GetComponent<VersionObject>().id = randomizedIndex.ToString();
+            versionToSwapWith.SetSiblingIndex(objsToSpawn.Length);
+            versionToSwapWith.GetComponent<VersionObject>().id = objsToSpawn.Length.ToString();
+
+            taskPanel.SetActive(true);
+        }
 
         ready = true;
 
         yield return null;
 
         var startupManager = AppManager.Instance.GetStartupManager();
-        startupManager.StartCoroutine(startupManager.StartUp(true));
+        startupManager.StartCoroutine(startupManager.StartUp(firstTime));
     }
 
     /// <summary>
@@ -184,6 +203,22 @@ public class ExperimentManager : MonoBehaviour
         }
 
         return objectsToSpawn;
+    }
+
+    public bool CheckSelectedVersion(GameObject version)
+    {
+        Debug.Log(version);
+        Debug.Log(lookedForVersion);
+
+        var id1 = version.GetComponentInParent<VersionObject>().id;
+        var id2 = lookedForVersion.GetComponent<VersionObject>().id;
+
+        if (id1 == id2)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     public bool IsReady()

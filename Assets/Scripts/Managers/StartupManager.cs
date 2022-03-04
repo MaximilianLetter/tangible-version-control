@@ -9,7 +9,7 @@ public class StartupManager : MonoBehaviour
     public GameObject markerHint;
     public GameObject taskPanel;
 
-    public IEnumerator StartUp(bool experiment = false)
+    public IEnumerator StartUp(bool firstTime = false)
     {
         // Wait one frame for other objects to instantiate
         yield return null;
@@ -64,9 +64,18 @@ public class StartupManager : MonoBehaviour
 
         AppManager.Instance.GetTrackedObjectLogic().GetComponent<TiltToMove>().Initialize();
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.1f);
 
         AppManager.Instance.GetTimelineManager().StartPlacement();
+
+        if (AppManager.Instance.experiment)
+        {
+            if (!firstTime)
+            // Disable replacement
+            AppManager.Instance.GetTimelineManager().FinishPlacement();
+            //AppManager.Instance.GetTimelineManager().DisableReplacement();
+        }
+
 #if UNITY_EDITOR
         if (AppManager.Instance.GetComparisonManager().usePhysical)
         {
@@ -78,12 +87,12 @@ public class StartupManager : MonoBehaviour
         markerHint.SetActive(true);
 #endif
 
-        if (experiment)
-        {
-            Debug.Log("EXPERIMENT MODE");
-            taskPanel.SetActive(true);
-            AppManager.Instance.GetTimelineContainer().SetActive(false);
-        }
+        //if (noPlacement)
+        //{
+        //    Debug.Log("EXPERIMENT MODE");
+        //    taskPanel.SetActive(true);
+        //    AppManager.Instance.GetTimelineContainer().SetActive(false);
+        //}
 
         Debug.Log("Startup finished.");
     }

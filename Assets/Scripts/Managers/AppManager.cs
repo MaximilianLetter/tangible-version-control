@@ -21,6 +21,8 @@ public class AppManager : MonoBehaviour
 
     protected AppManager() { }
 
+    public bool experiment;
+
     // References to all required objects
     private TrackedObject       trackedObjectLogic;
     private Transform           trackedTransform;
@@ -76,10 +78,10 @@ public class AppManager : MonoBehaviour
         if (ReadyVerification())
         {
             Debug.Log("The AppManager is ready.");
-            if (experimentManager != null)
+            if (experiment)
             {
-                // experiment Manager will call StartupManaer by itself
-                experimentManager.SetupExperiment();
+                // experiment Manager will call StartupManager by itself
+                experimentManager.SetupExperiment(true);
             }
             else
             {
@@ -268,18 +270,18 @@ public class AppManager : MonoBehaviour
         }
 
         // Not mandatory
-        if (GetTransitionManager() == null)
-        {
-            Debug.LogError("TransitionManager not found");
-            //return false;
-        }
+        //if (GetTransitionManager() == null)
+        //{
+        //    Debug.LogError("TransitionManager not found");
+        //    //return false;
+        //}
 
         // Not mandatory
-        if (GetApiManager() == null)
-        {
-            Debug.LogError("ApiManager not found");
-            //return false;
-        }
+        //if (GetApiManager() == null)
+        //{
+        //    Debug.LogError("ApiManager not found");
+        //    //return false;
+        //}
 
         // Not mandatory
         if (GetExperimentManager() == null)

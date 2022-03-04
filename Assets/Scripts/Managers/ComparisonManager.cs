@@ -101,6 +101,23 @@ public class ComparisonManager : MonoBehaviour
 
         Debug.Log("A new comparison is initiated. START COMPARISON");
 
+        if (AppManager.Instance.experiment)
+        {
+            bool result = AppManager.Instance.GetExperimentManager().CheckSelectedVersion(virtualObj);
+
+            Debug.Log(result);
+
+            if (result)
+            {
+                //Debug.Log("EXPERIMENT MODE");
+
+                //AppManager.Instance.GetTimelineContainer().SetActive(false);
+                AppManager.Instance.GetExperimentManager().SetupExperiment();
+            }
+
+            return;
+        }
+
         // Save reference to object for avoiding reinitializing the same comparison
         comparedAgainstVersionObject = versionObj;
 

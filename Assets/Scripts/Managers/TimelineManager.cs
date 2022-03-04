@@ -33,6 +33,7 @@ public class TimelineManager : MonoBehaviour
     private GameObject uiPanel;
     private GameObject placeBtn;
     private GameObject otherBtns;
+    private GameObject experimentBtn;
 
     // Material
     [SerializeField]
@@ -67,6 +68,7 @@ public class TimelineManager : MonoBehaviour
         // UI
         placeBtn = uiPanel.transform.GetChild(0).gameObject;
         otherBtns = uiPanel.transform.GetChild(1).gameObject;
+        experimentBtn = uiPanel.transform.GetChild(2).gameObject;
 
         // Line logic
         connectionLineLogic = AppManager.Instance.GetConnectionLine();
@@ -80,6 +82,13 @@ public class TimelineManager : MonoBehaviour
         inPlacement = false;
 
         ready = true;
+    }
+
+    public void ResetForTimelineChange()
+    {
+        versionObjs = new VersionObject[0];
+        if (comparisonLine != null) comparisonLine = null;
+        if (connectionLineLogic != null) connectionLineLogic = null;
     }
 
     void BuildTimeline()
@@ -174,7 +183,7 @@ public class TimelineManager : MonoBehaviour
                     }
                 }
 
-                connectionLineLogic.ConnectVirtualAndPhysical();
+                if (connectionLineLogic != null) connectionLineLogic.ConnectVirtualAndPhysical();
             }
         }
     }
@@ -264,6 +273,7 @@ public class TimelineManager : MonoBehaviour
         SetVersionInfoPanel(null);
 
         inPlacement = true;
+        Debug.Log("PLACEMENT SET TRUE");
     }
 
     /// <summary>
@@ -274,7 +284,18 @@ public class TimelineManager : MonoBehaviour
         // Manage the placement buttons
         placeBtn.SetActive(false);
         otherBtns.SetActive(true);
-        uiPanel.GetComponent<TransitionToPosition>().StartTransition(new Vector3(0, 0.1f, 0), true);
+        if (uiPanel.activeInHierarchy)
+        {
+            uiPanel.GetComponent<TransitionToPosition>().StartTransition(new Vector3(0, 0.1f, 0), true);
+        }
+
+        if (AppManager.Instance.experiment)
+        {
+            placeBtn.SetActive(false);
+            otherBtns.SetActive(false);
+            experimentBtn.SetActive(true);
+            timelineContainer.SetActive(true);
+        }
 
         connectionLineLogic.SetActive(true);
 
@@ -292,6 +313,7 @@ public class TimelineManager : MonoBehaviour
         SetVersionInfoPanel(virtualTwin);
 
         inPlacement = false;
+        Debug.Log("PLACEMENT SET FALSE");
     }
 
     private void SetColliderActive(bool status)
