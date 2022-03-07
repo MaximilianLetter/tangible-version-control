@@ -103,6 +103,9 @@ public class ComparisonManager : MonoBehaviour
 
         if (AppManager.Instance.experiment)
         {
+            // Only test if the experiment is running
+            if (!AppManager.Instance.GetExperimentManager().GetExperimentRunning()) return;
+
             bool result = AppManager.Instance.GetExperimentManager().CheckSelectedVersion(virtualObj);
 
             Debug.Log(result);
@@ -112,6 +115,8 @@ public class ComparisonManager : MonoBehaviour
                 //Debug.Log("EXPERIMENT MODE");
 
                 //AppManager.Instance.GetTimelineContainer().SetActive(false);
+
+                AppManager.Instance.GetExperimentManager().SetExperimentRunning(false);
                 AppManager.Instance.GetExperimentManager().SetupExperiment();
             }
 

@@ -62,29 +62,42 @@ public class StartupManager : MonoBehaviour
 
         AppManager.Instance.GetComparisonManager().Initialize();
 
-        AppManager.Instance.GetTrackedObjectLogic().GetComponent<TiltToMove>().Initialize();
+        if (!AppManager.Instance.experiment)
+        {
+            AppManager.Instance.GetTrackedObjectLogic().GetComponent<TiltToMove>().Initialize();
+        }
 
-        yield return new WaitForSeconds(0.1f);
+        //yield return new WaitForSeconds(0.1f);
 
         AppManager.Instance.GetTimelineManager().StartPlacement();
 
         if (AppManager.Instance.experiment)
         {
             if (!firstTime)
-            // Disable replacement
-            AppManager.Instance.GetTimelineManager().FinishPlacement();
+            {
+                // Disable replacement
+                taskPanel.gameObject.SetActive(true);
+                AppManager.Instance.GetTimelineManager().FinishPlacement();
+            }
             //AppManager.Instance.GetTimelineManager().DisableReplacement();
+            AppManager.Instance.GetTimelineManager().ToggleDummyModels(true);
         }
 
 #if UNITY_EDITOR
         if (AppManager.Instance.GetComparisonManager().usePhysical)
         {
             yield return new WaitForSeconds(0.5f);
-            markerHint.SetActive(true);
+            if (firstTime)
+            {
+                markerHint.SetActive(true);
+            }
         }
 #else
         yield return new WaitForSeconds(0.5f);
-        markerHint.SetActive(true);
+        if (firstTime) 
+        {
+            markerHint.SetActive(true);
+        }
 #endif
 
         //if (noPlacement)

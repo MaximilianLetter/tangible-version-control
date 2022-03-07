@@ -306,8 +306,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3931475628669796798}
-  - component: {fileID: 6075570422553964665}
-  - component: {fileID: 6075570422553964666}
+  - component: {fileID: 492046450979352079}
+  - component: {fileID: 588070534065542695}
   m_Layer: 0
   m_Name: TaskPanel
   m_TagString: Untagged
@@ -332,7 +332,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6075570422553964665
+--- !u!114 &492046450979352079
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -341,28 +341,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 3934286987034513394}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4684083f6dff4a1d8a790bccc354fcf4, type: 3}
+  m_Script: {fileID: 11500000, guid: 19aa0f56b71fba5438898c7daa70f339, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  updateLinkedTransform: 0
-  moveLerpTime: 0.1
-  rotateLerpTime: 0.1
-  scaleLerpTime: 0
-  maintainScaleOnInitialization: 1
-  smoothing: 1
-  lifetime: 0
-  referenceDirection: 1
-  minDistance: 0.25
-  maxDistance: 0.5
-  minViewDegrees: 0
-  maxViewDegrees: 15
-  aspectV: 1
-  ignoreAngleClamp: 0
-  ignoreDistanceClamp: 0
-  useFixedVerticalPosition: 0
-  fixedVerticalPosition: -0.4
-  orientToReferenceDirection: 0
---- !u!114 &6075570422553964666
+  goBtn: {fileID: 179030901440137936}
+  modelContainer: {fileID: 274147488779270515}
+--- !u!114 &588070534065542695
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -371,16 +355,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3934286987034513394}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b55691ad5b034fe6966763a6e23818d2, type: 3}
+  m_Script: {fileID: 11500000, guid: 2547b4dd088644d6aaf64f45df657c79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trackedTargetType: 0
-  trackedHandness: 3
-  trackedHandJoint: 2
-  transformOverride: {fileID: 0}
-  additionalOffset: {x: 0, y: 0, z: 0}
-  additionalRotation: {x: 0, y: 0, z: 0}
-  updateSolvers: 1
+  pivotAxis: 0
+  targetTransform: {fileID: 0}
 --- !u!1 &3935146675959720228
 GameObject:
   m_ObjectHideFlags: 0
@@ -692,6 +671,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c4ef8a879fb66d6468c67606ba1e6b25, type: 3}
+--- !u!1 &179030901440137936 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1050945951127360776, guid: c4ef8a879fb66d6468c67606ba1e6b25,
+    type: 3}
+  m_PrefabInstance: {fileID: 930484178678226904}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7507227577377979623 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7261695798870401855, guid: c4ef8a879fb66d6468c67606ba1e6b25,

@@ -37,6 +37,7 @@ public class AppManager : MonoBehaviour
     private ConnectionLine      connectionLine;
     private LineRenderer        comparisonLine;
     private ActionPanel         actionPanel;
+    private TaskPanel           taskPanel;
 
     // References to all managers
     private TimelineManager     timelineManager;
@@ -71,6 +72,7 @@ public class AppManager : MonoBehaviour
         connectionLine = FindObjectOfType<ConnectionLine>();
         comparisonLine = GameObject.Find("ComparisonLine").GetComponent<LineRenderer>();
         actionPanel = FindObjectOfType<ActionPanel>();
+        taskPanel = FindObjectOfType<TaskPanel>();
     }
 
     private void Start()
@@ -172,6 +174,10 @@ public class AppManager : MonoBehaviour
     public ActionPanel GetActionPanel()
     {
         return actionPanel;
+    }
+    public TaskPanel GetTaskPanel()
+    {
+        return taskPanel;
     }
 
     public Transform GetContentContainer()
@@ -306,6 +312,13 @@ public class AppManager : MonoBehaviour
         {
             Debug.LogError("Action panel not found");
             return false;
+        }
+
+        // Not mandatory
+        if (GetTaskPanel() == null)
+        {
+            Debug.LogError("Task panel not found");
+            //return false;
         }
 
         if (GetContentContainer() == null)

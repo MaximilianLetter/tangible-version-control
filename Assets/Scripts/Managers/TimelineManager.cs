@@ -79,16 +79,26 @@ public class TimelineManager : MonoBehaviour
         comparisonLine.useWorldSpace = false;
         comparisonLine.enabled = false;
 
+        timelineContainer.SetActive(true);
+
         inPlacement = false;
 
         ready = true;
     }
 
-    public void ResetForTimelineChange()
+    public void ResetValuesForTimelineChange()
     {
         versionObjs = new VersionObject[0];
         if (comparisonLine != null) comparisonLine = null;
         if (connectionLineLogic != null) connectionLineLogic = null;
+    }
+
+    public void ToggleDummyModels(bool status)
+    {
+        foreach (var v in versionObjs)
+        {
+            v.ToggleDummyModel(status);
+        }
     }
 
     void BuildTimeline()

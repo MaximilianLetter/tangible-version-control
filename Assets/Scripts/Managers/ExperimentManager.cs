@@ -14,8 +14,6 @@ public class ExperimentManager : MonoBehaviour
     public GameObject branchPrefab;
 
     private GameObject lookedForVersion;
-    public GameObject taskPanel;
-    private Transform modelImageTransform;
 
     [SerializeField]
     private int difficulty; // 0 - easy; 1 - medium; 2 - hard;
@@ -23,13 +21,14 @@ public class ExperimentManager : MonoBehaviour
     [SerializeField]
     private int amountOfVersions; // + the virtual twin
 
-
     private TimelineManager timelineManager;
+    private TaskPanel taskPanel;
     private bool ready;
+    private bool experimentRunning;
 
     void Start()
     {
-        modelImageTransform = taskPanel.transform.GetChild(0);
+        taskPanel = AppManager.Instance.GetTaskPanel();
         timelineManager = AppManager.Instance.GetTimelineManager();
     }
 
@@ -42,7 +41,7 @@ public class ExperimentManager : MonoBehaviour
 
     IEnumerator InstantiateTimelineObjects(bool firstTime)
     {
-        timelineManager.ResetForTimelineChange();
+        timelineManager.ResetValuesForTimelineChange();
 
         var branches = FindObjectsOfType<Branch>();
         if (branches != null)
@@ -54,15 +53,12 @@ public class ExperimentManager : MonoBehaviour
             }
         }
 
-        // Destroy model of last searched for object
-        if (modelImageTransform.childCount > 0)
-        {
-            var oldLookedForVersion = modelImageTransform.GetChild(0);
-            Destroy(oldLookedForVersion.gameObject);
-        }
+        yield return null;
+
+        taskPanel.ResetTaskPanel();
 
         // Wait until objects are really destroyed
-        yield return new WaitForSeconds(0.1f);
+        yield return null;
 
         var branchesContainer = AppManager.Instance.GetTimelineContainer().transform.GetChild(0);
         var singleBranch = Instantiate(branchPrefab, branchesContainer);
@@ -137,14 +133,26 @@ public class ExperimentManager : MonoBehaviour
             Destroy(loadedOBJ);
         }
 
-        if (!firstTime)
+        if (firstTime)
+        {
+            // Always set virtual twin in the center
+            var centerIndex = Mathf.RoundToInt(amountOfVersions / 2);
+            var versionToSwapWith = singleBranch.transform.GetChild(centerIndex);
+
+            var virtTwinObj = singleBranch.transform.GetChild(objsToSpawn.Length);
+            virtTwinObj.SetSiblingIndex(centerIndex); // this works, however, sibling index is not correctly ordered
+            virtTwinObj.GetComponent<VersionObject>().id = centerIndex.ToString();
+            versionToSwapWith.SetSiblingIndex(objsToSpawn.Length);
+            versionToSwapWith.GetComponent<VersionObject>().id = objsToSpawn.Length.ToString();
+        }
+        else
         {
             // Select randomly the looked for version
             var randomizedIndex = Random.Range(0, objsToSpawn.Length);
             lookedForVersion = singleBranch.transform.GetChild(randomizedIndex).gameObject;
 
             var modelCopy = lookedForVersion.transform.GetChild(0);
-            Instantiate(modelCopy, modelImageTransform);
+            Instantiate(modelCopy, taskPanel.GetModelContainer());
 
             // Reorder virtual twin and change ID with other version
             randomizedIndex = Random.Range(0, objsToSpawn.Length);
@@ -155,8 +163,6 @@ public class ExperimentManager : MonoBehaviour
             virtTwinObj.GetComponent<VersionObject>().id = randomizedIndex.ToString();
             versionToSwapWith.SetSiblingIndex(objsToSpawn.Length);
             versionToSwapWith.GetComponent<VersionObject>().id = objsToSpawn.Length.ToString();
-
-            taskPanel.SetActive(true);
         }
 
         ready = true;
@@ -219,6 +225,17 @@ public class ExperimentManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void SetExperimentRunning(bool status)
+    {
+        experimentRunning = status;
+        // In future measure time here
+    }
+
+    public bool GetExperimentRunning()
+    {
+        return experimentRunning;
     }
 
     public bool IsReady()
