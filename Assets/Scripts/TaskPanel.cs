@@ -8,6 +8,8 @@ public class TaskPanel : MonoBehaviour
     private GameObject goBtn;
     [SerializeField]
     private Transform modelContainer;
+    [SerializeField]
+    private TMPro.TextMeshPro textContainer;
 
     public void StartExperiment()
     {
@@ -31,5 +33,10 @@ public class TaskPanel : MonoBehaviour
     public Transform GetModelContainer()
     {
         return modelContainer;
+    }
+
+    public void SetCounterText(int counter)
+    {
+        textContainer.text = counter.ToString() + ". trial";
     }
 }

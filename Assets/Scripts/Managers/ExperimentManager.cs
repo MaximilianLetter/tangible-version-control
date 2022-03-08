@@ -25,6 +25,7 @@ public class ExperimentManager : MonoBehaviour
     private TaskPanel taskPanel;
     private bool ready;
     private bool experimentRunning;
+    private int experimentCounter;
 
     void Start()
     {
@@ -37,6 +38,16 @@ public class ExperimentManager : MonoBehaviour
         Debug.Log("Difficulty: " + difficulty);
         Debug.Log("Amount of versions: " + amountOfVersions);
         StartCoroutine(InstantiateTimelineObjects(firstTime));
+
+        if (firstTime)
+        {
+            experimentCounter = 0;
+        }
+        else
+        {
+            experimentCounter++;
+        }
+        taskPanel.SetCounterText(experimentCounter);
     }
 
     IEnumerator InstantiateTimelineObjects(bool firstTime)
