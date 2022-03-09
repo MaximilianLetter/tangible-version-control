@@ -34,7 +34,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.065, y: -0.085}
+  m_AnchoredPosition: {x: 0.065, y: -0.097}
   m_SizeDelta: {x: 0.06, y: 0.02}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &4543165981420419391
@@ -125,8 +125,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.12
-  m_fontSizeBase: 0.12
+  m_fontSize: 0.1
+  m_fontSizeBase: 0.1
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -328,8 +328,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.12
-  m_fontSizeBase: 0.12
+  m_fontSize: 0.1
+  m_fontSizeBase: 0.1
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -364,7 +364,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: 0, w: -0.0116533935}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -518,7 +518,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   goBtn: {fileID: 179030901440137936}
   modelContainer: {fileID: 274147488779270515}
-  textContainer: {fileID: 4456578002294733700}
+  textCounter: {fileID: 4456578002294733700}
+  textDescription: {fileID: 9170714197268066319}
+  textHeader: {fileID: 6784456825176947800}
 --- !u!114 &588070534065542695
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -690,8 +692,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.12
-  m_fontSizeBase: 0.12
+  m_fontSize: 0.1
+  m_fontSizeBase: 0.1
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -787,6 +789,21 @@ PrefabInstance:
       propertyPath: iconQuadTexture
       value: 
       objectReference: {fileID: 2800000, guid: b5066c514f7f02f4292cf842f3c8b75f, type: 3}
+    - target: {fileID: 5260594881063842630, guid: c4ef8a879fb66d6468c67606ba1e6b25,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 492046450979352079}
+    - target: {fileID: 5260594881063842630, guid: c4ef8a879fb66d6468c67606ba1e6b25,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Go
+      objectReference: {fileID: 0}
+    - target: {fileID: 5260594881063842630, guid: c4ef8a879fb66d6468c67606ba1e6b25,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: TaskPanel, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 7261695798870401855, guid: c4ef8a879fb66d6468c67606ba1e6b25,
         type: 3}
       propertyPath: m_RootOrder
@@ -800,7 +817,7 @@ PrefabInstance:
     - target: {fileID: 7261695798870401855, guid: c4ef8a879fb66d6468c67606ba1e6b25,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.082
+      value: -0.0944
       objectReference: {fileID: 0}
     - target: {fileID: 7261695798870401855, guid: c4ef8a879fb66d6468c67606ba1e6b25,
         type: 3}

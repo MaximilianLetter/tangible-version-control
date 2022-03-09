@@ -75,8 +75,6 @@ public class StartupManager : MonoBehaviour
         {
             if (!firstTime)
             {
-                // Disable replacement
-                taskPanel.gameObject.SetActive(true);
                 AppManager.Instance.GetTimelineManager().FinishPlacement();
             }
             //AppManager.Instance.GetTimelineManager().DisableReplacement();

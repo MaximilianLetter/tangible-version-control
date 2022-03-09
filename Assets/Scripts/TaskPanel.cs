@@ -9,7 +9,18 @@ public class TaskPanel : MonoBehaviour
     [SerializeField]
     private Transform modelContainer;
     [SerializeField]
-    private TMPro.TextMeshPro textContainer;
+    private TMPro.TextMeshPro textCounter;
+    [SerializeField]
+    private TMPro.TextMeshPro textDescription;
+    [SerializeField]
+    private TMPro.TextMeshPro textHeader;
+
+    private ExperimentManager experimentManager;
+
+    private void Start()
+    {
+        experimentManager = AppManager.Instance.GetExperimentManager();   
+    }
 
     public void StartExperiment()
     {
@@ -30,13 +41,42 @@ public class TaskPanel : MonoBehaviour
         }
     }
 
+    public void Go()
+    {
+        if (experimentManager.readyForExperiment)
+        {
+            goBtn.SetActive(false);
+            experimentManager.SetExperimentRunning(true);
+        }
+        else
+        {
+            experimentManager.SetupExperiment();
+        }
+    }
+
     public Transform GetModelContainer()
     {
         return modelContainer;
     }
 
-    public void SetCounterText(int counter)
+    public void SetTextCounter(int counter)
     {
-        textContainer.text = counter.ToString() + ". trial";
+        textCounter.text = counter.ToString() + ". trial";
+    }
+
+    public void SetTextDescription(string content)
+    {
+        textDescription.text = content;
+    }
+
+    public void SetTextHeader(string content)
+    {
+        textHeader.text = content;
+    }
+
+    public void SetStartInformation()
+    {
+        SetTextHeader("Selection experiment");
+        SetTextDescription("After the experiment starts, look for the shown version in the timeline. Select the correct version by moving the physical artifact in.");
     }
 }

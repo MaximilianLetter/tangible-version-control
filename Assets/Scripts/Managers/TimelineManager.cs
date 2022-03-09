@@ -33,7 +33,6 @@ public class TimelineManager : MonoBehaviour
     private GameObject uiPanel;
     private GameObject placeBtn;
     private GameObject otherBtns;
-    private GameObject experimentBtn;
 
     // Material
     [SerializeField]
@@ -68,7 +67,6 @@ public class TimelineManager : MonoBehaviour
         // UI
         placeBtn = uiPanel.transform.GetChild(0).gameObject;
         otherBtns = uiPanel.transform.GetChild(1).gameObject;
-        experimentBtn = uiPanel.transform.GetChild(2).gameObject;
 
         // Line logic
         connectionLineLogic = AppManager.Instance.GetConnectionLine();
@@ -141,6 +139,13 @@ public class TimelineManager : MonoBehaviour
 
             float xPos = -(betweenVersionsDistance * (totalAmountOfVOs - 1) / 2) + (i * betweenVersionsDistance);
             float zPos = offset * betweenBranchesDistance;
+
+            // Quick and dirty hack
+            if (AppManager.Instance.experiment)
+            {
+                zPos = 0;
+            }
+
             var pos = new Vector3(xPos, 0, zPos);
 
             currentVO.localPosition = pos;
@@ -283,7 +288,6 @@ public class TimelineManager : MonoBehaviour
         SetVersionInfoPanel(null);
 
         inPlacement = true;
-        Debug.Log("PLACEMENT SET TRUE");
     }
 
     /// <summary>
@@ -303,8 +307,8 @@ public class TimelineManager : MonoBehaviour
         {
             placeBtn.SetActive(false);
             otherBtns.SetActive(false);
-            experimentBtn.SetActive(true);
             timelineContainer.SetActive(true);
+            AppManager.Instance.GetTaskPanel().gameObject.SetActive(true);
         }
 
         connectionLineLogic.SetActive(true);
@@ -323,7 +327,6 @@ public class TimelineManager : MonoBehaviour
         SetVersionInfoPanel(virtualTwin);
 
         inPlacement = false;
-        Debug.Log("PLACEMENT SET FALSE");
     }
 
     private void SetColliderActive(bool status)

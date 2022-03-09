@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public class ExperimentManager : MonoBehaviour
 {
@@ -21,16 +22,24 @@ public class ExperimentManager : MonoBehaviour
     [SerializeField]
     private int amountOfVersions; // + the virtual twin
 
+    public int participantID; // TODO do something with this
+
     private TimelineManager timelineManager;
     private TaskPanel taskPanel;
     private bool ready;
     private bool experimentRunning;
     private int experimentCounter;
+    private float experimentStartTime;
+
+    public bool readyForExperiment;
 
     void Start()
     {
         taskPanel = AppManager.Instance.GetTaskPanel();
         timelineManager = AppManager.Instance.GetTimelineManager();
+
+        // To save results to
+        Directory.CreateDirectory(Application.streamingAssetsPath + "/results/");
     }
 
     public void SetupExperiment(bool firstTime = false)
@@ -42,12 +51,13 @@ public class ExperimentManager : MonoBehaviour
         if (firstTime)
         {
             experimentCounter = 0;
+            taskPanel.SetStartInformation();
         }
         else
         {
             experimentCounter++;
         }
-        taskPanel.SetCounterText(experimentCounter);
+        taskPanel.SetTextCounter(experimentCounter);
     }
 
     IEnumerator InstantiateTimelineObjects(bool firstTime)
@@ -155,6 +165,8 @@ public class ExperimentManager : MonoBehaviour
             virtTwinObj.GetComponent<VersionObject>().id = centerIndex.ToString();
             versionToSwapWith.SetSiblingIndex(objsToSpawn.Length);
             versionToSwapWith.GetComponent<VersionObject>().id = objsToSpawn.Length.ToString();
+
+            readyForExperiment = false;
         }
         else
         {
@@ -174,6 +186,8 @@ public class ExperimentManager : MonoBehaviour
             virtTwinObj.GetComponent<VersionObject>().id = randomizedIndex.ToString();
             versionToSwapWith.SetSiblingIndex(objsToSpawn.Length);
             versionToSwapWith.GetComponent<VersionObject>().id = objsToSpawn.Length.ToString();
+
+            readyForExperiment = true;
         }
 
         ready = true;
@@ -238,10 +252,49 @@ public class ExperimentManager : MonoBehaviour
         return false;
     }
 
+    public void SaveResults(float timeRequired)
+    {
+        // Check for folder first
+        string folderPath = Application.persistentDataPath + "/results";
+        if (!Directory.Exists(folderPath))
+        {
+            Directory.CreateDirectory(folderPath);
+        }
+
+        string filePath = folderPath + "/participant" + participantID + ".csv";
+
+        if (!File.Exists(filePath))
+        {
+            File.WriteAllText(filePath, "participant " + participantID + " | " + System.DateTime.Now + "\n\n");
+        }
+
+        // difficulty; trial count; time;
+        // could be: amount of objects; date;
+        string content = difficulty + ";" + experimentCounter + ";" + timeRequired + ";\n";
+
+        File.AppendAllText(filePath, content);
+
+        Debug.Log("Results saved");
+    }
+
     public void SetExperimentRunning(bool status)
     {
         experimentRunning = status;
-        // In future measure time here
+
+        timelineManager.ToggleDummyModels(false);
+        
+        // Experiment starts
+        if (status)
+        {
+            experimentStartTime = Time.time;
+        }
+        else // Experiment stops
+        {
+            var endTime = Time.time;
+            var timeRequired = endTime - experimentStartTime;
+
+            SaveResults(timeRequired);
+        }
     }
 
     public bool GetExperimentRunning()
