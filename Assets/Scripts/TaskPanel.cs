@@ -7,6 +7,8 @@ public class TaskPanel : MonoBehaviour
     [SerializeField]
     private GameObject goBtn;
     [SerializeField]
+    private GameObject understoodBtn;
+    [SerializeField]
     private Transform modelContainer;
     [SerializeField]
     private TMPro.TextMeshPro textCounter;
@@ -51,6 +53,8 @@ public class TaskPanel : MonoBehaviour
         else
         {
             experimentManager.SetupExperiment();
+
+            ToggleBetweenButtons(true);
         }
     }
 
@@ -78,5 +82,11 @@ public class TaskPanel : MonoBehaviour
     {
         SetTextHeader("Selection experiment");
         SetTextDescription("After the experiment starts, look for the shown version in the timeline. Select the correct version by moving the physical artifact in.");
+    }
+
+    public void ToggleBetweenButtons(bool state)
+    {
+        goBtn.SetActive(state);
+        understoodBtn.SetActive(!state);
     }
 }

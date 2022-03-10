@@ -166,6 +166,8 @@ public class ExperimentManager : MonoBehaviour
             versionToSwapWith.SetSiblingIndex(objsToSpawn.Length);
             versionToSwapWith.GetComponent<VersionObject>().id = objsToSpawn.Length.ToString();
 
+            taskPanel.ToggleBetweenButtons(false);
+
             readyForExperiment = false;
         }
         else

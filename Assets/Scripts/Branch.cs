@@ -53,6 +53,10 @@ public class Branch : MonoBehaviour
 
         // Set random color for the line
         Color randomColor = Random.ColorHSV();
+        if (AppManager.Instance.experiment)
+        {
+            randomColor = new Color(0.859f, 0.047f, 0.039f);
+        }
         branchLine.startColor = randomColor;
         branchLine.endColor = randomColor;
         branchLine.startWidth = timelineManager.branchLineWidth;
