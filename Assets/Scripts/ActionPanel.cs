@@ -58,6 +58,9 @@ public class ActionPanel : MonoBehaviour
             case 2:
                 cancelBtnTransform.localPosition = new Vector3(-0.05f, -0.05f, 0f);
                 break;
+            case 3:
+                cancelBtnTransform.localPosition = new Vector3(-0.05f, -0.1f, 0f);
+                break;
             default:
                 cancelBtnTransform.localPosition = new Vector3(-0.05f, 0.05f, 0f);
                 break;

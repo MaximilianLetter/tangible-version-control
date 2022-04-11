@@ -105,7 +105,8 @@ public class ComparisonObject : MonoBehaviour
 
         meshRenderer = GetComponentInChildren<MeshRenderer>();
         // Get base material directly from version Object;
-        baseMat = voToClone.GetComponentInChildren<MeshRenderer>().materials;
+        baseMat = voToClone.GetBaseMaterial();
+        ResetMaterial();
 
         // Set pivot point according the the current mode
         if (pivotCenter) SetPivotPointCenter();
