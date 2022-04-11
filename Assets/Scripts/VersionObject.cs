@@ -11,9 +11,14 @@ public class VersionObject : MonoBehaviour
     public string createdBy;
     [HideInInspector]
     public string id;
+    [HideInInspector]
+    public int sequence;
 
     [SerializeField]
     private Transform modelContainer;
+    [SerializeField]
+    private GameObject dummyModelPrefab;
+    private GameObject dummyModel;
 
     private MeshRenderer meshRenderer;
     private Material[] baseMat;
@@ -22,6 +27,20 @@ public class VersionObject : MonoBehaviour
     {
         meshRenderer = GetComponentInChildren<MeshRenderer>();
         baseMat = meshRenderer.materials;
+    }
+
+    public void ToggleDummyModel(bool status)
+    {
+        if (status)
+        {
+            modelContainer.gameObject.SetActive(false);
+            dummyModel = Instantiate(dummyModelPrefab, transform);
+        }
+        else
+        {
+            Destroy(dummyModel);
+            modelContainer.gameObject.SetActive(true);
+        }
     }
 
     public void OverrideBaseMaterial(Material newMat)

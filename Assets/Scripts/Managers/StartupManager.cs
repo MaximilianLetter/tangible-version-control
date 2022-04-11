@@ -7,8 +7,9 @@ public class StartupManager : MonoBehaviour
 {
     public GameObject[] sceneObjects;
     public GameObject markerHint;
+    public GameObject taskPanel;
 
-    public IEnumerator StartUp()
+    public IEnumerator StartUp(bool firstTime = false)
     {
         // Wait one frame for other objects to instantiate
         yield return null;
@@ -21,9 +22,17 @@ public class StartupManager : MonoBehaviour
 
         // First of wait for the ApiManager to finish
         var apiManager = AppManager.Instance.GetApiManager();
+        var experimentManager = AppManager.Instance.GetExperimentManager();
         while (true)
         {
-            if (apiManager.IsReady()) break;
+            if (apiManager != null)
+            {
+                if (apiManager.IsReady()) break;
+            }
+            if (experimentManager != null)
+            {
+                if (experimentManager.IsReady()) break;
+            }
             
             yield return null;
         }
@@ -53,19 +62,48 @@ public class StartupManager : MonoBehaviour
 
         AppManager.Instance.GetComparisonManager().Initialize();
 
-        AppManager.Instance.GetTrackedObjectLogic().GetComponent<TiltToMove>().Initialize();
+        if (!AppManager.Instance.experiment)
+        {
+            AppManager.Instance.GetTrackedObjectLogic().GetComponent<TiltToMove>().Initialize();
+        }
+
+        //yield return new WaitForSeconds(0.1f);
 
         AppManager.Instance.GetTimelineManager().StartPlacement();
+
+        if (AppManager.Instance.experiment)
+        {
+            if (!firstTime)
+            {
+                AppManager.Instance.GetTimelineManager().FinishPlacement();
+            }
+            //AppManager.Instance.GetTimelineManager().DisableReplacement();
+            AppManager.Instance.GetTimelineManager().ToggleDummyModels(true);
+        }
+
 #if UNITY_EDITOR
         if (AppManager.Instance.GetComparisonManager().usePhysical)
         {
             yield return new WaitForSeconds(0.5f);
-            markerHint.SetActive(true);
+            if (firstTime)
+            {
+                markerHint.SetActive(true);
+            }
         }
 #else
         yield return new WaitForSeconds(0.5f);
-        markerHint.SetActive(true);
+        if (firstTime) 
+        {
+            markerHint.SetActive(true);
+        }
 #endif
+
+        //if (noPlacement)
+        //{
+        //    Debug.Log("EXPERIMENT MODE");
+        //    taskPanel.SetActive(true);
+        //    AppManager.Instance.GetTimelineContainer().SetActive(false);
+        //}
 
         Debug.Log("Startup finished.");
     }

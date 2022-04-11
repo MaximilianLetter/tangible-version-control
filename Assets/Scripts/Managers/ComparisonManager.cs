@@ -11,6 +11,8 @@ public class ComparisonManager : MonoBehaviour
     public float staticFloatingDistance;
     public float pulseCadence;
     public float pulseHold;
+    [Range(0f, 1f)]
+    public float pulseAlphaLimit = 0.5f;
 
     [Header("Object Materials")]
     public Material phantomMat;
@@ -98,6 +100,28 @@ public class ComparisonManager : MonoBehaviour
         }
 
         Debug.Log("A new comparison is initiated. START COMPARISON");
+
+        if (AppManager.Instance.experiment)
+        {
+            // Only test if the experiment is running
+            if (!AppManager.Instance.GetExperimentManager().GetExperimentRunning()) return;
+
+            bool result = AppManager.Instance.GetExperimentManager().CheckSelectedVersion(virtualObj);
+
+            Debug.Log(result);
+
+            if (result)
+            {
+                //Debug.Log("EXPERIMENT MODE");
+
+                //AppManager.Instance.GetTimelineContainer().SetActive(false);
+
+                AppManager.Instance.GetExperimentManager().SetExperimentRunning(false);
+                AppManager.Instance.GetExperimentManager().SetupExperiment();
+            }
+
+            return;
+        }
 
         // Save reference to object for avoiding reinitializing the same comparison
         comparedAgainstVersionObject = versionObj;
@@ -334,7 +358,7 @@ public class ComparisonManager : MonoBehaviour
                 yield return new WaitForSeconds(pulseHold);
             }
 
-            float alpha = invertDirection ? Mathf.SmoothStep(0f, 1.0f, passedTime / pulseCadence) : Mathf.SmoothStep(1.0f, 0f, passedTime / pulseCadence);
+            float alpha = invertDirection ? Mathf.SmoothStep(0f, pulseAlphaLimit, passedTime / pulseCadence) : Mathf.SmoothStep(pulseAlphaLimit, 0f, passedTime / pulseCadence);
 
             var subColor = diffMatSubtracted.color;
             diffMatSubtracted.color = new Color(subColor.r, subColor.g, subColor.b, alpha);
@@ -344,6 +368,20 @@ public class ComparisonManager : MonoBehaviour
 
             yield return null;
         }
+    }
+
+    /// <summary>
+    /// Always reset material to opacity limit when program is shut down.
+    /// </summary>
+    private void OnDisable()
+    {
+        Debug.Log("RESET COLORS");
+
+        var subColor = diffMatSubtracted.color;
+        diffMatSubtracted.color = new Color(subColor.r, subColor.g, subColor.b, pulseAlphaLimit);
+
+        var addColor = diffMatAdded.color;
+        diffMatAdded.color = new Color(addColor.r, addColor.g, addColor.b, pulseAlphaLimit);
     }
 
     public VersionObject GetVirtualTwin()

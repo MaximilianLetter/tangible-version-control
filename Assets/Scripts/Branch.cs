@@ -15,6 +15,7 @@ public class Branch : MonoBehaviour
     // Meta data of branch
     public int index;
     public string branchName;
+    public string lastCommit;
     private int numberOfVersions;
 
     private bool ready;
@@ -52,6 +53,10 @@ public class Branch : MonoBehaviour
 
         // Set random color for the line
         Color randomColor = Random.ColorHSV();
+        if (AppManager.Instance.experiment)
+        {
+            randomColor = new Color(0.859f, 0.047f, 0.039f);
+        }
         branchLine.startColor = randomColor;
         branchLine.endColor = randomColor;
         branchLine.startWidth = timelineManager.branchLineWidth;
@@ -67,11 +72,18 @@ public class Branch : MonoBehaviour
         ready = true;
     }
 
-    public void SetBranchLinePositionsAndOrder(Vector3[] positions, int order)
+    public void SetBranchLinePositionsAndOrder(int order)
     {
-        branchLine.positionCount = positions.Length;
+        branchLine.positionCount = transform.childCount;
 
-        branchLine.SetPositions(positions);
+        List<Vector3> positions = new List<Vector3>();
+
+        foreach (Transform child in transform)
+        {
+            positions.Add(child.localPosition);
+        }
+
+        branchLine.SetPositions(positions.ToArray());
 
         branchLine.sortingOrder = order;
     }

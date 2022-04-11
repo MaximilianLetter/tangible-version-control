@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AppManager : MonoBehaviour
 {
@@ -20,6 +21,8 @@ public class AppManager : MonoBehaviour
 
     protected AppManager() { }
 
+    public bool experiment;
+
     // References to all required objects
     private TrackedObject       trackedObjectLogic;
     private Transform           trackedTransform;
@@ -34,6 +37,7 @@ public class AppManager : MonoBehaviour
     private ConnectionLine      connectionLine;
     private LineRenderer        comparisonLine;
     private ActionPanel         actionPanel;
+    private TaskPanel           taskPanel;
 
     // References to all managers
     private TimelineManager     timelineManager;
@@ -41,6 +45,7 @@ public class AppManager : MonoBehaviour
     private TransitionManager   transitionManager;
     private StartupManager      startupManager;
     private GitHubAPIManager    apiManager;
+    private ExperimentManager   experimentManager;
 
     private void Awake()
     {
@@ -52,6 +57,7 @@ public class AppManager : MonoBehaviour
         transitionManager = GameObject.FindObjectOfType<TransitionManager>();
         startupManager = GameObject.FindObjectOfType<StartupManager>();
         apiManager = GameObject.FindObjectOfType<GitHubAPIManager>();
+        experimentManager = FindObjectOfType<ExperimentManager>();
 
         // Find all required objects
         trackedObjectLogic = GameObject.FindObjectOfType<TrackedObject>();
@@ -60,12 +66,13 @@ public class AppManager : MonoBehaviour
         comparisonObjectLogic = GameObject.FindObjectOfType<ComparisonObject>();
         //differencesObjectLogic = trackedObjectLogic.transform.parent.Find("DifferencesObject").GetComponent<ObjectParts>();
 
-        contentContainer = GameObject.Find("Content").transform;
+        contentContainer = GameObject.Find("MixedRealitySceneContent").transform;
         timelineContainer = GameObject.Find("Timeline");
         branchContainer = timelineContainer.transform.Find("BranchContainer");
         connectionLine = FindObjectOfType<ConnectionLine>();
         comparisonLine = GameObject.Find("ComparisonLine").GetComponent<LineRenderer>();
         actionPanel = FindObjectOfType<ActionPanel>();
+        taskPanel = FindObjectOfType<TaskPanel>();
     }
 
     private void Start()
@@ -73,10 +80,18 @@ public class AppManager : MonoBehaviour
         if (ReadyVerification())
         {
             Debug.Log("The AppManager is ready.");
-            startupManager.StartCoroutine("StartUp");
+            if (experiment)
+            {
+                // experiment Manager will call StartupManager by itself
+                experimentManager.SetupExperiment(true);
+            }
+            else
+            {
+                startupManager.StartCoroutine("StartUp", true);
+            }
         } else
         {
-            Debug.LogError("The AppManager was not able to find all required components.");
+            Debug.Log("The AppManager was not able to find all required components.");
         }
     }
 
@@ -99,6 +114,11 @@ public class AppManager : MonoBehaviour
     public StartupManager GetStartupManager()
     {
         return startupManager;
+    }
+
+    public ExperimentManager GetExperimentManager()
+    {
+        return experimentManager;
     }
 
     public TrackedObject GetTrackedObjectLogic()
@@ -155,6 +175,10 @@ public class AppManager : MonoBehaviour
     {
         return actionPanel;
     }
+    public TaskPanel GetTaskPanel()
+    {
+        return taskPanel;
+    }
 
     public Transform GetContentContainer()
     {
@@ -185,7 +209,7 @@ public class AppManager : MonoBehaviour
             }
         }
 
-        Debug.LogError("No object in the timeline is set as virtual twin.");
+        Debug.Log("No object in the timeline is set as virtual twin.");
         return null;
     }
 
@@ -193,100 +217,121 @@ public class AppManager : MonoBehaviour
     {
         if (GetTrackedObjectLogic() == null)
         {
-            Debug.LogError("TrackedObjectLogic not found");
+            Debug.Log("TrackedObjectLogic not found");
             return false;
         }
 
         if (GetTrackedTransform() == null)
         {
-            Debug.LogError("TrackedTransform not found");
+            Debug.Log("TrackedTransform not found");
             return false;
         }
 
         if (GetComparisonObjectLogic() == null)
         {
-            Debug.LogError("ComparisonObjectLogic not found");
+            Debug.Log("ComparisonObjectLogic not found");
             return false;
         }
 
         //if (GetDifferencesObjectLogic() == null)
         //{
-        //    Debug.LogError("DifferencesObjectLogic not found");
+        //    Debug.Log("DifferencesObjectLogic not found");
         //    return false;
         //}
 
         if (GetTimelineContainer() == null)
         {
-            Debug.LogError("TimelineContainer not found");
+            Debug.Log("TimelineContainer not found");
             return false;
         }
 
         if (GetBranchContainer() == null)
         {
-            Debug.LogError("BranchContainer not found");
+            Debug.Log("BranchContainer not found");
             return false;
         }
 
         //if (GetVirtualTwin() == null)
         //{
-        //    Debug.LogError("VirtualTwin not found");
+        //    Debug.Log("VirtualTwin not found");
         //    return false;
         //}
 
         if (GetTimelineManager() == null)
         {
-            Debug.LogError("TimelineManager not found");
+            Debug.Log("TimelineManager not found");
             return false;
         }
 
         if (GetComparisonManager() == null)
         {
-            Debug.LogError("ComparisonManager not found");
+            Debug.Log("ComparisonManager not found");
             return false;
         }
 
         if (GetStartupManager() == null)
         {
-            Debug.LogError("StartupManager not found");
+            Debug.Log("StartupManager not found");
             return false;
         }
 
-        if (GetTransitionManager() == null)
-        {
-            Debug.LogError("TransitionManager not found");
-            return false;
-        }
+        // Not mandatory
+        //if (GetTransitionManager() == null)
+        //{
+        //    Debug.Log("TransitionManager not found");
+        //    //return false;
+        //}
 
-        if (GetApiManager() == null)
+        // Not mandatory
+        //if (GetApiManager() == null)
+        //{
+        //    Debug.Log("ApiManager not found");
+        //    //return false;
+        //}
+
+        // Not mandatory
+        if (GetExperimentManager() == null)
         {
-            Debug.LogError("ApiManager not found");
-            return false;
+            Debug.Log("ExperimentManager not found");
+            //return false;
         }
 
         if (GetConnectionLine() == null)
         {
-            Debug.LogError("Connection line not found");
+            Debug.Log("Connection line not found");
             return false;
         }
 
         if (GetComparisonLine() == null)
         {
-            Debug.LogError("Comparison line not found");
+            Debug.Log("Comparison line not found");
             return false;
         }
 
         if (GetActionPanel() == null)
         {
-            Debug.LogError("Action panel not found");
+            Debug.Log("Action panel not found");
             return false;
+        }
+
+        // Not mandatory
+        if (GetTaskPanel() == null)
+        {
+            Debug.Log("Task panel not found");
+            //return false;
         }
 
         if (GetContentContainer() == null)
         {
-            Debug.LogError("Content container not found");
+            Debug.Log("Content container not found");
             return false;
         }
 
         return true;
+    }
+
+    public void BackToSceneSelection()
+    {
+        SceneManager.LoadScene("_SelectionScene");
     }
 }

@@ -19,14 +19,11 @@ public class TiltToMove : MonoBehaviour
     private bool xScrolling = false;
     private bool zScrolling = false;
 
-    void Start()
+    public void Initialize()
     {
         branchContainer = AppManager.Instance.GetBranchContainer();
         trackedTransform = AppManager.Instance.GetTrackedTransform();
-    }
 
-    public void Initialize()
-    {
         // Check if moving branches in Z is required
         int amountOfBranches = branchContainer.childCount - 1; // branchContainer holds one more object besides the branches
         if (amountOfBranches >= minBranchesZ)

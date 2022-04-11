@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   index: 0
   branchName: name
-  branchDate: 03.03.2003
+  lastCommit: 
 --- !u!120 &6618143911547680828
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -62,10 +62,11 @@ LineRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a08dec89fb90b874593165f6c646af53, type: 2}
+  - {fileID: 2100000, guid: 8b7802bfe864a4140bd5a45ae7095abe, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -148,7 +149,7 @@ LineRenderer:
     numCornerVertices: 8
     numCapVertices: 8
     alignment: 0
-    textureMode: 0
+    textureMode: 3
     shadowBias: 0.5
     generateLightingData: 0
   m_UseWorldSpace: 1

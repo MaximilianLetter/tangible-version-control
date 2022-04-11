@@ -6,9 +6,22 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/_Scenes/CubeMarkerScene.unity
+    path: Assets/_Scenes/_SelectionScene.unity
+    guid: c00cc40dee63c4c4a8c191ac38dbd135
+  - enabled: 1
+    path: Assets/_Scenes/_CubeMarkerScene.unity
     guid: d207590d2e9783545b73597f55e04242
-  - enabled: 0
-    path: Assets/_Scenes/_ExperimentScene.unity
+  - enabled: 1
+    path: Assets/_Scenes/_ShaderTestScene.unity
     guid: f545e95d700e0a245acfda04821d88ef
-  m_configObjects: {}
+  - enabled: 1
+    path: Assets/_Scenes/_EditorScene.unity
+    guid: e120caac096256c469dbace0bfaea1bb
+  - enabled: 1
+    path: Assets/_Scenes/_ExperimentScene.unity
+    guid: 390b840d195cb7e4c8dcd3f1fe3b4ca6
+  m_configObjects:
+    Unity.XR.WindowsMR.Settings: {fileID: 11400000, guid: b740a6b577d024146895173517a5f53e,
+      type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: fe059c0790cf733438f6670a808e03dc,
+      type: 2}

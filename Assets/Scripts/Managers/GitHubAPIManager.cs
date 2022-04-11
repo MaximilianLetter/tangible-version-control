@@ -31,7 +31,7 @@ public class GitHubAPIManager : MonoBehaviour
 
     void Start()
     {
-        branchesContainer = AppManager.Instance.GetTimelineContainer().transform.GetChild(0);
+        branchesContainer = AppManager.Instance.GetBranchContainer();
         progressIndicator = FindObjectOfType<ProgressIndicatorObjectDisplay>();
         showcaseObjLoader = GetComponent<ShowcaseObjLoader>();
 

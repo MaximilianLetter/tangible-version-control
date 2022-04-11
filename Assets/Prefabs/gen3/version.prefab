@@ -50,7 +50,10 @@ MonoBehaviour:
   createdAt: DATE
   createdBy: NAME
   id: 
+  sequence: 0
   modelContainer: {fileID: 7610267281255366631}
+  dummyModelPrefab: {fileID: 6203001129056487964, guid: 6d6a0c9858e8aa648aa40c814ed3c63a,
+    type: 3}
 --- !u!65 &3476348255400178918
 BoxCollider:
   m_ObjectHideFlags: 0
