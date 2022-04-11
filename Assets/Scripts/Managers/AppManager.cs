@@ -87,11 +87,11 @@ public class AppManager : MonoBehaviour
             }
             else
             {
-                startupManager.StartCoroutine("StartUp");
+                startupManager.StartCoroutine("StartUp", true);
             }
         } else
         {
-            Debug.LogError("The AppManager was not able to find all required components.");
+            Debug.Log("The AppManager was not able to find all required components.");
         }
     }
 
@@ -209,7 +209,7 @@ public class AppManager : MonoBehaviour
             }
         }
 
-        Debug.LogError("No object in the timeline is set as virtual twin.");
+        Debug.Log("No object in the timeline is set as virtual twin.");
         return null;
     }
 
@@ -217,113 +217,113 @@ public class AppManager : MonoBehaviour
     {
         if (GetTrackedObjectLogic() == null)
         {
-            Debug.LogError("TrackedObjectLogic not found");
+            Debug.Log("TrackedObjectLogic not found");
             return false;
         }
 
         if (GetTrackedTransform() == null)
         {
-            Debug.LogError("TrackedTransform not found");
+            Debug.Log("TrackedTransform not found");
             return false;
         }
 
         if (GetComparisonObjectLogic() == null)
         {
-            Debug.LogError("ComparisonObjectLogic not found");
+            Debug.Log("ComparisonObjectLogic not found");
             return false;
         }
 
         //if (GetDifferencesObjectLogic() == null)
         //{
-        //    Debug.LogError("DifferencesObjectLogic not found");
+        //    Debug.Log("DifferencesObjectLogic not found");
         //    return false;
         //}
 
         if (GetTimelineContainer() == null)
         {
-            Debug.LogError("TimelineContainer not found");
+            Debug.Log("TimelineContainer not found");
             return false;
         }
 
         if (GetBranchContainer() == null)
         {
-            Debug.LogError("BranchContainer not found");
+            Debug.Log("BranchContainer not found");
             return false;
         }
 
         //if (GetVirtualTwin() == null)
         //{
-        //    Debug.LogError("VirtualTwin not found");
+        //    Debug.Log("VirtualTwin not found");
         //    return false;
         //}
 
         if (GetTimelineManager() == null)
         {
-            Debug.LogError("TimelineManager not found");
+            Debug.Log("TimelineManager not found");
             return false;
         }
 
         if (GetComparisonManager() == null)
         {
-            Debug.LogError("ComparisonManager not found");
+            Debug.Log("ComparisonManager not found");
             return false;
         }
 
         if (GetStartupManager() == null)
         {
-            Debug.LogError("StartupManager not found");
+            Debug.Log("StartupManager not found");
             return false;
         }
 
         // Not mandatory
         //if (GetTransitionManager() == null)
         //{
-        //    Debug.LogError("TransitionManager not found");
+        //    Debug.Log("TransitionManager not found");
         //    //return false;
         //}
 
         // Not mandatory
         //if (GetApiManager() == null)
         //{
-        //    Debug.LogError("ApiManager not found");
+        //    Debug.Log("ApiManager not found");
         //    //return false;
         //}
 
         // Not mandatory
         if (GetExperimentManager() == null)
         {
-            Debug.LogError("ExperimentManager not found");
+            Debug.Log("ExperimentManager not found");
             //return false;
         }
 
         if (GetConnectionLine() == null)
         {
-            Debug.LogError("Connection line not found");
+            Debug.Log("Connection line not found");
             return false;
         }
 
         if (GetComparisonLine() == null)
         {
-            Debug.LogError("Comparison line not found");
+            Debug.Log("Comparison line not found");
             return false;
         }
 
         if (GetActionPanel() == null)
         {
-            Debug.LogError("Action panel not found");
+            Debug.Log("Action panel not found");
             return false;
         }
 
         // Not mandatory
         if (GetTaskPanel() == null)
         {
-            Debug.LogError("Task panel not found");
+            Debug.Log("Task panel not found");
             //return false;
         }
 
         if (GetContentContainer() == null)
         {
-            Debug.LogError("Content container not found");
+            Debug.Log("Content container not found");
             return false;
         }
 

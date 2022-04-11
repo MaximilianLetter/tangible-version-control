@@ -618,9 +618,9 @@ PlayerSettings:
   metroPackageVersion: 1.0.0.0
   metroCertificatePath: Assets\WSATestCertificate.pfx
   metroCertificatePassword: 
-  metroCertificateSubject: ML
-  metroCertificateIssuer: ML
-  metroCertificateNotAfter: 006dd3901c4cd801
+  metroCertificateSubject: AnonymousCompany
+  metroCertificateIssuer: AnonymousCompany
+  metroCertificateNotAfter: 009e83af8c6cd901
   metroApplicationDescription: Tangible Version Control in version 2.0 on HoloLens1
   wsaImages: {}
   metroTileShortName: TVC 2.0

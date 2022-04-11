@@ -416,6 +416,7 @@ GameObject:
   m_Component:
   - component: {fileID: 257893097}
   - component: {fileID: 257893098}
+  - component: {fileID: 257893099}
   m_Layer: 0
   m_Name: GitHubAPIManager
   m_TagString: Untagged
@@ -455,6 +456,29 @@ MonoBehaviour:
     type: 3}
   alternativeDefaultMat: {fileID: 2100000, guid: 4821fee33edd6a9419fc498bf20208c1,
     type: 2}
+--- !u!114 &257893099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 257893096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f593dc9b08d73a4b87c026d1aa4d955, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  doShowcase: 1
+  virtTwinID: 3
+  allObjs:
+  - {fileID: 919132149155446097, guid: d384725347ed6cd429c9d041ed2f1837, type: 3}
+  - {fileID: 919132149155446097, guid: 55f2ff828cbe4e346a75530eff2a013d, type: 3}
+  - {fileID: 919132149155446097, guid: 93527f8151ab14a4cb3575c1f36e5a0c, type: 3}
+  - {fileID: 919132149155446097, guid: 7e3120fdaa40520428da1727294a0980, type: 3}
+  - {fileID: 919132149155446097, guid: 1dea2ec955407c3429ee5ba416a002b4, type: 3}
+  - {fileID: 919132149155446097, guid: a900848e0069e6f46b5f1b4488a4f958, type: 3}
+  - {fileID: 919132149155446097, guid: 70f90aecc5870cd4f8773802be76abf2, type: 3}
+  - {fileID: 919132149155446097, guid: 336c30f5254ef4446bb8834903358cd6, type: 3}
 --- !u!1 &313482406
 GameObject:
   m_ObjectHideFlags: 0
@@ -760,6 +784,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1166894994}
     m_Modifications:
+    - target: {fileID: 191335482902089082, guid: 8f92f5e00fa5210469e36256ec2d7f3d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 191335483413269655, guid: 8f92f5e00fa5210469e36256ec2d7f3d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4626603232124461316, guid: 8f92f5e00fa5210469e36256ec2d7f3d,
         type: 3}
       propertyPath: m_RootOrder
@@ -1584,6 +1618,7 @@ MonoBehaviour:
   - {fileID: 1959046667}
   - {fileID: 514037944}
   markerHint: {fileID: 9100975794188380003}
+  taskPanel: {fileID: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -2548,6 +2583,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 480d0d473f0675e48a0e52c8d42b4cdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  experiment: 0
 --- !u!1 &1812368681
 GameObject:
   m_ObjectHideFlags: 0

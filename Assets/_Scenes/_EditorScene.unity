@@ -683,7 +683,7 @@ MonoBehaviour:
   betweenVersionsDistance: 0.1
   betweenBranchesDistance: 0.15
   branchColliderWidth: 0.15
-  branchLineWidth: 0.0035
+  branchLineWidth: 0.0045
   infoPanelTilt: {fileID: 0}
   infoPanelVersionObject: {fileID: 580122685}
   mirrorAllAxis: 0
@@ -851,8 +851,8 @@ MonoBehaviour:
   invisibleMat: {fileID: 2100000, guid: 680ce2717dd7a0349b5547614be44abf, type: 2}
   edgesMat: {fileID: 2100000, guid: 8a2eb0a7f7ce218499260558df6c19d7, type: 2}
   diffMatBase: {fileID: 2100000, guid: d7046a59404915248ba699e8327ec7e0, type: 2}
-  diffMatAdded: {fileID: 2100000, guid: 05ebd99ef702e6443966e1d4dd8b7988, type: 2}
-  diffMatSubtracted: {fileID: 2100000, guid: c7db75e37596a714d8b525ba5e006548, type: 2}
+  diffMatAdded: {fileID: 2100000, guid: c7cb53fa2be29a444bf4b511c1f8a441, type: 2}
+  diffMatSubtracted: {fileID: 2100000, guid: f013d08929e1ed04f835a069e7664841, type: 2}
   mode: 0
 --- !u!1 &324248960
 GameObject:
@@ -2169,6 +2169,7 @@ MonoBehaviour:
   - {fileID: 1671996490}
   - {fileID: 5478216070745988610}
   markerHint: {fileID: 0}
+  taskPanel: {fileID: 0}
 --- !u!1 &936274094
 GameObject:
   m_ObjectHideFlags: 0
@@ -3238,7 +3239,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1166894994}
   m_Layer: 0
-  m_Name: Content
+  m_Name: MixedRealitySceneContent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3859,6 +3860,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 480d0d473f0675e48a0e52c8d42b4cdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  experiment: 0
 --- !u!4 &4168837285741293 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 533234528715841240, guid: 3b1c46c228d486e4b8bc4cebce4b50f4,
