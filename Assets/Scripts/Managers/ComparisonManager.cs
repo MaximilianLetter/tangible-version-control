@@ -107,6 +107,8 @@ public class ComparisonManager : MonoBehaviour
 
         Debug.Log("A new comparison is initiated. START COMPARISON");
 
+        trackedObj.PlaySound();
+
         if (AppManager.Instance.experiment)
         {
             // Only test if the experiment is running

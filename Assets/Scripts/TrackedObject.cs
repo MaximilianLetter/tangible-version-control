@@ -11,8 +11,11 @@ public class TrackedObject : MonoBehaviour
     private MeshRenderer meshRenderer;
     private Material[] baseMat;
 
+    private AudioSource audioSrc;
+
     public void Initialize()
     {
+        audioSrc = GetComponent<AudioSource>();
         comparisonManager = AppManager.Instance.GetComparisonManager();
 
         VersionObject virtTwin = AppManager.Instance.GetVirtualTwin();
@@ -66,5 +69,10 @@ public class TrackedObject : MonoBehaviour
     public void ResetMaterial()
     {
         meshRenderer.materials = baseMat;
+    }
+
+    public void PlaySound()
+    {
+        audioSrc.Play();
     }
 }
