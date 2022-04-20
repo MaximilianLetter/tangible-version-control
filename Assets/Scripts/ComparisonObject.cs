@@ -7,8 +7,7 @@ public class ComparisonObject : MonoBehaviour
     // External references
     private ComparisonManager comparisonManager;
     private Transform trackedObjTransform;
-    private Vector3 markerOffset;
-    private Transform panel;
+    //private Transform panel;
 
     // Side by side variables
     private float floatingDistance;
@@ -20,14 +19,14 @@ public class ComparisonObject : MonoBehaviour
     private Material[] baseMat;
     private Transform transformInUse;
     private bool pivotCenter;
+    private Transform modelContainer;
 
     void Start()
     {
         // Get references to necessary gameobjects
         comparisonManager = AppManager.Instance.GetComparisonManager();
         trackedObjTransform = AppManager.Instance.GetTrackedTransform();
-        markerOffset = AppManager.Instance.GetTrackedObjectLogic().transform.parent.localPosition;
-        panel = AppManager.Instance.GetActionPanel().transform;
+        //panel = AppManager.Instance.GetActionPanel().transform;
 
         // Side by side variables
         transformInUse = transform;
@@ -35,54 +34,72 @@ public class ComparisonObject : MonoBehaviour
         hoverSide = false;
     }
 
-    void Update()
-    {
-        if (!comparisonManager.IsInComparison()) return;
+    //void Update()
+    //{
+    //    if (!comparisonManager.IsInComparison()) return;
 
-        Vector3 offset, menuOffset;
-        Transform camTransform = Camera.main.transform;
-        Vector3 trackedPos = trackedObjTransform.position + markerOffset;
+    //    Vector3 offset;
+    //    Transform camTransform = Camera.main.transform;
+    //    Vector3 trackedPos = trackedObjTransform.position;
 
-        // Get distance and direction relative to camera
-        float distance = Vector3.Distance(camTransform.position, trackedPos);
-        Vector3 direction = (trackedPos - camTransform.position).normalized;
+    //    // Get distance and direction relative to camera
+    //    float distance = Vector3.Distance(camTransform.position, trackedPos);
+    //    Vector3 direction = (trackedPos - camTransform.position).normalized;
 
-        // Calculate angle based on triangulation
-        float angleF = Mathf.Asin(floatingDistance / Vector3.Distance(camTransform.position, trackedPos));
-        float yAngle = (angleF * 180) / Mathf.PI;
+    //    // Calculate angle based on triangulation
+    //    float angleF = Mathf.Asin(floatingDistance / Vector3.Distance(camTransform.position, trackedPos));
+    //    float yAngle = (angleF * 180) / Mathf.PI;
 
-        // Flip the floating side if specified
-        if (hoverSide) yAngle = 360 - yAngle;
+    //    // Flip the floating side if specified
+    //    if (hoverSide) yAngle = 360 - yAngle;
 
-        // Calculate offset based on angle, direction and distance
-        // In case of a steep camera angle the positioning bugs out
-        offset = Quaternion.Euler(0, yAngle, 0) * direction * distance;
+    //    // Calculate offset based on angle, direction and distance
+    //    // In case of a steep camera angle the positioning bugs out
+    //    offset = Quaternion.Euler(0, yAngle, 0) * direction * distance;
 
-        if (sideBySide)
-        {
-            // Apply calculated position and rotation
-            transformInUse.SetPositionAndRotation(
-                camTransform.position + offset,
-                trackedObjTransform.rotation
-            );
-        }
-
-        // Position the panel on the other side
-        if (panel.gameObject.activeSelf)
-        {
-            menuOffset = Quaternion.Euler(0, 360 - yAngle, 0) * direction * distance;
-            panel.position = camTransform.position + menuOffset;
-        }
-    }
+    //    if (sideBySide)
+    //    {
+    //        // Apply calculated position and rotation
+    //        transformInUse.SetPositionAndRotation(
+    //            camTransform.position + offset,
+    //            trackedObjTransform.rotation
+    //        );
+    //    }
+    //}
 
     /// <summary>
     /// Activates the floating mode besides the tracked object.
     /// </summary>
     /// <param name="distance">Distance between the tracked and the compared object.</param>
-    public void SetSideBySide(bool state, float distance)
+    //public void SetSideBySide(bool state, float distance)
+    //{
+    //    floatingDistance = distance;
+    //    sideBySide = state;
+
+    //    transformInUse.SetParent(rightAnchor);
+    //    transformInUse.localPosition = Vector3.zero;
+    //}
+
+    public void SetOnAnchor(Transform anchor, float distance, bool flipSide = false)
     {
-        floatingDistance = distance;
-        sideBySide = state;
+        anchor.localPosition = new Vector3(distance, 0, 0);
+
+        transform.SetParent(anchor);
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
+
+        if (flipSide)
+        {
+            anchor.localPosition *= -1;
+        }
+
+        SetModelOffset(true);
+    }
+
+    public void SetModelOffset(bool state)
+    {
+        var markerOffset = new Vector3(0, state ? 0.015f : 0, 0); // AppManager.Instance.GetTrackedObjectLogic().transform.parent.localPosition;
+        modelContainer.localPosition = markerOffset;
     }
 
     /// <summary>
@@ -99,7 +116,7 @@ public class ComparisonObject : MonoBehaviour
     /// <returns>The primary model used for comparison.</returns>
     public GameObject Initialize(VersionObject voToClone)
     {
-        var modelContainer = Instantiate(voToClone.GetModelContainer(), transform);
+        modelContainer = Instantiate(voToClone.GetModelContainer(), transform);
         Destroy(modelContainer.GetComponent<BoxCollider>());
         modelContainer.tag = "Untagged";
 

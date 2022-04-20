@@ -28,6 +28,8 @@ public class ComparisonManager : MonoBehaviour
     public ComparisonMode mode = ComparisonMode.Combined;
 
     public GameObject companionObjPrefab;
+    [SerializeField] private Transform rightAnchor;
+    [SerializeField] private Transform leftAnchor;
 
     // Required object references
     private ActionPanel actionPanel;
@@ -176,8 +178,9 @@ public class ComparisonManager : MonoBehaviour
         if (mode == ComparisonMode.SideBySide)
         {
             trackedObj.ResetMaterial();
-            comparisonObjTransform.SetParent(contentContainer);
-            comparisonObj.SetSideBySide(true, floatingDistance);
+            //comparisonObjTransform.SetParent(contentContainer);
+            //comparisonObj.SetSideBySide(true, floatingDistance);
+            comparisonObj.SetOnAnchor(rightAnchor, floatingDistance);
         }
         else if (mode == ComparisonMode.Overlay)
         {
@@ -185,7 +188,9 @@ public class ComparisonManager : MonoBehaviour
 
             // Parent the comparison object container under the tracked transform to match the physical object
             comparisonObjTransform.SetParent(trackedObjContainer);
+            comparisonObj.SetModelOffset(false);
             comparisonObjTransform.localPosition = Vector3.zero;
+            comparisonObjTransform.localRotation = Quaternion.identity;
 
             trackedObj.SetMaterial(invisibleMat);
         }
@@ -235,9 +240,9 @@ public class ComparisonManager : MonoBehaviour
         {
             // Floating the two objects side by side
             companionObjLeft.gameObject.SetActive(true);
-            companionObjLeft.SetSideBySide(true, -floatingDistance);
+            companionObjLeft.SetOnAnchor(leftAnchor, floatingDistance, true);
             companionObjRight.gameObject.SetActive(true);
-            companionObjRight.SetSideBySide(true, floatingDistance);
+            companionObjRight.SetOnAnchor(rightAnchor, floatingDistance);
 
             // Differences on physical object
             comparisonObj.SetPivotPointBottom();
@@ -305,6 +310,12 @@ public class ComparisonManager : MonoBehaviour
         }
         comparisonObj.gameObject.SetActive(false);
 
+        if (companionObjLeft != null || companionObjRight != null)
+        {
+            Destroy(companionObjLeft.gameObject);
+            Destroy(companionObjRight.gameObject);
+        }
+
         inComparison = false;
     }
 
@@ -330,7 +341,7 @@ public class ComparisonManager : MonoBehaviour
         }
 
         comparisonObj.ResetMaterial();
-        comparisonObj.SetSideBySide(false, floatingDistance);
+        //comparisonObj.ResetFromAnchor();
 
         if (companionObjLeft != null || companionObjRight != null)
         {
