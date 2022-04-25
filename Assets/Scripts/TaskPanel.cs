@@ -78,10 +78,18 @@ public class TaskPanel : MonoBehaviour
         textHeader.text = content;
     }
 
-    public void SetStartInformation()
+    public void SetStartInformation(ExperimentMode mode)
     {
-        SetTextHeader("Selection experiment");
-        SetTextDescription("After the experiment starts, look for the shown version in the timeline. Select the correct version by moving the physical artifact in.");
+        if (mode == ExperimentMode.Timeline)
+        {
+            SetTextHeader("Selection experiment");
+            SetTextDescription("After the experiment starts, look for the shown version in the timeline. Select the correct version by moving the physical artifact in.");
+        }
+        else
+        {
+            SetTextHeader("Comparison experiment");
+            SetTextDescription("After you start the experiment, the physical object will be in comparison with an alternative version.");
+        }
     }
 
     public void ToggleBetweenButtons(bool state)

@@ -86,6 +86,8 @@ public class ComparisonManager : MonoBehaviour
     {
         VersionObject versionObj = virtualObj.GetComponentInParent<VersionObject>();
 
+        Debug.Log(versionObj);
+
         if (versionObj.virtualTwin)
         {
             Debug.Log("Comparing against virtual twin; ABORT COMPARISON.");
@@ -111,24 +113,27 @@ public class ComparisonManager : MonoBehaviour
 
         if (AppManager.Instance.experiment)
         {
-            // Only test if the experiment is running
-            if (!AppManager.Instance.GetExperimentManager().GetExperimentRunning()) return;
-
-            bool result = AppManager.Instance.GetExperimentManager().CheckSelectedVersion(virtualObj);
-
-            Debug.Log(result);
-
-            if (result)
+            if (AppManager.Instance.GetExperimentManager().mode == ExperimentMode.Timeline)
             {
-                //Debug.Log("EXPERIMENT MODE");
+                // Only test if the experiment is running
+                if (!AppManager.Instance.GetExperimentManager().GetExperimentRunning()) return;
 
-                //AppManager.Instance.GetTimelineContainer().SetActive(false);
+                bool result = AppManager.Instance.GetExperimentManager().CheckSelectedVersion(virtualObj);
 
-                AppManager.Instance.GetExperimentManager().SetExperimentRunning(false);
-                AppManager.Instance.GetExperimentManager().SetupExperiment();
+                Debug.Log(result);
+
+                if (result)
+                {
+                    //Debug.Log("EXPERIMENT MODE");
+
+                    //AppManager.Instance.GetTimelineContainer().SetActive(false);
+
+                    AppManager.Instance.GetExperimentManager().SetExperimentRunning(false);
+                    AppManager.Instance.GetExperimentManager().SetupExperiment();
+                }
+
+                return;
             }
-
-            return;
         }
 
         // Save reference to object for avoiding reinitializing the same comparison
@@ -301,7 +306,7 @@ public class ComparisonManager : MonoBehaviour
             comparedAgainstVersionObject = null;
         }
 
-        actionPanel.gameObject.SetActive(false);
+        if (actionPanel != null) actionPanel.gameObject.SetActive(false);
 
         trackedObj.ResetMaterial();
 

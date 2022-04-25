@@ -48,6 +48,8 @@ public class TimelineManager : MonoBehaviour
     private bool ready;
     private bool inPlacement;
 
+    public bool deactivated;
+
     public void Initialize()
     {
         comparisonManager = AppManager.Instance.GetComparisonManager();
@@ -171,6 +173,8 @@ public class TimelineManager : MonoBehaviour
 
     private void Update()
     {
+        if (deactivated) return;
+
         // Only align timeline and physical artifact during placement
         if (inPlacement)
         {
@@ -212,8 +216,8 @@ public class TimelineManager : MonoBehaviour
     /// <param name="obj2">Endpoint of line.</param>
     public void EnableComparisonLine(Transform obj1, Transform obj2)
     {
-        Debug.Log(obj1);
-        Debug.Log(obj2);
+        if (comparisonLine == null) return;
+
         float height1 = obj1.GetChild(0).GetComponent<Collider>().bounds.size.y;
         float height2 = obj2.GetChild(0).GetComponent<Collider>().bounds.size.y;
 
@@ -233,6 +237,8 @@ public class TimelineManager : MonoBehaviour
 
     public void DisableComparisonLine()
     {
+        if (comparisonLine == null) return;
+
         comparisonLine.enabled = false;
     }
 
@@ -351,6 +357,8 @@ public class TimelineManager : MonoBehaviour
     /// <param name="status">True equals the normal display material, false equals the normal placement edges material.</param>
     public void ToggleMaterials(bool status)
     {
+        if (versionObjs == null) return;
+
         foreach (var obj in versionObjs)
         {
             if (!status)
@@ -379,6 +387,8 @@ public class TimelineManager : MonoBehaviour
 
     public void SetCloseInteraction(bool status, VersionObject vo = null)
     {
+        if (deactivated) return;
+
         if (status)
         {
             SetVersionInfoPanel(vo);
@@ -409,9 +419,9 @@ public class TimelineManager : MonoBehaviour
     /// <param name="vo">The version object to display infomration from.</param>
     private void SetVersionInfoPanel(VersionObject vo)
     {
-        if (vo == null)
+        if (vo == null || infoPanelVersionObjectTransition == null)
         {
-            infoPanelVersionObject.SetActive(false);
+            if (infoPanelVersionObject) infoPanelVersionObject.SetActive(false);
             return;
         }
 
