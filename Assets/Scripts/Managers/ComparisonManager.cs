@@ -25,7 +25,7 @@ public class ComparisonManager : MonoBehaviour
     public Material diffMatSubtracted;
 
     [Space(10)]
-    public ComparisonMode mode = ComparisonMode.Combined;
+    public ComparisonMode mode = ComparisonMode.Differences;
 
     public GameObject companionObjPrefab;
     [SerializeField] private Transform rightAnchor;
@@ -133,6 +133,11 @@ public class ComparisonManager : MonoBehaviour
                 }
 
                 return;
+            }
+            else
+            {
+                // Always use differences mode for comparison experiment
+                mode = ComparisonMode.Differences;
             }
         }
 

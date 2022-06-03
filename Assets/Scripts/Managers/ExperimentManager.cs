@@ -89,6 +89,18 @@ public class ExperimentManager : MonoBehaviour
 
             taskPanel.SetStartInformation(ExperimentMode.Comparison);
             taskPanel.SetTextCounter(experimentCounter);
+
+            if (firstTime)
+            {
+                experimentCounter = 0;
+                taskPanel.gameObject.SetActive(true);
+            }
+            else
+            {
+                experimentCounter++;
+            }
+
+            taskPanel.SetTextCounter(experimentCounter);
         }
     }
 

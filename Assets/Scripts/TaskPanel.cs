@@ -58,6 +58,15 @@ public class TaskPanel : MonoBehaviour
         }
     }
 
+    public void LockPosition()
+    {
+        var radialView = GetComponent<Microsoft.MixedReality.Toolkit.Utilities.Solvers.RadialView>();
+        if (radialView != null) radialView.enabled = false;
+
+        var solverHandler = GetComponent<Microsoft.MixedReality.Toolkit.Utilities.Solvers.SolverHandler>();
+        if (solverHandler != null) solverHandler.enabled = false;
+    }
+
     public Transform GetModelContainer()
     {
         return modelContainer;
