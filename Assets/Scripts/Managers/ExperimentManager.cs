@@ -16,18 +16,24 @@ public class ExperimentManager : MonoBehaviour
     [SerializeField]
     private GameObject[] compObjExch;
 
-    private GameObject[] compObjInUse;
+    //private GameObject[] compObjInUse;
 
-    public GameObject virtTwinModel;
+    private GameObject virtTwinModel;
+    private GameObject goalModel;
 
-    public GameObject[] objectsEasy;
-    public GameObject[] objectsMedium;
-    public GameObject[] objectsHard;
+    [SerializeField]
+    private GameObject tutorialVirtTwinModel;
+
+    [SerializeField]
+    private GameObject[] timelineObjects;
 
     public GameObject placeHolderModel;
     public GameObject virtualTwinModel;
     public GameObject versionPrefab;
     public GameObject branchPrefab;
+
+    public GameObject conditionsPanel;
+    public GameObject conditionsPanelToggleButton;
 
     private GameObject lookedForVersion;
 
@@ -48,6 +54,7 @@ public class ExperimentManager : MonoBehaviour
     private int experimentCounter;
     private float experimentStartTime;
 
+    private bool setupWasDone;
     public bool readyForExperiment;
 
     void Start()
@@ -59,6 +66,35 @@ public class ExperimentManager : MonoBehaviour
 
         // To save results to
         Directory.CreateDirectory(Application.streamingAssetsPath + "/results/");
+    }
+
+    public void SelectExperimentCondition(string type, bool variant)
+    {
+        int increment = 0;
+        if (variant) increment = 2;
+
+        if (type == "add")
+        {
+            virtTwinModel = compObjAdd[increment];
+            goalModel = compObjAdd[increment + 1];
+        }
+
+        if (type == "sub")
+        {
+            virtTwinModel = compObjSub[increment];
+            goalModel = compObjSub[increment + 1];
+        }
+
+        if (type == "exch")
+        {
+            virtTwinModel = compObjExch[increment];
+            goalModel = compObjExch[increment + 1];
+        }
+
+        SetupExperiment(!setupWasDone);
+
+        conditionsPanel.SetActive(false);
+        conditionsPanelToggleButton.SetActive(true);
     }
 
     public void SetupExperiment(bool firstTime = false)
@@ -82,9 +118,6 @@ public class ExperimentManager : MonoBehaviour
         }
         else if (mode == ExperimentMode.Comparison)
         {
-            // For testing purposes
-            compObjInUse = compObjAdd;
-
             StartCoroutine(InstantiateComparison(firstTime));
 
             taskPanel.SetStartInformation(ExperimentMode.Comparison);
@@ -107,7 +140,7 @@ public class ExperimentManager : MonoBehaviour
             var startupManager = AppManager.Instance.GetStartupManager();
             startupManager.StartCoroutine(startupManager.StartUp(firstTime));
 
-            var virtTwin = CreateVersionObjectFromModel(virtTwinModel, 0, true);
+            var virtTwin = CreateVersionObjectFromModel(tutorialVirtTwinModel, 0, true);
             virtTwin.Initialize();
             AppManager.Instance.FindAndSetVirtualTwin();
 
@@ -118,6 +151,9 @@ public class ExperimentManager : MonoBehaviour
             trackedObject.SetActive(true);
             trackedObject.GetComponent<TrackedObject>().SetMaterial(comparisonManager.edgesMat);
         }
+
+
+        setupWasDone = true;
     }
 
     IEnumerator InstantiateComparison(bool firstTime)
@@ -143,10 +179,10 @@ public class ExperimentManager : MonoBehaviour
         yield return null;
 
         // Select a random object from the list of available objects
-        int randomIndex = Random.Range(0, compObjInUse.Length - 1);
-        GameObject objModel= compObjInUse[randomIndex];
+        //int randomIndex = Random.Range(0, compObjInUse.Length - 1);
+        //GameObject objModel= compObjInUse[randomIndex];
 
-        var comparedAgainstVersion = CreateVersionObjectFromModel(objModel, 1);
+        var comparedAgainstVersion = CreateVersionObjectFromModel(goalModel, 1);
 
         var voModel = comparedAgainstVersion.transform.GetChild(0).gameObject;
         var toModel = trackedObject.transform.GetChild(0).gameObject;
@@ -348,24 +384,24 @@ public class ExperimentManager : MonoBehaviour
     {
         GameObject[] objectsToSpawn = new GameObject[amountOfVersions];
 
-        GameObject[] selectedArray;
-        switch (difficulty) {
-            case 0:
-                selectedArray = objectsEasy;
-                break;
-            case 1:
-                selectedArray = objectsMedium;
-                break;
-            case 2:
-                selectedArray = objectsHard;
-                break;
-            default:
-                Debug.Log("Difficulty not set to a value.");
-                selectedArray = objectsEasy;
-                break;
-        }
+        //GameObject[] selectedArray;
+        //switch (difficulty) {
+        //    case 0:
+        //        selectedArray = timelineObjects;
+        //        break;
+        //    case 1:
+        //        selectedArray = timelineObjects;
+        //        break;
+        //    case 2:
+        //        selectedArray = timelineObjects;
+        //        break;
+        //    default:
+        //        Debug.Log("Difficulty not set to a value.");
+        //        selectedArray = timelineObjects;
+        //        break;
+        //}
 
-        List<GameObject> objPool = new List<GameObject>(selectedArray);
+        List<GameObject> objPool = new List<GameObject>(timelineObjects);
 
         for (int i = 0; i < amountOfVersions; i++)
         {

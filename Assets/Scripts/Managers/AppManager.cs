@@ -83,7 +83,7 @@ public class AppManager : MonoBehaviour
             if (experiment)
             {
                 // experiment Manager will call StartupManager by itself
-                experimentManager.SetupExperiment(true);
+                //experimentManager.SetupExperiment(true);
             }
             else
             {
