@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
-public enum ExperimentMode { Comparison, Timeline }
+public enum ExperimentMode { Comparison, Timeline, Tutorial }
 
 public class ExperimentManager : MonoBehaviour
 {
@@ -80,7 +80,7 @@ public class ExperimentManager : MonoBehaviour
             }
             taskPanel.SetTextCounter(experimentCounter);
         }
-        else
+        else if (mode == ExperimentMode.Comparison)
         {
             // For testing purposes
             compObjInUse = compObjAdd;
@@ -101,6 +101,22 @@ public class ExperimentManager : MonoBehaviour
             }
 
             taskPanel.SetTextCounter(experimentCounter);
+        }
+        else // Tutorial
+        {
+            var startupManager = AppManager.Instance.GetStartupManager();
+            startupManager.StartCoroutine(startupManager.StartUp(firstTime));
+
+            var virtTwin = CreateVersionObjectFromModel(virtTwinModel, 0, true);
+            virtTwin.Initialize();
+            AppManager.Instance.FindAndSetVirtualTwin();
+
+            AppManager.Instance.GetTrackedObjectLogic().Initialize();
+            //comparisonManager.Initialize();
+            timelineManager.deactivated = true;
+
+            trackedObject.SetActive(true);
+            trackedObject.GetComponent<TrackedObject>().SetMaterial(comparisonManager.edgesMat);
         }
     }
 

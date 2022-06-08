@@ -330,8 +330,13 @@ public class AppManager : MonoBehaviour
         return true;
     }
 
-    public void BackToSceneSelection()
+    public void LoadSceneSelection()
     {
         SceneManager.LoadScene("_SelectionScene");
+    }
+    
+    public void LoadExperimentScene()
+    {
+        SceneManager.LoadScene("_ExperimentScene");
     }
 }
