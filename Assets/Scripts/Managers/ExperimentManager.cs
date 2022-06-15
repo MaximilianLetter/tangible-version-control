@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-
 public enum ExperimentMode { Comparison, Timeline, Tutorial }
 
 public class ExperimentManager : MonoBehaviour
@@ -23,6 +22,8 @@ public class ExperimentManager : MonoBehaviour
 
     [SerializeField]
     private GameObject tutorialVirtTwinModel;
+    [SerializeField]
+    private Material tutorialOutlineMat;
 
     [SerializeField]
     private GameObject[] timelineObjects;
@@ -151,7 +152,10 @@ public class ExperimentManager : MonoBehaviour
             timelineManager.deactivated = true;
 
             trackedObject.SetActive(true);
-            trackedObject.GetComponent<TrackedObject>().SetMaterial(comparisonManager.edgesMat);
+            //trackedObject.GetComponent<TrackedObject>().SetMaterial(comparisonManager.edgesMat);
+            var outline = trackedObject.AddComponent<Microsoft.MixedReality.Toolkit.Utilities.MeshOutlineHierarchy>();
+            outline.OutlineMaterial = tutorialOutlineMat;
+            outline.OutlineWidth = 0.004f;
         }
 
         if (!setupWasDone)
