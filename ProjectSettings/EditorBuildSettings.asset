@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Scenes/_ExperimentScene.unity
     guid: 390b840d195cb7e4c8dcd3f1fe3b4ca6
+  - enabled: 1
+    path: Assets/_Scenes/_ExperimentTutorialScene.unity
+    guid: ae19f964f4c012c4ba648a5335e12863
   m_configObjects:
     Unity.XR.WindowsMR.Settings: {fileID: 11400000, guid: b740a6b577d024146895173517a5f53e,
       type: 2}

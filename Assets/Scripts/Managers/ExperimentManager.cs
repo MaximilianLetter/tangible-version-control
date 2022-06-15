@@ -3,16 +3,37 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
+public enum ExperimentMode { Comparison, Timeline, Tutorial }
+
 public class ExperimentManager : MonoBehaviour
 {
-    public GameObject[] objectsEasy;
-    public GameObject[] objectsMedium;
-    public GameObject[] objectsHard;
+    public ExperimentMode mode = ExperimentMode.Comparison;
+
+    [SerializeField]
+    private GameObject[] compObjAdd;
+    [SerializeField]
+    private GameObject[] compObjSub;
+    [SerializeField]
+    private GameObject[] compObjExch;
+
+    //private GameObject[] compObjInUse;
+
+    private GameObject virtTwinModel;
+    private GameObject goalModel;
+
+    [SerializeField]
+    private GameObject tutorialVirtTwinModel;
+
+    [SerializeField]
+    private GameObject[] timelineObjects;
 
     public GameObject placeHolderModel;
     public GameObject virtualTwinModel;
     public GameObject versionPrefab;
     public GameObject branchPrefab;
+
+    public GameObject conditionsPanel;
+    public GameObject conditionsPanelToggleButton;
 
     private GameObject lookedForVersion;
 
@@ -25,39 +46,175 @@ public class ExperimentManager : MonoBehaviour
     public int participantID; // TODO do something with this
 
     private TimelineManager timelineManager;
+    private ComparisonManager comparisonManager;
+    private GameObject trackedObject;
     private TaskPanel taskPanel;
     private bool ready;
     private bool experimentRunning;
     private int experimentCounter;
     private float experimentStartTime;
 
+    private bool setupWasDone;
     public bool readyForExperiment;
 
     void Start()
     {
         taskPanel = AppManager.Instance.GetTaskPanel();
         timelineManager = AppManager.Instance.GetTimelineManager();
+        comparisonManager = AppManager.Instance.GetComparisonManager();
+        trackedObject = AppManager.Instance.GetTrackedObjectLogic().gameObject;
 
         // To save results to
         Directory.CreateDirectory(Application.streamingAssetsPath + "/results/");
+
+        if (mode == ExperimentMode.Tutorial) SetupExperiment();
+    }
+
+    public void SelectExperimentCondition(string type, bool variant)
+    {
+        int increment = 0;
+        if (variant) increment = 2;
+
+        if (type == "add")
+        {
+            virtTwinModel = compObjAdd[increment];
+            goalModel = compObjAdd[increment + 1];
+        }
+
+        if (type == "sub")
+        {
+            virtTwinModel = compObjSub[increment];
+            goalModel = compObjSub[increment + 1];
+        }
+
+        if (type == "exch")
+        {
+            virtTwinModel = compObjExch[increment];
+            goalModel = compObjExch[increment + 1];
+        }
+
+        SetupExperiment(!setupWasDone);
+
+        conditionsPanel.SetActive(false);
+        conditionsPanelToggleButton.SetActive(true);
     }
 
     public void SetupExperiment(bool firstTime = false)
     {
-        Debug.Log("Difficulty: " + difficulty);
-        Debug.Log("Amount of versions: " + amountOfVersions);
-        StartCoroutine(InstantiateTimelineObjects(firstTime));
+        if (mode == ExperimentMode.Timeline)
+        {
+            Debug.Log("Difficulty: " + difficulty);
+            Debug.Log("Amount of versions: " + amountOfVersions);
+            StartCoroutine(InstantiateTimelineObjects(firstTime));
 
+            if (firstTime)
+            {
+                experimentCounter = 0;
+                taskPanel.SetStartInformation(ExperimentMode.Timeline);
+            }
+            else
+            {
+                experimentCounter++;
+            }
+            taskPanel.SetTextCounter(experimentCounter);
+        }
+        else if (mode == ExperimentMode.Comparison)
+        {
+            StartCoroutine(InstantiateComparison(firstTime));
+
+            taskPanel.SetStartInformation(ExperimentMode.Comparison);
+            taskPanel.SetTextCounter(experimentCounter);
+
+            if (firstTime)
+            {
+                experimentCounter = 0;
+                taskPanel.gameObject.SetActive(true);
+            }
+            else
+            {
+                experimentCounter++;
+            }
+
+            taskPanel.SetTextCounter(experimentCounter);
+        }
+        else // Tutorial
+        {
+            var startupManager = AppManager.Instance.GetStartupManager();
+            startupManager.StartCoroutine(startupManager.StartUp(firstTime));
+
+            var virtTwin = CreateVersionObjectFromModel(tutorialVirtTwinModel, 0, true);
+            virtTwin.Initialize();
+            AppManager.Instance.FindAndSetVirtualTwin();
+
+            AppManager.Instance.GetTrackedObjectLogic().Initialize();
+            //comparisonManager.Initialize();
+            timelineManager.deactivated = true;
+
+            trackedObject.SetActive(true);
+            trackedObject.GetComponent<TrackedObject>().SetMaterial(comparisonManager.edgesMat);
+        }
+
+        if (!setupWasDone)
+        {
+            // Hide not required elements
+            var actionPanel = AppManager.Instance.GetActionPanel();
+            if (actionPanel != null)
+            {
+                actionPanel.gameObject.SetActive(false);
+            }
+
+            var timeline = AppManager.Instance.GetTimelineContainer();
+            if (timeline != null)
+            {
+                timeline.gameObject.SetActive(false);
+            }
+
+            if (taskPanel != null)
+            {
+                taskPanel.gameObject.SetActive(false);
+            }
+        }
+
+        setupWasDone = true;        
+    }
+
+    IEnumerator InstantiateComparison(bool firstTime)
+    {
         if (firstTime)
         {
-            experimentCounter = 0;
-            taskPanel.SetStartInformation();
+            var startupManager = AppManager.Instance.GetStartupManager();
+            startupManager.StartCoroutine(startupManager.StartUp(firstTime));
+
+            // create virtual twin
+            var virtTwin = CreateVersionObjectFromModel(virtTwinModel, 0, true);
+            virtTwin.Initialize();
+            AppManager.Instance.FindAndSetVirtualTwin();
+
+            yield return null;
+
+            AppManager.Instance.GetTrackedObjectLogic().Initialize();
+            comparisonManager.Initialize();
+
+            timelineManager.deactivated = true;
         }
-        else
-        {
-            experimentCounter++;
-        }
-        taskPanel.SetTextCounter(experimentCounter);
+
+        yield return null;
+
+        // Select a random object from the list of available objects
+        //int randomIndex = Random.Range(0, compObjInUse.Length - 1);
+        //GameObject objModel= compObjInUse[randomIndex];
+
+        var comparedAgainstVersion = CreateVersionObjectFromModel(goalModel, 1);
+
+        var voModel = comparedAgainstVersion.transform.GetChild(0).gameObject;
+        var toModel = trackedObject.transform.GetChild(0).gameObject;
+
+        // Required to for finding VersionObject in parent
+        AppManager.Instance.GetTimelineContainer().SetActive(true);
+
+        comparisonManager.StartComparison(toModel, voModel);
+
+        AppManager.Instance.GetTimelineContainer().SetActive(false);
     }
 
     IEnumerator InstantiateTimelineObjects(bool firstTime)
@@ -200,6 +357,47 @@ public class ExperimentManager : MonoBehaviour
         startupManager.StartCoroutine(startupManager.StartUp(firstTime));
     }
 
+    VersionObject CreateVersionObjectFromModel(GameObject baseModel, int id, bool virtTwin = false)
+    {
+        GameObject loadedOBJ = Instantiate(baseModel);
+        GameObject newVersion = Instantiate(versionPrefab, AppManager.Instance.GetBranchContainer());
+        VersionObject versionLogic = newVersion.GetComponent<VersionObject>();
+
+        // Meta information
+        versionLogic.id = id.ToString();
+        versionLogic.description = "MESSAGE TO SET"; // TODO message is important, as this might be the description fitting to the looked for object
+        versionLogic.createdBy = "Anonymous";
+        versionLogic.createdAt = System.DateTime.Now.ToString();
+        versionLogic.virtualTwin = virtTwin;
+
+        // Switch model to the prefab
+        Transform modelContainer = versionLogic.GetModelContainer();
+
+        // The glTF result is the complete scene, including light and camera
+        // only keep the actual mesh, destroy other or dont even create other
+        var model = loadedOBJ.transform.GetChild(0).gameObject;
+        model.transform.SetParent(modelContainer);
+
+        modelContainer.localScale = model.transform.localScale;
+        modelContainer.localPosition = model.transform.transform.localPosition;
+        modelContainer.localRotation = model.transform.localRotation;
+
+        model.transform.localScale = Vector3.one;
+        model.transform.localPosition = Vector3.zero;
+        model.transform.localRotation = Quaternion.identity;
+
+        model.name = "model";
+
+        ColliderToFit.FitToChildren(modelContainer.gameObject);
+
+        versionLogic.Initialize();
+
+        // Destroy the glTF scene, the required model was already moved out
+        Destroy(loadedOBJ);
+
+        return versionLogic;
+    }
+
     /// <summary>
     /// Select a number of objects out of an object pool. Based on the set difficulty and number of versions defined.
     /// </summary>
@@ -208,24 +406,24 @@ public class ExperimentManager : MonoBehaviour
     {
         GameObject[] objectsToSpawn = new GameObject[amountOfVersions];
 
-        GameObject[] selectedArray;
-        switch (difficulty) {
-            case 0:
-                selectedArray = objectsEasy;
-                break;
-            case 1:
-                selectedArray = objectsMedium;
-                break;
-            case 2:
-                selectedArray = objectsHard;
-                break;
-            default:
-                Debug.Log("Difficulty not set to a value.");
-                selectedArray = objectsEasy;
-                break;
-        }
+        //GameObject[] selectedArray;
+        //switch (difficulty) {
+        //    case 0:
+        //        selectedArray = timelineObjects;
+        //        break;
+        //    case 1:
+        //        selectedArray = timelineObjects;
+        //        break;
+        //    case 2:
+        //        selectedArray = timelineObjects;
+        //        break;
+        //    default:
+        //        Debug.Log("Difficulty not set to a value.");
+        //        selectedArray = timelineObjects;
+        //        break;
+        //}
 
-        List<GameObject> objPool = new List<GameObject>(selectedArray);
+        List<GameObject> objPool = new List<GameObject>(timelineObjects);
 
         for (int i = 0; i < amountOfVersions; i++)
         {

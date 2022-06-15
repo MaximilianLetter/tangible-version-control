@@ -12,6 +12,17 @@ public class ActionPanel : MonoBehaviour
 
     public Transform cancelBtnTransform;
 
+    [SerializeField]
+    private Vector3 offset;
+    [SerializeField]
+    private float distance;
+    private Transform trackedTransform;
+
+    private void Start()
+    {
+        trackedTransform = AppManager.Instance.GetTrackedTransform();
+    }
+
     /// <summary>
     /// Activates the fitting sub visualizations based on the active comparison mode.
     /// </summary>
@@ -50,17 +61,30 @@ public class ActionPanel : MonoBehaviour
         switch (index)
         {
             case 0:
-                cancelBtnTransform.localPosition = new Vector3(-0.05f, 0.05f, 0f);
+                cancelBtnTransform.localPosition = new Vector3(-0.075f, -0.05f, 0f);
                 break;
             case 1:
-                cancelBtnTransform.localPosition = new Vector3(-0.05f, 0f, 0f);
+                cancelBtnTransform.localPosition = new Vector3(-0.025f, -0.05f, 0f);
                 break;
             case 2:
-                cancelBtnTransform.localPosition = new Vector3(-0.05f, -0.05f, 0f);
+                cancelBtnTransform.localPosition = new Vector3(0.025f, -0.05f, 0f);
+                break;
+            case 3:
+                cancelBtnTransform.localPosition = new Vector3(0.075f, -0.05f, 0f);
                 break;
             default:
-                cancelBtnTransform.localPosition = new Vector3(-0.05f, 0.05f, 0f);
+                cancelBtnTransform.localPosition = new Vector3(-0.075f, -0.05f, 0f);
                 break;
         }
     }
+
+    //private void Update()
+    //{
+    //    Transform camTransform = Camera.main.transform;
+    //    Vector3 trackedPos = trackedTransform.position + offset;
+
+    //    Vector3 direction = (trackedPos - camTransform.position).normalized;
+
+    //    transform.position = trackedTransform.position + (direction * distance);
+    //}
 }

@@ -83,7 +83,7 @@ public class AppManager : MonoBehaviour
             if (experiment)
             {
                 // experiment Manager will call StartupManager by itself
-                experimentManager.SetupExperiment(true);
+                //experimentManager.SetupExperiment(true);
             }
             else
             {
@@ -330,8 +330,13 @@ public class AppManager : MonoBehaviour
         return true;
     }
 
-    public void BackToSceneSelection()
+    public void LoadSceneSelection()
     {
         SceneManager.LoadScene("_SelectionScene");
+    }
+    
+    public void LoadExperimentScene()
+    {
+        SceneManager.LoadScene("_ExperimentScene");
     }
 }

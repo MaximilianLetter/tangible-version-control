@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum ComparisonMode { SideBySide, Overlay, Differences }
+public enum ComparisonMode { SideBySide, Overlay, Differences, Combined }
 
 public class ComparisonManager : MonoBehaviour
 {
@@ -25,7 +25,11 @@ public class ComparisonManager : MonoBehaviour
     public Material diffMatSubtracted;
 
     [Space(10)]
-    public ComparisonMode mode = ComparisonMode.SideBySide;
+    public ComparisonMode mode = ComparisonMode.Differences;
+
+    public GameObject companionObjPrefab;
+    [SerializeField] private Transform rightAnchor;
+    [SerializeField] private Transform leftAnchor;
 
     // Required object references
     private ActionPanel actionPanel;
@@ -36,8 +40,10 @@ public class ComparisonManager : MonoBehaviour
     private Transform contentContainer;
     private Transform trackedObjContainer;
     private TrackedObject trackedObj;
-    private Transform comparisonObjContainer;
+    private Transform comparisonObjTransform;
     private ComparisonObject comparisonObj;
+    private ComparisonObject companionObjLeft;
+    private ComparisonObject companionObjRight;
 
     // State variables
     private VersionObject comparedAgainstVersionObject;
@@ -55,7 +61,7 @@ public class ComparisonManager : MonoBehaviour
         actionPanel = AppManager.Instance.GetActionPanel();
         timelineManager = AppManager.Instance.GetTimelineManager();
         comparisonObj = AppManager.Instance.GetComparisonObjectLogic();
-        comparisonObjContainer = comparisonObj.transform;
+        comparisonObjTransform = comparisonObj.transform;
 
         // Get relevant transform information
         contentContainer = AppManager.Instance.GetContentContainer();
@@ -80,6 +86,8 @@ public class ComparisonManager : MonoBehaviour
     {
         VersionObject versionObj = virtualObj.GetComponentInParent<VersionObject>();
 
+        Debug.Log(versionObj);
+
         if (versionObj.virtualTwin)
         {
             Debug.Log("Comparing against virtual twin; ABORT COMPARISON.");
@@ -101,26 +109,36 @@ public class ComparisonManager : MonoBehaviour
 
         Debug.Log("A new comparison is initiated. START COMPARISON");
 
+        trackedObj.PlaySound();
+
         if (AppManager.Instance.experiment)
         {
-            // Only test if the experiment is running
-            if (!AppManager.Instance.GetExperimentManager().GetExperimentRunning()) return;
-
-            bool result = AppManager.Instance.GetExperimentManager().CheckSelectedVersion(virtualObj);
-
-            Debug.Log(result);
-
-            if (result)
+            if (AppManager.Instance.GetExperimentManager().mode == ExperimentMode.Timeline)
             {
-                //Debug.Log("EXPERIMENT MODE");
+                // Only test if the experiment is running
+                if (!AppManager.Instance.GetExperimentManager().GetExperimentRunning()) return;
 
-                //AppManager.Instance.GetTimelineContainer().SetActive(false);
+                bool result = AppManager.Instance.GetExperimentManager().CheckSelectedVersion(virtualObj);
 
-                AppManager.Instance.GetExperimentManager().SetExperimentRunning(false);
-                AppManager.Instance.GetExperimentManager().SetupExperiment();
+                Debug.Log(result);
+
+                if (result)
+                {
+                    //Debug.Log("EXPERIMENT MODE");
+
+                    //AppManager.Instance.GetTimelineContainer().SetActive(false);
+
+                    AppManager.Instance.GetExperimentManager().SetExperimentRunning(false);
+                    AppManager.Instance.GetExperimentManager().SetupExperiment();
+                }
+
+                return;
             }
-
-            return;
+            else
+            {
+                // Always use differences mode for comparison experiment
+                mode = ComparisonMode.Differences;
+            }
         }
 
         // Save reference to object for avoiding reinitializing the same comparison
@@ -128,6 +146,25 @@ public class ComparisonManager : MonoBehaviour
 
         // Save the main model that is used by the comparison object
         mainComparisonModel = comparisonObj.Initialize(versionObj);
+
+        // Create companionObjs
+        if (companionObjLeft != null)
+        {
+            var toDestroyL = companionObjLeft.gameObject;
+            Destroy(toDestroyL);
+            companionObjLeft = null;
+        }
+        if (companionObjRight != null)
+        {
+            var toDestroyR = companionObjRight.gameObject;
+            Destroy(toDestroyR);
+            companionObjRight = null;
+        }
+
+        companionObjLeft = Instantiate(companionObjPrefab, contentContainer).GetComponent<ComparisonObject>();
+        companionObjLeft.Initialize(virtualTwin);
+        companionObjRight = Instantiate(companionObjPrefab, contentContainer).GetComponent<ComparisonObject>();
+        companionObjRight.Initialize(comparedAgainstVersionObject);
 
         // Highlight in timeline
         timelineManager.EnableComparisonLine(virtualTwin.transform, comparedAgainstVersionObject.transform);
@@ -153,16 +190,19 @@ public class ComparisonManager : MonoBehaviour
         if (mode == ComparisonMode.SideBySide)
         {
             trackedObj.ResetMaterial();
-            comparisonObjContainer.SetParent(contentContainer);
-            comparisonObj.SetSideBySide(true, floatingDistance);
+            //comparisonObjTransform.SetParent(contentContainer);
+            //comparisonObj.SetSideBySide(true, floatingDistance);
+            comparisonObj.SetOnAnchor(rightAnchor, floatingDistance);
         }
         else if (mode == ComparisonMode.Overlay)
         {
             comparisonObj.SetPivotPointBottom();
 
             // Parent the comparison object container under the tracked transform to match the physical object
-            comparisonObjContainer.SetParent(trackedObjContainer);
-            comparisonObjContainer.localPosition = Vector3.zero;
+            comparisonObjTransform.SetParent(trackedObjContainer);
+            comparisonObj.SetModelOffset(false);
+            comparisonObjTransform.localPosition = Vector3.zero;
+            comparisonObjTransform.localRotation = Quaternion.identity;
 
             trackedObj.SetMaterial(invisibleMat);
         }
@@ -172,25 +212,25 @@ public class ComparisonManager : MonoBehaviour
             trackedObj.SetMaterial(invisibleMat);
 
             // Parent the comparison object container under the tracked transform to match the physical object
-            comparisonObjContainer.SetParent(trackedObjContainer);
-            comparisonObjContainer.localPosition = Vector3.zero;
-            comparisonObjContainer.localRotation = Quaternion.identity;
+            comparisonObjTransform.SetParent(trackedObjContainer);
+            comparisonObjTransform.localPosition = Vector3.zero;
+            comparisonObjTransform.localRotation = Quaternion.identity;
 
             // Create two more GameObjects to display the differences
             // currently only the compared against is visible, two base objects need to be instantiated
             var baseModelContainer = trackedObj.transform.GetChild(0).gameObject;
 
-            var diffBase = Instantiate(baseModelContainer, comparisonObjContainer);
-            var diffSub = Instantiate(baseModelContainer, comparisonObjContainer);
+            var diffBase = Instantiate(baseModelContainer, comparisonObjTransform);
+            var diffSub = Instantiate(baseModelContainer, comparisonObjTransform);
             var diffAdded = mainComparisonModel;
 
             // Clean up copied components, except the already existing comparison object
-            for (int i = 1; i < comparisonObjContainer.childCount; i++)
+            for (int i = 1; i < comparisonObjTransform.childCount; i++)
             {
-                var coll = comparisonObjContainer.GetChild(i).GetComponent<BoxCollider>();
+                var coll = comparisonObjTransform.GetChild(i).GetComponent<BoxCollider>();
                 if (coll) Destroy(coll);
 
-                var collScript = comparisonObjContainer.GetChild(i).GetComponent<CollisionInteraction>();
+                var collScript = comparisonObjTransform.GetChild(i).GetComponent<CollisionInteraction>();
                 if (collScript) Destroy(collScript);
             }
 
@@ -201,6 +241,52 @@ public class ComparisonManager : MonoBehaviour
             //diffBase.GetComponentInChildren<Renderer>().material = diffMatBase;
             //diffSub.GetComponentInChildren<Renderer>().material = diffMatSubtracted;
             //diffAdded.GetComponentInChildren<Renderer>().material = diffMatAdded;
+            var rendBase = diffBase.GetComponentInChildren<Renderer>();
+            rendBase.materials = MultiMats.BuildMaterials(diffMatBase, rendBase.materials.Length);
+            var rendDiff = diffSub.GetComponentInChildren<Renderer>();
+            rendDiff.materials = MultiMats.BuildMaterials(diffMatSubtracted, rendDiff.materials.Length);
+            var rendAdded = diffAdded.GetComponentInChildren<Renderer>();
+            rendAdded.materials = MultiMats.BuildMaterials(diffMatAdded, rendAdded.materials.Length);
+        }
+        else if (mode == ComparisonMode.Combined)
+        {
+            // Floating the two objects side by side
+            companionObjLeft.gameObject.SetActive(true);
+            companionObjLeft.SetOnAnchor(leftAnchor, floatingDistance, true);
+            companionObjRight.gameObject.SetActive(true);
+            companionObjRight.SetOnAnchor(rightAnchor, floatingDistance);
+
+            // Differences on physical object
+            comparisonObj.SetPivotPointBottom();
+            trackedObj.SetMaterial(invisibleMat);
+
+            // Parent the comparison object container under the tracked transform to match the physical object
+            comparisonObjTransform.SetParent(trackedObjContainer);
+            comparisonObjTransform.localPosition = Vector3.zero;
+            comparisonObjTransform.localRotation = Quaternion.identity;
+
+            // Create two more GameObjects to display the differences
+            // currently only the compared against is visible, two base objects need to be instantiated
+            var baseModelContainer = trackedObj.transform.GetChild(0).gameObject;
+
+            var diffBase = Instantiate(baseModelContainer, comparisonObjTransform);
+            var diffSub = Instantiate(baseModelContainer, comparisonObjTransform);
+            var diffAdded = mainComparisonModel;
+
+            // Clean up copied components, except the already existing comparison object
+            for (int i = 1; i < comparisonObjTransform.childCount; i++)
+            {
+                var coll = comparisonObjTransform.GetChild(i).GetComponent<BoxCollider>();
+                if (coll) Destroy(coll);
+
+                var collScript = comparisonObjTransform.GetChild(i).GetComponent<CollisionInteraction>();
+                if (collScript) Destroy(collScript);
+            }
+
+            diffBase.transform.localPosition = baseModelContainer.transform.localPosition;
+            diffSub.transform.localPosition = baseModelContainer.transform.localPosition;
+            diffAdded.transform.localPosition = baseModelContainer.transform.localPosition;
+
             var rendBase = diffBase.GetComponentInChildren<Renderer>();
             rendBase.materials = MultiMats.BuildMaterials(diffMatBase, rendBase.materials.Length);
             var rendDiff = diffSub.GetComponentInChildren<Renderer>();
@@ -225,16 +311,22 @@ public class ComparisonManager : MonoBehaviour
             comparedAgainstVersionObject = null;
         }
 
-        actionPanel.gameObject.SetActive(false);
+        if (actionPanel != null) actionPanel.gameObject.SetActive(false);
 
         trackedObj.ResetMaterial();
 
         // Destroy all objects
-        foreach (Transform child in comparisonObjContainer)
+        foreach (Transform child in comparisonObjTransform)
         {
             Destroy(child.gameObject);
         }
         comparisonObj.gameObject.SetActive(false);
+
+        if (companionObjLeft != null || companionObjRight != null)
+        {
+            Destroy(companionObjLeft.gameObject);
+            Destroy(companionObjRight.gameObject);
+        }
 
         inComparison = false;
     }
@@ -244,24 +336,30 @@ public class ComparisonManager : MonoBehaviour
     /// </summary>
     void CleanUpComparison()
     {
-        int modelsInUse = comparisonObjContainer.childCount;
+        int modelsInUse = comparisonObjTransform.childCount;
 
         if (modelsInUse > 1)
         {
-            for (int i = 0; i < comparisonObjContainer.childCount; i++)
+            for (int i = 0; i < comparisonObjTransform.childCount; i++)
             {
-                if (comparisonObjContainer.GetChild(i).gameObject == mainComparisonModel)
+                if (comparisonObjTransform.GetChild(i).gameObject == mainComparisonModel)
                 {
                     comparisonObj.ReInitialize(mainComparisonModel);
                     continue;
                 }
 
-                Destroy(comparisonObjContainer.GetChild(i).gameObject);
+                Destroy(comparisonObjTransform.GetChild(i).gameObject);
             }
         }
 
         comparisonObj.ResetMaterial();
-        comparisonObj.SetSideBySide(false, floatingDistance);
+        //comparisonObj.ResetFromAnchor();
+
+        if (companionObjLeft != null || companionObjRight != null)
+        {
+            companionObjLeft.gameObject.SetActive(false);
+            companionObjRight.gameObject.SetActive(false);
+        }
     }
 
     /// <summary>

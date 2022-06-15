@@ -364,7 +364,7 @@ PrefabInstance:
       propertyPath: m_text
       value: 'EXPERIMENT
 
-        timeline
+        comp quick
 
 '
       objectReference: {fileID: 0}
@@ -1306,7 +1306,7 @@ PrefabInstance:
       propertyPath: m_text
       value: 'EXPERIMENT
 
-        comparison'
+        comp full'
       objectReference: {fileID: 0}
     - target: {fileID: 3703606743104540543, guid: c4ef8a879fb66d6468c67606ba1e6b25,
         type: 3}
@@ -1332,6 +1332,11 @@ PrefabInstance:
         type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: ChangeScenes, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5260594881063842630, guid: c4ef8a879fb66d6468c67606ba1e6b25,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: _ExperimentTutorialScene
       objectReference: {fileID: 0}
     - target: {fileID: 6005136639931975735, guid: c4ef8a879fb66d6468c67606ba1e6b25,
         type: 3}

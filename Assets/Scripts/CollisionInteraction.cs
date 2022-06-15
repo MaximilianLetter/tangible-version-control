@@ -15,6 +15,9 @@ public class CollisionInteraction : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        // HACKY SOLUTION FOR EXPERIMENT
+        if (AppManager.Instance.experiment) return;
+
         if (timelineManager.GetInPlacement())
         {
             return;

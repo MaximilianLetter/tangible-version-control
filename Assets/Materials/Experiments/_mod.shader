@@ -113,6 +113,8 @@ Shader "Mixed Reality Toolkit/Standard modified"
         _StencilReference("Stencil Reference", Range(0, 255)) = 0
         [Enum(UnityEngine.Rendering.CompareFunction)]_StencilComparison("Stencil Comparison", Int) = 0
         [Enum(UnityEngine.Rendering.StencilOp)]_StencilOperation("Stencil Operation", Int) = 0
+
+        _StripeSize("Stripe Size", Range(1, 100.0)) = 10.0
 }
 
     SubShader
@@ -781,6 +783,7 @@ Shader "Mixed Reality Toolkit/Standard modified"
             {
                 UNITY_SETUP_INSTANCE_ID(i);
 
+
 #if defined(_TRIPLANAR_MAPPING)
                 // Calculate triplanar uvs and apply texture scale and offset values like TRANSFORM_TEX.
                 fixed3 triplanarBlend = pow(abs(i.triplanarNormal), _TriplanarMappingBlendSharpness);
@@ -794,7 +797,9 @@ Shader "Mixed Reality Toolkit/Standard modified"
                 uvX.x *= axisSign.x;
                 uvY.x *= axisSign.y;
                 uvZ.x *= -axisSign.z;
+
 #endif
+
 
             // Texturing.
 #if defined(_DISABLE_ALBEDO_MAP)
@@ -804,6 +809,7 @@ Shader "Mixed Reality Toolkit/Standard modified"
                 fixed4 albedo = tex2D(_MainTex, uvX) * triplanarBlend.x + 
                                 tex2D(_MainTex, uvY) * triplanarBlend.y + 
                                 tex2D(_MainTex, uvZ) * triplanarBlend.z;
+
 #else
 #if defined(_USE_SSAA)
                 // Does SSAA on the texture, implementation based off this article: https://medium.com/@bgolus/sharper-mipmapping-using-shader-based-supersampling-ed7aadb47bec
@@ -1106,6 +1112,19 @@ Shader "Mixed Reality Toolkit/Standard modified"
 #endif
                 // Final lighting mix.
                 fixed4 output = albedo;
+
+#if defined(_TRIPLANAR_MAPPING)
+
+                // ---- test stripes ---
+                int _Tiling = 400;
+                float _Direction = 0.5;
+
+                float pos = lerp(uvX, uvY, _Direction) * _Tiling;
+                fixed value = floor(frac(pos) + 0.75);
+                return lerp(output, fixed4(0, 0, 0, 0), value);
+                return value;
+#endif
+
 #if defined(_SPHERICAL_HARMONICS)
                 fixed3 ambient = i.ambient;
 #else
@@ -1186,6 +1205,8 @@ Shader "Mixed Reality Toolkit/Standard modified"
 //
 //                return output;
 //#endif
+
+
                 return output;
             }
 
