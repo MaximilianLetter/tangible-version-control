@@ -65,7 +65,7 @@ public class ExperimentManager : MonoBehaviour
         trackedObject = AppManager.Instance.GetTrackedObjectLogic().gameObject;
 
         // To save results to
-        Directory.CreateDirectory(Application.streamingAssetsPath + "/results/");
+        //Directory.CreateDirectory(Application.streamingAssetsPath + "/results/");
 
         if (mode == ExperimentMode.Tutorial) SetupExperiment();
     }
