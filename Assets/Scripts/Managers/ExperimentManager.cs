@@ -66,6 +66,8 @@ public class ExperimentManager : MonoBehaviour
 
         // To save results to
         Directory.CreateDirectory(Application.streamingAssetsPath + "/results/");
+
+        if (mode == ExperimentMode.Tutorial) SetupExperiment();
     }
 
     public void SelectExperimentCondition(string type, bool variant)
@@ -152,8 +154,28 @@ public class ExperimentManager : MonoBehaviour
             trackedObject.GetComponent<TrackedObject>().SetMaterial(comparisonManager.edgesMat);
         }
 
+        if (!setupWasDone)
+        {
+            // Hide not required elements
+            var actionPanel = AppManager.Instance.GetActionPanel();
+            if (actionPanel != null)
+            {
+                actionPanel.gameObject.SetActive(false);
+            }
 
-        setupWasDone = true;
+            var timeline = AppManager.Instance.GetTimelineContainer();
+            if (timeline != null)
+            {
+                timeline.gameObject.SetActive(false);
+            }
+
+            if (taskPanel != null)
+            {
+                taskPanel.gameObject.SetActive(false);
+            }
+        }
+
+        setupWasDone = true;        
     }
 
     IEnumerator InstantiateComparison(bool firstTime)

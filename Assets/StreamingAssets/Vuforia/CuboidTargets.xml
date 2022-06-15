@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QCARConfig>
     <Tracking>
-        <ImageTarget name="test.Right" size="0.030000 0.128136"/>
-        <ImageTarget name="test.Top" size="0.128000 0.029968"/>
-        <ImageTarget name="test.Left" size="0.030000 0.128136"/>
-        <ImageTarget name="test.Front" size="0.128000 0.128000"/>
-        <ImageTarget name="test.Back" size="0.128000 0.128000"/>
-        <ImageTarget name="test.Bottom" size="0.128000 0.029968"/>
-        <MultiTarget name="CubeModel_128x30">
-            <Part name="test.Left" translation="-0.06400000303983688 0 0" rotation="AD: 0 1 0 -90"/>
-            <Part name="test.Right" translation="0.06400000303983688 0 0" rotation="AD: 0 1 0 90"/>
-            <Part name="test.Front" translation="0 0 0.014999999664723873" rotation="AD: 1 0 0 0"/>
-            <Part name="test.Back" translation="0 0 -0.014999999664723873" rotation="AD: 0 1 0 180"/>
-            <Part name="test.Top" translation="0 0.06400000303983688 0" rotation="AD: 1 0 0 -90"/>
-            <Part name="test.Bottom" translation="0 -0.06400000303983688 0" rotation="AD: 1 0 0 90"/>
+        <ImageTarget name="TVC_Study_128x30.Bottom" size="0.128000 0.029968"/>
+        <ImageTarget name="TVC_Study_128x30.Left" size="0.030000 0.128220"/>
+        <ImageTarget name="TVC_Study_128x30.Right" size="0.030000 0.128136"/>
+        <ImageTarget name="TVC_Study_128x30.Front" size="0.128000 0.128000"/>
+        <ImageTarget name="TVC_Study_128x30.Top" size="0.128000 0.029968"/>
+        <MultiTarget name="TVC_Study_128x30">
+            <Part name="TVC_Study_128x30.Left" translation="-0.06400000303983688 0 0" rotation="AD: 0 1 0 -90"/>
+            <Part name="TVC_Study_128x30.Right" translation="0.06400000303983688 0 0" rotation="AD: 0 1 0 90"/>
+            <Part name="TVC_Study_128x30.Front" translation="0 0 0.014999999664723873" rotation="AD: 1 0 0 0"/>
+            <Part name="TVC_Study_128x30.Top" translation="0 0.06400000303983688 0" rotation="AD: 1 0 0 -90"/>
+            <Part name="TVC_Study_128x30.Bottom" translation="0 -0.06400000303983688 0" rotation="AD: 1 0 0 90"/>
         </MultiTarget>
     </Tracking>
 </QCARConfig>
