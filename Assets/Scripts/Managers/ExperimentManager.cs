@@ -166,13 +166,15 @@ public class ExperimentManager : MonoBehaviour
             var timeline = AppManager.Instance.GetTimelineContainer();
             if (timeline != null)
             {
-                timeline.gameObject.SetActive(false);
+                timeline.SetActive(false);
             }
 
             if (taskPanel != null)
             {
                 taskPanel.gameObject.SetActive(false);
             }
+
+            Debug.Log("Disabling not used scene content.");
         }
 
         setupWasDone = true;        
