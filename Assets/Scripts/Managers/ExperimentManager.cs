@@ -13,7 +13,7 @@ public class ExperimentManager : MonoBehaviour
     [SerializeField]
     private GameObject[] compObjSub;
     [SerializeField]
-    private GameObject[] compObjExch;
+    private GameObject[] compObjExc;
 
     //private GameObject[] compObjInUse;
 
@@ -71,6 +71,11 @@ public class ExperimentManager : MonoBehaviour
         if (mode == ExperimentMode.Tutorial) SetupExperiment();
     }
 
+    /// <summary>
+    /// Triggered by clicking on the corresponding button. Selects and starts the experiment condition.
+    /// </summary>
+    /// <param name="type">Add, subtract, or exchange condition.</param>
+    /// <param name="variant">One of two variants of this condition.</param>
     public void SelectExperimentCondition(string type, bool variant)
     {
         int increment = 0;
@@ -88,13 +93,13 @@ public class ExperimentManager : MonoBehaviour
             goalModel = compObjSub[increment + 1];
         }
 
-        if (type == "exch")
+        if (type == "exc")
         {
-            virtTwinModel = compObjExch[increment];
-            goalModel = compObjExch[increment + 1];
+            virtTwinModel = compObjExc[increment];
+            goalModel = compObjExc[increment + 1];
         }
 
-        SetupExperiment(!setupWasDone);
+        SetupExperiment(true);
 
         conditionsPanel.SetActive(false);
         conditionsPanelToggleButton.SetActive(true);
@@ -102,6 +107,17 @@ public class ExperimentManager : MonoBehaviour
 
     public void SetupExperiment(bool firstTime = false)
     {
+        // Destroy old virtual twins in timeline
+        var vos = AppManager.Instance.GetBranchContainer();
+        if (vos.transform.childCount > 0)
+        {
+            foreach (Transform vo in vos.transform)
+            {
+                Destroy(vo.gameObject);
+            }
+        }
+        
+
         if (mode == ExperimentMode.Timeline)
         {
             Debug.Log("Difficulty: " + difficulty);
@@ -121,22 +137,22 @@ public class ExperimentManager : MonoBehaviour
         }
         else if (mode == ExperimentMode.Comparison)
         {
-            StartCoroutine(InstantiateComparison(firstTime));
+            StartCoroutine(InstantiateComparison(true));
 
-            taskPanel.SetStartInformation(ExperimentMode.Comparison);
-            taskPanel.SetTextCounter(experimentCounter);
+            //taskPanel.SetStartInformation(ExperimentMode.Comparison);
+            //taskPanel.SetTextCounter(experimentCounter);
 
-            if (firstTime)
-            {
-                experimentCounter = 0;
-                taskPanel.gameObject.SetActive(true);
-            }
-            else
-            {
-                experimentCounter++;
-            }
+            //if (firstTime)
+            //{
+            //    experimentCounter = 0;
+            //    taskPanel.gameObject.SetActive(true);
+            //}
+            //else
+            //{
+            //    experimentCounter++;
+            //}
 
-            taskPanel.SetTextCounter(experimentCounter);
+            //taskPanel.SetTextCounter(experimentCounter);
         }
         else // Tutorial
         {
@@ -158,7 +174,7 @@ public class ExperimentManager : MonoBehaviour
             outline.OutlineWidth = 0.004f;
         }
 
-        if (!setupWasDone)
+        if (!setupWasDone || firstTime)
         {
             // Hide not required elements
             var actionPanel = AppManager.Instance.GetActionPanel();
@@ -186,19 +202,29 @@ public class ExperimentManager : MonoBehaviour
 
     IEnumerator InstantiateComparison(bool firstTime)
     {
+        yield return null;
+
         if (firstTime)
         {
             var startupManager = AppManager.Instance.GetStartupManager();
             startupManager.StartCoroutine(startupManager.StartUp(firstTime));
 
+            comparisonManager.StopComparison();
+
             // create virtual twin
             var virtTwin = CreateVersionObjectFromModel(virtTwinModel, 0, true);
             virtTwin.Initialize();
-            AppManager.Instance.FindAndSetVirtualTwin();
+            Debug.Log("new virt twin created");
+
+            yield return null;
+
+            AppManager.Instance.FindAndSetVirtualTwin(true);
+            AppManager.Instance.GetTrackedObjectLogic().ResetModel();
 
             yield return null;
 
             AppManager.Instance.GetTrackedObjectLogic().Initialize();
+            Debug.Log("tracked object newly initialized");
             comparisonManager.Initialize();
 
             timelineManager.deactivated = true;

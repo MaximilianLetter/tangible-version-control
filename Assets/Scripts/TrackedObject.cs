@@ -71,6 +71,14 @@ public class TrackedObject : MonoBehaviour
         meshRenderer.materials = baseMat;
     }
 
+    public void ResetModel()
+    {
+        if (transform.childCount > 0)
+        {
+            Destroy(transform.GetChild(0).gameObject);
+        }
+    }
+
     public void PlaySound()
     {
         audioSrc.Play();

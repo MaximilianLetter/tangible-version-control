@@ -454,7 +454,7 @@ public class TimelineManager : MonoBehaviour
     /// <param name="vo">The version object representing the virtual twin.</param>
     public void SetVirtualTwinReference(VersionObject vo)
     {
-        connectionLineLogic.SetVirtualTwinTransform(vo);
+        if (connectionLineLogic != null) connectionLineLogic.SetVirtualTwinTransform(vo);
     }
 
     public Material GetEdgesMaterial()

@@ -173,7 +173,7 @@ public class ComparisonManager : MonoBehaviour
         floatingDistance = CalculateFloatingDistance(physicalObj, virtualObj);
 
         // Show panel
-        actionPanel.gameObject.SetActive(true);
+        //actionPanel.gameObject.SetActive(true);
 
         DisplayComparison();
     }
@@ -313,6 +313,8 @@ public class ComparisonManager : MonoBehaviour
 
         if (actionPanel != null) actionPanel.gameObject.SetActive(false);
 
+        if (trackedObj == null) return; // happens in experiment start
+
         trackedObj.ResetMaterial();
 
         // Destroy all objects
@@ -327,6 +329,8 @@ public class ComparisonManager : MonoBehaviour
             Destroy(companionObjLeft.gameObject);
             Destroy(companionObjRight.gameObject);
         }
+
+        StopAllCoroutines();
 
         inComparison = false;
     }
